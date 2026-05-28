@@ -1,0 +1,15 @@
+[Unit]
+Description=Guerrilla Night — AI Radio
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/www/guerillanight
+ExecStart=/var/www/guerillanight/.venv/bin/python3 server.py --port 8900
+Restart=always
+RestartSec=5
+Environment=PATH=/usr/local/bin:/usr/bin:/bin
+
+[Install]
+WantedBy=multi-user.target

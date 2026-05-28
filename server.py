@@ -454,7 +454,7 @@ async def api_playlists():
     playlists = []
     if not os.path.exists(PLAYLISTS_DIR):
         return playlists
-    for f in sorted(os.listdir(PLAYLISTS_DIR), reverse=True):
+    for f in os.listdir(PLAYLISTS_DIR):
         if f.endswith(".json") and not f.endswith("_score.json") and f.startswith("playlist_"):
             path = os.path.join(PLAYLISTS_DIR, f)
             with open(path) as fh:
@@ -468,6 +468,9 @@ async def api_playlists():
                 "generated_at": data.get("generated_at", ""),
                 "has_youtube": has_youtube,
             })
+    # Sort by actual generation time (filename sorts by generator name, not date).
+    # Fall back to filename when generated_at is missing.
+    playlists.sort(key=lambda p: (p["generated_at"] or p["filename"]), reverse=True)
     return playlists[:10]  # last 10
 
 

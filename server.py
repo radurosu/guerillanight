@@ -734,7 +734,7 @@ function saveToYouTube() {
   if (!ytTokenClient || !tracks.length) return;
   document.getElementById('yt-save-btn').disabled = true;
   document.getElementById('yt-save-btn').textContent = 'Signing in...';
-  ytTokenClient.requestAccessToken();
+  ytTokenClient.requestAccessToken({ prompt: 'consent' });
 }
 
 async function doCreatePlaylist(token) {

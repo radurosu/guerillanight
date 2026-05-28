@@ -229,6 +229,13 @@ async def api_models():
     return get_available_models()
 
 
+@app.get("/api/config")
+async def api_config():
+    """Return public config for the frontend."""
+    client_id = os.environ.get("GOOGLE_CLIENT_ID", "")
+    return {"youtube_enabled": bool(client_id), "google_client_id": client_id}
+
+
 @app.get("/api/generate/{model_key}")
 async def api_generate(model_key: str):
     if model_key not in MODELS:
@@ -369,6 +376,11 @@ def get_app_html() -> str:
   .controls{display:flex;gap:.4rem;margin-top:.6rem;justify-content:center}
   .controls button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.5);padding:.35rem .9rem;border-radius:6px;font-family:'Space Grotesk',sans-serif;font-size:.8rem;cursor:pointer;transition:all .15s}
   .controls button:hover{background:rgba(255,255,255,.1);color:#fff}
+  .yt-save{margin-top:.6rem;text-align:center}
+  .yt-save-btn{padding:.4rem 1rem;background:rgba(255,59,48,.08);border:1px solid rgba(255,59,48,.15);color:rgba(255,255,255,.5);border-radius:6px;font-family:'Space Grotesk',sans-serif;font-size:.75rem;cursor:pointer;transition:all .15s}
+  .yt-save-btn:hover{background:rgba(255,59,48,.15);border-color:rgba(255,59,48,.3);color:#fff}
+  .yt-save-btn:disabled{opacity:.4;cursor:wait}
+  .yt-save-btn svg{width:14px;height:14px;vertical-align:-2px;margin-right:.3rem;fill:currentColor}
 
   .trk{display:grid;grid-template-columns:28px 40px 1fr;gap:0 .5rem;padding:.45rem .6rem;border-radius:6px;cursor:pointer;transition:background .12s;align-items:center}
   .trk:hover{background:rgba(255,255,255,.04)}
@@ -432,6 +444,12 @@ def get_app_html() -> str:
           <button onclick="prevTrack()">Prev</button>
           <button onclick="togglePlay()" id="btn-play">Pause</button>
           <button onclick="nextTrack()">Next</button>
+        </div>
+        <div class="yt-save" id="yt-save" style="display:none">
+          <button class="yt-save-btn" onclick="saveToYouTube()" id="yt-save-btn">
+            <svg viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0C.488 3.45.029 5.804 0 12c.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0C23.512 20.55 23.971 18.196 24 12c-.029-6.185-.484-8.549-4.385-8.816zM9 16V8l8 4-8 4z"/></svg>
+            Save to YouTube
+          </button>
         </div>
       </div>
       <div class="player-list" id="tracklist"></div>
@@ -684,15 +702,89 @@ async function loadPlaylist(filename) {
   } catch(e) { console.error(e); }
 }
 
+// ── Save to YouTube ──
+let gisLoaded = false, ytTokenClient = null;
+
+function loadGIS(clientId) {
+  const s = document.createElement('script');
+  s.src = 'https://accounts.google.com/gsi/client';
+  s.onload = () => {
+    gisLoaded = true;
+    ytTokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: clientId,
+      scope: 'https://www.googleapis.com/auth/youtube',
+      callback: (resp) => {
+        if (resp.access_token) doCreatePlaylist(resp.access_token);
+      },
+    });
+    document.getElementById('yt-save').style.display = '';
+  };
+  document.head.appendChild(s);
+}
+
+function saveToYouTube() {
+  if (!ytTokenClient || !tracks.length) return;
+  document.getElementById('yt-save-btn').disabled = true;
+  document.getElementById('yt-save-btn').textContent = 'Signing in...';
+  ytTokenClient.requestAccessToken();
+}
+
+async function doCreatePlaylist(token) {
+  const btn = document.getElementById('yt-save-btn');
+  try {
+    btn.textContent = 'Creating playlist...';
+    const headers = { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' };
+    const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+
+    // Create playlist
+    const plResp = await fetch('https://www.googleapis.com/youtube/v3/playlists?part=snippet,status', {
+      method: 'POST', headers,
+      body: JSON.stringify({
+        snippet: { title: 'Guerrilla Night — ' + date, description: 'AI-curated overnight radio — guerillanight.eloquentix.com' },
+        status: { privacyStatus: 'unlisted' }
+      })
+    });
+    const pl = await plResp.json();
+    if (!pl.id) { btn.textContent = 'Error: ' + (pl.error?.message || 'failed'); btn.disabled = false; return; }
+
+    // Add tracks sequentially with throttle to avoid 403 rateLimitExceeded
+    for (let i = 0; i < tracks.length; i++) {
+      btn.textContent = 'Adding tracks (' + (i + 1) + '/' + tracks.length + ')...';
+      const resp = await fetch('https://www.googleapis.com/youtube/v3/playlistItems?part=snippet', {
+        method: 'POST', headers,
+        body: JSON.stringify({
+          snippet: { playlistId: pl.id, resourceId: { kind: 'youtube#video', videoId: tracks[i].id } }
+        })
+      });
+      if (!resp.ok) console.warn('Failed to add track ' + tracks[i].id);
+      await new Promise(r => setTimeout(r, 100));
+    }
+
+    // Deep link — window.location.href forces native YouTube app on mobile
+    const url = 'https://www.youtube.com/playlist?list=' + pl.id;
+    btn.innerHTML = '<a href="' + url + '" target="_blank" style="color:#fff;text-decoration:none">Open on YouTube &#8599;</a>';
+    btn.disabled = false;
+    window.location.href = url;
+  } catch(e) {
+    btn.textContent = 'Error: ' + e.message;
+    btn.disabled = false;
+  }
+}
+
 // ── Init ──
 async function init() {
-  // Load models + playlists in parallel
-  const [modelsResp, playlistsResp] = await Promise.all([
+  // Load models + playlists + config in parallel
+  const [modelsResp, playlistsResp, configResp] = await Promise.all([
     fetch('/api/models'),
-    fetch('/api/playlists')
+    fetch('/api/playlists'),
+    fetch('/api/config')
   ]);
   const models = await modelsResp.json();
   const playlists = await playlistsResp.json();
+  const config = await configResp.json();
+
+  // Load Google Identity Services if YouTube export is enabled
+  if (config.youtube_enabled) loadGIS(config.google_client_id);
 
   // Populate generate buttons
   const container = document.getElementById('model-btns');

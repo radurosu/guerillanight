@@ -445,7 +445,7 @@ def get_app_html() -> str:
 
   <div class="footer">
     Built with AI and a love for late-night radio.<br>
-    Inspired by <a href="https://www.guerrilla.ro/" target="_blank" rel="noopener">Radio Guerrilla</a>.
+    Inspired by <a href="https://www.guerrillaradio.ro" target="_blank" rel="noopener">Radio Guerrilla</a>.
     &middot; <a href="https://github.com/radurosu/guerillanight" target="_blank">GitHub</a>
   </div>
 

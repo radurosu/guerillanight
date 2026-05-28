@@ -1,6 +1,6 @@
 # Guerrilla Night
 
-AI-curated overnight radio, inspired by [Radio Guerrilla](https://www.guerrilla.ro/)'s legendary 20:00–02:00 music block.
+AI-curated overnight radio, inspired by [Radio Guerrilla](https://www.guerrillaradio.ro)'s legendary 22:00–06:00 music block.
 
 **Live at [guerillanight.eloquentix.com](https://guerillanight.eloquentix.com)**
 

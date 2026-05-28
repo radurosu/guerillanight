@@ -58,6 +58,8 @@ MODELS = {
 
 def compute_style_profile(tracks: list[dict]) -> dict:
     """Distill the knowledge base into a style profile for the LLM."""
+    import random
+
     total = len(tracks)
     enriched = [t for t in tracks if t.get("genres")]
 
@@ -73,12 +75,17 @@ def compute_style_profile(tracks: list[dict]) -> dict:
     artist_counts = Counter(t["artist"] for t in tracks)
     top_artists = artist_counts.most_common(30)
 
-    # Unique artists per night
-    nights = {}
+    # Group tracks by night
+    nights_sets = {}
+    nights_lists = {}
     for t in tracks:
-        nights.setdefault(t["date"], set()).add(t["artist"])
-    avg_unique_artists = round(sum(len(v) for v in nights.values()) / max(len(nights), 1), 1)
-    avg_tracks_per_night = round(total / max(len(nights), 1), 1)
+        nights_sets.setdefault(t["date"], set()).add(t["artist"])
+        nights_lists.setdefault(t["date"], []).append(t)
+    for d in nights_lists:
+        nights_lists[d].sort(key=lambda t: t["time"])
+
+    avg_unique_artists = round(sum(len(v) for v in nights_sets.values()) / max(len(nights_sets), 1), 1)
+    avg_tracks_per_night = round(total / max(len(nights_sets), 1), 1)
 
     # Popularity distribution (from Last.fm listeners)
     listeners = [t["metadata"]["lastfm_listeners"] for t in tracks
@@ -99,13 +106,6 @@ def compute_style_profile(tracks: list[dict]) -> dict:
     else:
         pop_pcts = pop_buckets
 
-    # Geographic mix (artist country from metadata)
-    countries = Counter()
-    for t in enriched:
-        c = t.get("metadata", {}).get("artist_country", "")
-        if c:
-            countries[c] += 1
-
     # Romanian artist ratio
     romanian_artists = set()
     all_artists = set()
@@ -116,42 +116,119 @@ def compute_style_profile(tracks: list[dict]) -> dict:
         if any(kw in " ".join(genres).lower() for kw in romanian_keywords):
             romanian_artists.add(t["artist"])
 
-    # Sample tracks — 3 tracks from each night to show sequencing
+    # ── Transition analysis ─────────────────────────────────────────────────
+    # Build genre transition matrix (what follows what)
+    genre_trans = Counter()
+    genre_from_count = Counter()
+    for date, nt in nights_lists.items():
+        for i in range(len(nt) - 1):
+            g_a = (nt[i].get("genres") or ["unknown"])[:1][0]
+            g_b = (nt[i + 1].get("genres") or ["unknown"])[:1][0]
+            genre_trans[(g_a, g_b)] += 1
+            genre_from_count[g_a] += 1
+
+    # Top transition flows for the 12 most common genres
+    flow_genres = [g for g, _ in top_genres[:12] if g != "unknown"]
+    transition_flows = {}
+    for g in flow_genres:
+        total_from = genre_from_count.get(g, 0)
+        if total_from < 5:
+            continue
+        follows = [(b, c) for (a, b), c in genre_trans.items() if a == g and b != "unknown"]
+        follows.sort(key=lambda x: -x[1])
+        transition_flows[g] = [(b, round(c / total_from * 100)) for b, c in follows[:4]]
+
+    # ── Signature juxtapositions (rare cross-genre transitions) ─────────────
+    juxtapositions = []
+    for date, nt in nights_lists.items():
+        for i in range(len(nt) - 1):
+            a, b = nt[i], nt[i + 1]
+            ga = (a.get("genres") or ["?"])[:1][0]
+            gb = (b.get("genres") or ["?"])[:1][0]
+            if ga == gb or ga == "?" or gb == "?" or ga == "unknown" or gb == "unknown":
+                continue
+            total_from = genre_from_count.get(ga, 1)
+            prob = genre_trans.get((ga, gb), 0) / total_from
+            if prob < 0.06:
+                juxtapositions.append({
+                    "from_artist": a["artist"],
+                    "from_genre": ga,
+                    "to_artist": b["artist"],
+                    "to_genre": gb,
+                })
+    # Pick a diverse random sample
+    random.shuffle(juxtapositions)
+    sampled_juxtapositions = juxtapositions[:20]
+
+    # ── Rich sequence examples (longer runs from multiple nights) ───────────
+    sorted_dates = sorted(nights_lists.keys())
+    # Pick 3 nights spread across the data, show 10+ consecutive tracks each
+    sample_dates = []
+    if len(sorted_dates) >= 3:
+        sample_dates = [sorted_dates[0], sorted_dates[len(sorted_dates) // 2], sorted_dates[-1]]
+    else:
+        sample_dates = sorted_dates
+
     sample_sequences = []
-    for date in sorted(nights.keys())[:3]:
-        night_tracks = sorted([t for t in tracks if t["date"] == date], key=lambda t: t["time"])
+    for date in sample_dates:
+        nt = nights_lists[date]
         sample = []
-        for t in night_tracks[:5]:
-            genre_str = ", ".join(t.get("genres", [])[:3]) if t.get("genres") else "unknown"
-            sample.append(f"  {t['time']} {t['artist']} — {t['title']} [{genre_str}]")
+        for t in nt[:12]:
+            genre_str = ", ".join(t.get("genres", [])[:2]) if t.get("genres") else "unknown"
+            pop = t.get("metadata", {}).get("lastfm_listeners", 0)
+            pop_label = ("mainstream" if pop > 2_000_000 else "known" if pop > 500_000
+                         else "indie" if pop > 50_000 else "deep")
+            sample.append(f"  {t['time']} {t['artist']} — {t['title']} [{genre_str}] ({pop_label})")
         sample_sequences.append({"date": date, "tracks": sample})
 
-    # All unique artists (for "don't just repeat these")
+    # All unique artists (for freshness control)
     all_artist_list = sorted(all_artists)
 
     return {
         "total_tracks": total,
-        "total_nights": len(nights),
+        "total_nights": len(nights_sets),
         "avg_tracks_per_night": avg_tracks_per_night,
         "avg_unique_artists": avg_unique_artists,
         "genre_distribution": genre_pcts,
         "popularity_distribution": pop_pcts,
         "top_recurring_artists": [(a, c) for a, c in top_artists[:20]],
         "romanian_artist_pct": round(len(romanian_artists) / max(len(all_artists), 1) * 100, 1),
+        "transition_flows": transition_flows,
+        "juxtapositions": sampled_juxtapositions,
         "sample_sequences": sample_sequences,
         "known_artists": all_artist_list,
     }
 
 
 def build_prompt(profile: dict) -> str:
-    # Extract top recurring artists for the anchor list
+    # Anchor artists
     anchors = [a for a, _ in profile["top_recurring_artists"][:15]]
     anchor_str = ", ".join(anchors)
 
-    # Build known artists list for freshness control
-    known_sample = ", ".join(profile["known_artists"][:100])
+    # Genre distribution from actual data
+    genre_lines = []
+    for g, pct in profile["genre_distribution"][:15]:
+        genre_lines.append(f"  {g}: {pct}%")
+    genre_text = "\n".join(genre_lines)
 
-    # Sample sequences for taste reference
+    # Popularity distribution from actual data
+    pop_lines = [f"  {k}: {v}%" for k, v in profile["popularity_distribution"].items()]
+    pop_text = "\n".join(pop_lines)
+
+    # Transition flows
+    flow_lines = []
+    for genre, follows in profile["transition_flows"].items():
+        targets = ", ".join(f"{b} ({p}%)" for b, p in follows)
+        flow_lines.append(f"  {genre} → {targets}")
+    flow_text = "\n".join(flow_lines)
+
+    # Juxtaposition examples
+    jux_lines = []
+    for j in profile["juxtapositions"]:
+        jux_lines.append(f"  {j['from_artist']} [{j['from_genre']}] → {j['to_artist']} [{j['to_genre']}]")
+    jux_text = "\n".join(jux_lines)
+
+    # Rich sequence examples (10+ tracks per night)
     seq_lines = []
     for seq in profile["sample_sequences"]:
         seq_lines.append(f"\n  Night of {seq['date']}:")
@@ -159,42 +236,55 @@ def build_prompt(profile: dict) -> str:
             seq_lines.append(f"    {t}")
     sample_text = "\n".join(seq_lines)
 
-    return f"""You are the AI music director for Radio Guerrilla Overnight (20:00–02:00).
-Curate exactly 6 hours of seamless playlist (35-40 tracks) that perfectly matches
-this signature style:
+    # Known artists for freshness control
+    known_sample = ", ".join(profile["known_artists"][:100])
 
-## Signature Artists (heavy rotation)
+    return f"""You are the AI music director for Radio Guerrilla's overnight block.
+Curate a 6-hour playlist of EXACTLY 37 tracks (no more, no fewer) starting at 20:00.
+
+Your PRIMARY job is SEQUENCING — each track must be a response to the one before it.
+Not similarity. Response. Contrast, complement, surprise — but always emotionally coherent.
+
+## The Guerrilla Signature
+
+This station's magic is the juxtaposition. They play 95% cross-genre transitions —
+almost never the same genre twice in a row. The flow is conversational: a jazz ballad
+answers a post-punk dirge, trip-hop dissolves into classic rock, Romanian hip-hop
+follows blues. Every transition should make the listener think "I would never have
+put these together, but it works."
+
+## Genre Distribution (from {profile['total_tracks']} real tracks across {profile['total_nights']} nights)
+{genre_text}
+
+## Popularity Mix
+{pop_text}
+
+## Transition Flows (what actually follows what — percentages from real data)
+{flow_text}
+
+## Signature Juxtapositions (real surprising transitions from the station)
+{jux_text}
+
+## How Actual Nights Sound (study the sequencing carefully)
+{sample_text}
+
+## Anchor Artists (appear most often on the real station)
 {anchor_str}
 
-## Genre DNA
-- 40% alternative/indie rock + pop
-- 25% electronic/trip-hop/chillout
-- 15% folk/singer-songwriter/acoustic
-- 10% classic rock/blues/soul
-- 10% romanian/local artists (rock, hip-hop, folk, electronic)
-
-## Vibe
-Eclectic, moody, reflective late-night journey. Mix big international names with
-deep cuts and Romanian/Moldovan flavor. Include occasional high-energy bursts but
-keep overall nocturnal flow. The station is known for surprising juxtapositions —
-Metallica into Karen Souza, Aphex Twin into Leonard Cohen.
-
-## Structure
-- 20:00–22:00: Mid-tempo rock/pop/indie to ease into the night
-- 22:00–01:00: Build subtle energy — electronic, trip-hop, deeper alternative
-- 01:00–02:00: Descend into atmospheric/folk/soul, wind down toward dawn
-
-## Constraints
-- No two tracks by the same artist
-- No two tracks of the same genre back-to-back
-- Mix popularity: ~30% well-known tracks, ~40% mid-tier, ~30% deep cuts
-- Real tracks only — every entry must be a real, existing song
-- At least 50% of artists should NOT be from this already-played list:
-  {known_sample}
-  Introduce new artists that FIT the style. Keep it fresh for repeat listeners.
-
-## Taste Reference (actual recent nights)
-{sample_text}
+## Sequencing Rules
+1. NEVER play the same genre back-to-back. 95% of real transitions are cross-genre.
+2. Each track must emotionally respond to the previous one — by contrast, complement,
+   or surprise. After something heavy, go intimate. After something electronic, go acoustic.
+   After something famous, go obscure.
+3. Vary popularity constantly — mainstream hit → deep cut → known artist → underground.
+   Never cluster similar popularity levels.
+4. Romanian/local artists (~{profile['romanian_artist_pct']}%) should appear naturally woven in,
+   not clustered. A Romanian track after an international one and before another international one.
+5. No two tracks by the same artist.
+6. Real tracks only — every entry must be a real, existing song.
+7. At least 50% of artists should be NEW — not from this already-played list:
+   {known_sample}
+   Introduce new artists that FIT the style but keep it fresh for repeat listeners.
 
 ## Output Format
 
@@ -206,9 +296,13 @@ Return ONLY a JSON array, no other text. Each entry:
   "title": "Track Title",
   "genre_tags": ["tag1", "tag2"],
   "approx_duration_ms": 240000,
-  "reason_for_placement": "brief reason this track fits here"
+  "reason_for_placement": "why this track HERE, after the previous one"
 }}
 ```
+
+The "reason_for_placement" is critical — it must explain the TRANSITION, not just
+describe the track. Example: "After Nick Cave's brooding intensity, this Carla Bruni
+whisper feels like exhaling. French chanson after post-punk — the contrast is the point."
 
 Generate the full 6-hour block now."""
 

@@ -1,0 +1,437 @@
+{
+  "generator": "grok",
+  "model_id": "grok-3",
+  "generated_at": "2026-05-22T16:03:51.160034+03:00",
+  "track_count": 39,
+  "tracks": [
+    {
+      "time": "20:00",
+      "artist": "U2",
+      "title": "Every Breaking Wave",
+      "genre_tags": [
+        "alternative rock",
+        "pop rock"
+      ],
+      "approx_duration_ms": 258000,
+      "reason_for_placement": "Opens the night with reflective mid-tempo indie rock from signature artist"
+    },
+    {
+      "time": "20:09",
+      "artist": "The National",
+      "title": "I Need My Girl",
+      "genre_tags": [
+        "indie rock",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 244000,
+      "reason_for_placement": "Fresh indie contrast after U2, moody and introspective"
+    },
+    {
+      "time": "20:18",
+      "artist": "Lana Del Rey",
+      "title": "Video Games",
+      "genre_tags": [
+        "alternative pop",
+        "dream pop"
+      ],
+      "approx_duration_ms": 262000,
+      "reason_for_placement": "Signature artist, cinematic mid-tempo pop to ease into evening"
+    },
+    {
+      "time": "20:27",
+      "artist": "Portishead",
+      "title": "Roads",
+      "genre_tags": [
+        "trip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 278000,
+      "reason_for_placement": "Genre shift to chill electronic for nocturnal flow"
+    },
+    {
+      "time": "20:36",
+      "artist": "Olivia Rodrigo",
+      "title": "drivers license",
+      "genre_tags": [
+        "pop rock",
+        "indie pop"
+      ],
+      "approx_duration_ms": 271000,
+      "reason_for_placement": "Signature artist, emotional mid-tempo pop-rock transition"
+    },
+    {
+      "time": "20:45",
+      "artist": "Ada Milea",
+      "title": "Ploaia",
+      "genre_tags": [
+        "romanian folk",
+        "acoustic"
+      ],
+      "approx_duration_ms": 195000,
+      "reason_for_placement": "Romanian local flavor, acoustic folk deep cut after pop"
+    },
+    {
+      "time": "20:52",
+      "artist": "Electric Light Orchestra",
+      "title": "Can't Get It Out of My Head",
+      "genre_tags": [
+        "classic rock",
+        "progressive rock"
+      ],
+      "approx_duration_ms": 255000,
+      "reason_for_placement": "Signature artist, melodic classic rock burst for energy variation"
+    },
+    {
+      "time": "21:01",
+      "artist": "London Grammar",
+      "title": "Wasting My Young Years",
+      "genre_tags": [
+        "indie electronic",
+        "chillout"
+      ],
+      "approx_duration_ms": 225000,
+      "reason_for_placement": "Signature artist, atmospheric indie-electronic wind-down"
+    },
+    {
+      "time": "21:09",
+      "artist": "Nick Cave & The Bad Seeds",
+      "title": "The Ship Song",
+      "genre_tags": [
+        "alternative rock",
+        "ballad"
+      ],
+      "approx_duration_ms": 298000,
+      "reason_for_placement": "Signature artist deep cut, reflective rock to close first hour"
+    },
+    {
+      "time": "21:18",
+      "artist": "Myles Smith & Niall Horan",
+      "title": "Nice To Meet You",
+      "genre_tags": [
+        "folk pop",
+        "acoustic"
+      ],
+      "approx_duration_ms": 187000,
+      "reason_for_placement": "Signature collaboration, gentle acoustic folk-pop"
+    },
+    {
+      "time": "21:26",
+      "artist": "Katie Melua",
+      "title": "The Closest Thing to Crazy",
+      "genre_tags": [
+        "jazz pop",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 265000,
+      "reason_for_placement": "Signature artist, smooth mid-tempo vocal jazz blend"
+    },
+    {
+      "time": "21:35",
+      "artist": "Foals",
+      "title": "My Number",
+      "genre_tags": [
+        "indie rock",
+        "dance rock"
+      ],
+      "approx_duration_ms": 243000,
+      "reason_for_placement": "Fresh indie rock energy burst, genre shift from jazz"
+    },
+    {
+      "time": "21:43",
+      "artist": "Faust",
+      "title": "Krautrock",
+      "genre_tags": [
+        "krautrock",
+        "experimental"
+      ],
+      "approx_duration_ms": 312000,
+      "reason_for_placement": "Signature artist, avant-garde deep cut for surprising juxtaposition"
+    },
+    {
+      "time": "21:52",
+      "artist": "Billie Eilish",
+      "title": "everything i wanted",
+      "genre_tags": [
+        "electronic pop",
+        "chillout"
+      ],
+      "approx_duration_ms": 245000,
+      "reason_for_placement": "Signature artist mid-tier track, atmospheric pop transition"
+    },
+    {
+      "time": "22:00",
+      "artist": "Massive Attack",
+      "title": "Teardrop",
+      "genre_tags": [
+        "trip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 330000,
+      "reason_for_placement": "Builds energy into electronic section with classic trip-hop"
+    },
+    {
+      "time": "22:10",
+      "artist": "Coma",
+      "title": "Viziune",
+      "genre_tags": [
+        "romanian indie",
+        "electronic rock"
+      ],
+      "approx_duration_ms": 268000,
+      "reason_for_placement": "Signature Romanian artist, deep electronic-rock fusion"
+    },
+    {
+      "time": "22:19",
+      "artist": "PJ Harvey",
+      "title": "The Words That Maketh Murder",
+      "genre_tags": [
+        "alternative rock",
+        "blues rock"
+      ],
+      "approx_duration_ms": 222000,
+      "reason_for_placement": "Raw bluesy alternative after electronic, fresh artist"
+    },
+    {
+      "time": "22:27",
+      "artist": "Deliric x Silent Strike",
+      "title": "Inimi de Hartie",
+      "genre_tags": [
+        "romanian hip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 254000,
+      "reason_for_placement": "Signature local electronic-hip-hop deep cut"
+    },
+    {
+      "time": "22:36",
+      "artist": "Radiohead",
+      "title": "Weird Fishes/Arpeggi",
+      "genre_tags": [
+        "art rock",
+        "experimental"
+      ],
+      "approx_duration_ms": 318000,
+      "reason_for_placement": "Deeper alternative build-up with fresh progressive sound"
+    },
+    {
+      "time": "22:46",
+      "artist": "Faithless",
+      "title": "God Is a DJ",
+      "genre_tags": [
+        "electronic",
+        "trip-hop"
+      ],
+      "approx_duration_ms": 243000,
+      "reason_for_placement": "Signature artist, mid-tier energetic electronic pulse"
+    },
+    {
+      "time": "22:54",
+      "artist": "Tom Waits",
+      "title": "Hold On",
+      "genre_tags": [
+        "blues",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 276000,
+      "reason_for_placement": "Genre switch to gritty blues-folk for contrast"
+    },
+    {
+      "time": "23:03",
+      "artist": "Byron",
+      "title": "Focul",
+      "genre_tags": [
+        "romanian rock",
+        "alternative"
+      ],
+      "approx_duration_ms": 231000,
+      "reason_for_placement": "Signature local rock artist, deep cut in electronic block"
+    },
+    {
+      "time": "23:11",
+      "artist": "Morcheeba",
+      "title": "The Sea",
+      "genre_tags": [
+        "trip-hop",
+        "chillout"
+      ],
+      "approx_duration_ms": 305000,
+      "reason_for_placement": "Fresh chill trip-hop to maintain nocturnal depth"
+    },
+    {
+      "time": "23:20",
+      "artist": "Leonard Cohen",
+      "title": "You Want It Darker",
+      "genre_tags": [
+        "folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 279000,
+      "reason_for_placement": "Signature artist, profound folk reflection after electronic"
+    },
+    {
+      "time": "23:29",
+      "artist": "Grimes",
+      "title": "Oblivion",
+      "genre_tags": [
+        "electronic",
+        "art pop"
+      ],
+      "approx_duration_ms": 246000,
+      "reason_for_placement": "Mid-tier electronic art-pop energy shift"
+    },
+    {
+      "time": "23:38",
+      "artist": "Nils Frahm",
+      "title": "Says",
+      "genre_tags": [
+        "ambient",
+        "neo-classical"
+      ],
+      "approx_duration_ms": 348000,
+      "reason_for_placement": "Atmospheric electronic interlude for late-night immersion"
+    },
+    {
+      "time": "23:48",
+      "artist": "Arcade Fire",
+      "title": "The Suburbs",
+      "genre_tags": [
+        "indie rock",
+        "alternative"
+      ],
+      "approx_duration_ms": 318000,
+      "reason_for_placement": "Fresh indie rock return with epic scope"
+    },
+    {
+      "time": "23:58",
+      "artist": "Róisín Murphy",
+      "title": "Let Me Know",
+      "genre_tags": [
+        "electronic",
+        "dance pop"
+      ],
+      "approx_duration_ms": 255000,
+      "reason_for_placement": "Electronic dance edge to sustain energy till midnight"
+    },
+    {
+      "time": "00:07",
+      "artist": "Susanne Sundfør",
+      "title": "The Silicone Veil",
+      "genre_tags": [
+        "art pop",
+        "electronic"
+      ],
+      "approx_duration_ms": 291000,
+      "reason_for_placement": "New Nordic electronic-pop for deeper alternative section"
+    },
+    {
+      "time": "00:16",
+      "artist": "Iron & Wine",
+      "title": "Flightless Bird, American Mouth",
+      "genre_tags": [
+        "folk",
+        "indie acoustic"
+      ],
+      "approx_duration_ms": 246000,
+      "reason_for_placement": "Gentle folk acoustic after electronic for subtle descent"
+    },
+    {
+      "time": "00:25",
+      "artist": "Hozier",
+      "title": "Almost (Sweet Music)",
+      "genre_tags": [
+        "soul",
+        "indie rock"
+      ],
+      "approx_duration_ms": 217000,
+      "reason_for_placement": "Bluesy soul-indie bridge with fresh artist"
+    },
+    {
+      "time": "00:33",
+      "artist": "Goldfrapp",
+      "title": "Lovely Head",
+      "genre_tags": [
+        "electronic",
+        "trip-hop"
+      ],
+      "approx_duration_ms": 233000,
+      "reason_for_placement": "Trip-hop electronic return for late-night texture"
+    },
+    {
+      "time": "00:41",
+      "artist": "Agnes Obel",
+      "title": "Riverside",
+      "genre_tags": [
+        "folk",
+        "chamber pop"
+      ],
+      "approx_duration_ms": 208000,
+      "reason_for_placement": "Atmospheric folk wind-down into final hour"
+    },
+    {
+      "time": "00:50",
+      "artist": "Mumford & Sons",
+      "title": "Timshel",
+      "genre_tags": [
+        "folk rock",
+        "acoustic"
+      ],
+      "approx_duration_ms": 185000,
+      "reason_for_placement": "Acoustic folk-rock to deepen reflective mood"
+    },
+    {
+      "time": "00:57",
+      "artist": "Zero 7",
+      "title": "Destiny",
+      "genre_tags": [
+        "chillout",
+        "downtempo"
+      ],
+      "approx_duration_ms": 329000,
+      "reason_for_placement": "Downtempo electronic close to 1am"
+    },
+    {
+      "time": "01:07",
+      "artist": "Damien Rice",
+      "title": "The Blower's Daughter",
+      "genre_tags": [
+        "singer-songwriter",
+        "acoustic"
+      ],
+      "approx_duration_ms": 298000,
+      "reason_for_placement": "Intimate acoustic folk-soul descent"
+    },
+    {
+      "time": "01:16",
+      "artist": "Carla Bruni",
+      "title": "Quelqu'un m'a dit",
+      "genre_tags": [
+        "french chanson",
+        "acoustic"
+      ],
+      "approx_duration_ms": 142000,
+      "reason_for_placement": "Light French acoustic folk for pre-dawn calm"
+    },
+    {
+      "time": "01:23",
+      "artist": "John Martyn",
+      "title": "Solid Air",
+      "genre_tags": [
+        "folk",
+        "blues"
+      ],
+      "approx_duration_ms": 334000,
+      "reason_for_placement": "Blues-folk classic deep cut to slow toward dawn"
+    },
+    {
+      "time": "01:33",
+      "artist": "Ólafur Arnalds",
+      "title": "Near Light",
+      "genre_tags": [
+        "ambient",
+        "neo-classical"
+      ],
+      "approx_duration_ms": 247000,
+      "reason_for_placement": "Final atmospheric wind-down for 2am close"
+    }
+  ]
+}

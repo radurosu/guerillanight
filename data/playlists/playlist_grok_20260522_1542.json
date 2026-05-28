@@ -1,0 +1,128 @@
+{
+  "generator": "grok",
+  "model_id": "grok-3",
+  "generated_at": "2026-05-22T15:42:34.881847+03:00",
+  "track_count": 10,
+  "tracks": [
+    {
+      "time": "20:00",
+      "artist": "Nick Drake",
+      "title": "Pink Moon",
+      "genres": [
+        "folk",
+        "singer-songwriter",
+        "acoustic"
+      ],
+      "mood": "mellow",
+      "why": "Gentle acoustic opener that sets a reflective evening tone matching the underground folk leanings."
+    },
+    {
+      "time": "20:04",
+      "artist": "Robin and the Backstabbers",
+      "title": "Același drum",
+      "genres": [
+        "rock",
+        "alternative",
+        "romanian"
+      ],
+      "mood": "introspective",
+      "why": "Romanian rock track provides local flavor and smooth transition into deeper night vibes."
+    },
+    {
+      "time": "20:08",
+      "artist": "Massive Attack",
+      "title": "Teardrop",
+      "genres": [
+        "trip-hop",
+        "electronic",
+        "chillout"
+      ],
+      "mood": "atmospheric",
+      "why": "Trip-hop staple adds electronic texture early without overwhelming the mellow start."
+    },
+    {
+      "time": "20:13",
+      "artist": "Laura Marling",
+      "title": "What He Wrote",
+      "genres": [
+        "folk",
+        "singer-songwriter",
+        "indie"
+      ],
+      "mood": "intimate",
+      "why": "Female vocalist folk keeps the emotional depth flowing naturally."
+    },
+    {
+      "time": "20:17",
+      "artist": "Luna Amară",
+      "title": "Ego",
+      "genres": [
+        "rock",
+        "alternative",
+        "romanian"
+      ],
+      "mood": "brooding",
+      "why": "Second Romanian pick adds grit and alternative edge as the hour deepens."
+    },
+    {
+      "time": "20:22",
+      "artist": "The National",
+      "title": "About Today",
+      "genres": [
+        "indie rock",
+        "alternative",
+        "indie"
+      ],
+      "mood": "melancholic",
+      "why": "Known indie track bridges toward late-night introspection with baritone warmth."
+    },
+    {
+      "time": "20:27",
+      "artist": "Portishead",
+      "title": "Roads",
+      "genres": [
+        "trip-hop",
+        "electronic",
+        "experimental"
+      ],
+      "mood": "haunting",
+      "why": "Classic trip-hop maintains the chill electronic undercurrent for smooth pacing."
+    },
+    {
+      "time": "20:33",
+      "artist": "Agnes Obel",
+      "title": "Riverside",
+      "genres": [
+        "indie pop",
+        "singer-songwriter",
+        "chillout"
+      ],
+      "mood": "ethereal",
+      "why": "Female-led indie pop adds delicate layers while staying true to the popularity mix."
+    },
+    {
+      "time": "20:38",
+      "artist": "Vița de Vie",
+      "title": "Într-o zi cu soare",
+      "genres": [
+        "rock",
+        "pop rock",
+        "romanian"
+      ],
+      "mood": "reflective",
+      "why": "Third Romanian entry keeps local presence balanced and transitions gently."
+    },
+    {
+      "time": "20:42",
+      "artist": "Damien Rice",
+      "title": "The Blower's Daughter",
+      "genres": [
+        "singer-songwriter",
+        "folk",
+        "acoustic"
+      ],
+      "mood": "tender",
+      "why": "Intimate acoustic moment deepens the overnight introspection arc."
+    }
+  ]
+}

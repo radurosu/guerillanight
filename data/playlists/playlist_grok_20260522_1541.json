@@ -1,0 +1,118 @@
+{
+  "generator": "grok",
+  "model_id": "grok-3",
+  "generated_at": "2026-05-22T15:41:34.134539+03:00",
+  "track_count": 10,
+  "tracks": [
+    {
+      "time": "20:00",
+      "artist": "The National",
+      "title": "Fake Empire",
+      "genres": [
+        "indie rock",
+        "alternative"
+      ],
+      "mood": "mellow",
+      "why": "Opens the evening with introspective indie rock to set a reflective tone."
+    },
+    {
+      "time": "20:04",
+      "artist": "Fleet Foxes",
+      "title": "White Winter Hymnal",
+      "genres": [
+        "folk",
+        "indie"
+      ],
+      "mood": "warm",
+      "why": "Gentle folk harmonies ease into the night flow."
+    },
+    {
+      "time": "20:08",
+      "artist": "Moonlight Breakfast",
+      "title": "On & On",
+      "genres": [
+        "electronic",
+        "indie pop"
+      ],
+      "mood": "smooth",
+      "why": "Romanian indie electronic adds local flavor with chill groove."
+    },
+    {
+      "time": "20:12",
+      "artist": "Portishead",
+      "title": "Roads",
+      "genres": [
+        "trip-hop",
+        "alternative"
+      ],
+      "mood": "brooding",
+      "why": "Deepens mood with atmospheric trip-hop transition."
+    },
+    {
+      "time": "20:17",
+      "artist": "Vița de Vie",
+      "title": "Vino",
+      "genres": [
+        "rock",
+        "romanian"
+      ],
+      "mood": "intimate",
+      "why": "Romanian rock staple fits the alternative core seamlessly."
+    },
+    {
+      "time": "20:21",
+      "artist": "Sufjan Stevens",
+      "title": "Chicago",
+      "genres": [
+        "indie folk",
+        "singer-songwriter"
+      ],
+      "mood": "nostalgic",
+      "why": "Builds emotional depth with acoustic storytelling."
+    },
+    {
+      "time": "20:26",
+      "artist": "Massive Attack",
+      "title": "Teardrop",
+      "genres": [
+        "trip-hop",
+        "electronic"
+      ],
+      "mood": "atmospheric",
+      "why": "Threads electronic textures into the rock foundation."
+    },
+    {
+      "time": "20:30",
+      "artist": "Timpuri Noi",
+      "title": "București",
+      "genres": [
+        "rock",
+        "romanian"
+      ],
+      "mood": "urban",
+      "why": "Injects Romanian alternative edge for local authenticity."
+    },
+    {
+      "time": "20:34",
+      "artist": "Bonobo",
+      "title": "Kerala",
+      "genres": [
+        "electronic",
+        "chillout"
+      ],
+      "mood": "flowing",
+      "why": "Subtle electronic shift maintains pacing toward midnight."
+    },
+    {
+      "time": "20:39",
+      "artist": "The xx",
+      "title": "Intro",
+      "genres": [
+        "indie",
+        "alternative"
+      ],
+      "mood": "sparse",
+      "why": "Minimalist indie creates space for late-evening introspection."
+    }
+  ]
+}

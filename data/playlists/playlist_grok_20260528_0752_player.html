@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guerrilla Night — Player</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0f;
+    color: #e0ddd5;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .header {
+    text-align: center;
+    padding: 1.5rem 1rem 1rem;
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1025 50%, #0a0a0f 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .header h1 {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  .header h1 span {
+    background: linear-gradient(135deg, #c084fc, #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header .meta {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.35);
+    font-family: 'JetBrains Mono', monospace;
+    margin-top: 0.3rem;
+  }
+
+  .main {
+    display: flex;
+    flex: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    gap: 0;
+  }
+
+  .player-col {
+    flex: 0 0 640px;
+    padding: 1.5rem;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #player-wrap {
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    width: 100%;
+  }
+
+  .now-playing {
+    margin-top: 1rem;
+    padding: 0.8rem 1rem;
+    background: rgba(255,255,255,0.03);
+    border-radius: 8px;
+  }
+
+  .now-playing .np-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.3);
+  }
+
+  .now-playing .np-artist {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #fff;
+    margin-top: 0.25rem;
+  }
+
+  .now-playing .np-title {
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.55);
+  }
+
+  .now-playing .np-genres {
+    display: flex;
+    gap: 0.3rem;
+    margin-top: 0.4rem;
+  }
+
+  .now-playing .np-genres span {
+    font-size: 0.65rem;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    background: rgba(192,132,252,0.1);
+    color: rgba(192,132,252,0.7);
+  }
+
+  .tracklist-col {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 100vh;
+    padding: 1rem 1rem 2rem 0;
+  }
+
+  .track {
+    display: grid;
+    grid-template-columns: 30px 42px 1fr;
+    gap: 0 0.6rem;
+    padding: 0.5rem 0.7rem;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s;
+    align-items: center;
+  }
+
+  .track:hover {
+    background: rgba(255,255,255,0.05);
+  }
+
+  .track.active {
+    background: rgba(192,132,252,0.08);
+    border-left: 2px solid #c084fc;
+  }
+
+  .track.missing {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  .t-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.2);
+    text-align: center;
+  }
+
+  .track.active .t-num {
+    color: #c084fc;
+  }
+
+  .t-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.25);
+  }
+
+  .t-info {
+    min-width: 0;
+  }
+
+  .t-artist {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #e0ddd5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .t-title {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.4);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.8rem;
+    justify-content: center;
+  }
+
+  .controls button {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.6);
+    padding: 0.4rem 1rem;
+    border-radius: 6px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .controls button:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  @media (max-width: 900px) {
+    .main { flex-direction: column; }
+    .player-col { flex: none; position: static; height: auto; padding: 1rem; }
+    .tracklist-col { max-height: 50vh; padding: 0.5rem 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Guerrilla <span>Night</span></h1>
+  <div class="meta">grok (grok-3) &middot; 34 tracks &middot; score 75.5</div>
+</div>
+
+<div class="main">
+  <div class="player-col">
+    <div id="player-wrap"><div id="player"></div></div>
+    <div class="now-playing" id="now-playing">
+      <div class="np-label">Now Playing</div>
+      <div class="np-artist" id="np-artist">—</div>
+      <div class="np-title" id="np-title">—</div>
+      <div class="np-genres" id="np-genres"></div>
+    </div>
+    <div class="controls">
+      <button onclick="prevTrack()">Prev</button>
+      <button onclick="togglePlay()" id="btn-play">Pause</button>
+      <button onclick="nextTrack()">Next</button>
+    </div>
+  </div>
+
+  <div class="tracklist-col" id="tracklist"></div>
+</div>
+
+<script>
+const tracks = [{"id": "ZmDBbnmKpqQ", "time": "20:00", "artist": "Olivia Rodrigo", "title": "drivers license", "genres": ["indie pop", "alternative"]}, {"id": "8WRWno_c_W8", "time": "20:04", "artist": "The National", "title": "Fake Empire", "genres": ["indie rock", "alternative"]}, {"id": "JKrDdsgXuso", "time": "20:08", "artist": "Noah Kahan", "title": "Stick Season", "genres": ["folk pop", "singer-songwriter"]}, {"id": "sElE_BfQ67s", "time": "20:11", "artist": "Cigarettes After Sex", "title": "Apocalypse", "genres": ["dream pop", "indie"]}, {"id": "iYVEik7Lvc4", "time": "20:16", "artist": "U2", "title": "Every Breaking Wave", "genres": ["alternative rock", "rock"]}, {"id": "9sfYpolGCu8", "time": "20:20", "artist": "Phoebe Bridgers", "title": "Motion Sickness", "genres": ["indie folk", "singer-songwriter"]}, {"id": "Qg3DxELVPj4", "time": "20:24", "artist": "Lana Del Rey", "title": "Venice Bitch", "genres": ["art pop", "indie"]}, {"id": "QRR_pvZcu-o", "time": "20:34", "artist": "Foals", "title": "My Number", "genres": ["indie rock", "dance rock"]}, {"id": "C-BnRZ52jHs", "time": "20:38", "artist": "Katie Melua", "title": "The Closest Thing to Crazy", "genres": ["jazz pop", "singer-songwriter"]}, {"id": "2QT5eGHCJdE", "time": "20:42", "artist": "Daughter", "title": "Youth", "genres": ["indie folk", "ambient"]}, {"id": "3NPxqXMZq7o", "time": "22:00", "artist": "Moderat", "title": "Bad Kingdom", "genres": ["electronic", "techno"]}, {"id": "4qQyUi4zfDs", "time": "22:04", "artist": "Portishead", "title": "Glory Box", "genres": ["trip-hop", "downtempo"]}, {"id": "P8JEm4d6Wu4", "time": "22:09", "artist": "Faithless", "title": "Insomnia", "genres": ["electronic", "dance"]}, {"id": "S0Q4gqBUs7c", "time": "22:18", "artist": "Bonobo", "title": "Kerala", "genres": ["electronic", "chillout"]}, {"id": "dX3k_QDnzHE", "time": "22:22", "artist": "M83", "title": "Midnight City", "genres": ["synthwave", "indie electronic"]}, {"id": "--wy8QmLlM8", "time": "22:26", "artist": "Morcheeba", "title": "The Sea", "genres": ["trip-hop", "downtempo"]}, {"id": "xMV6l2y67rk", "time": "22:31", "artist": "The xx", "title": "Intro", "genres": ["indie electronic", "minimal"]}, {"id": "-SLc9v10wV4", "time": "22:33", "artist": "Anotr", "title": "Relax My Eyes", "genres": ["house", "electronic"]}, {"id": "u7K72X4eo_s", "time": "22:37", "artist": "Massive Attack", "title": "Teardrop", "genres": ["trip-hop", "electronic"]}, {"id": "nMEHJPuggHQ", "time": "22:42", "artist": "London Grammar", "title": "Hey Now", "genres": ["indie electronic", "alternative"]}, {"id": "U_OKigBRqBI", "time": "22:46", "artist": "Zero 7", "title": "Destiny", "genres": ["chillout", "downtempo"]}, {"id": "5K7mGiCPNmI", "time": "22:52", "artist": "Coma", "title": "Spiders", "genres": ["indie rock", "electronic"]}, {"id": "vjncyiuwwXQ", "time": "22:56", "artist": "Agnes Obel", "title": "Riverside", "genres": ["chamber folk", "ambient"]}, {"id": "v0nmHymgM7Y", "time": "01:00", "artist": "Leonard Cohen", "title": "You Want It Darker", "genres": ["folk", "singer-songwriter"]}, {"id": "FFOzayDpWoI", "time": "01:04", "artist": "Fiona Apple", "title": "Criminal", "genres": ["soul", "alternative"]}, {"id": "1GWsdqCYvgw", "time": "01:10", "artist": "Nick Cave & The Bad Seeds", "title": "Higgs Boson Blues", "genres": ["alternative rock", "blues"]}, {"id": "0P5jV4lHHR0", "time": "01:17", "artist": "Tom Waits", "title": "Hold On", "genres": ["blues", "singer-songwriter"]}, {"id": "d4iGZ_jP-1U", "time": "01:21", "artist": "Alex Warren", "title": "Carry You Home", "genres": ["indie pop", "folk pop"]}, {"id": "3M_Gg1xAHE4", "time": "01:24", "artist": "Radiohead", "title": "Pyramid Song", "genres": ["art rock", "ambient"]}, {"id": "5kjTREsDob0", "time": "01:29", "artist": "Cristian Vasile", "title": "Strada Speran\u021bei", "genres": ["romanian tango", "folk"]}, {"id": "xqe6TF2y8i4", "time": "01:32", "artist": "Nick Drake", "title": "Pink Moon", "genres": ["folk", "acoustic"]}, {"id": "EelX_LwPHbA", "time": "01:34", "artist": "Carla Bruni", "title": "Quelqu'un m'a dit", "genres": ["chanson", "acoustic"]}, {"id": "XSkbM0Ijl-g", "time": "01:37", "artist": "ROA", "title": "D-Aia", "genres": ["romanian", "electronic"]}, {"id": "6p6PcFFUm5I", "time": "01:40", "artist": "James Blake", "title": "Retrograde", "genres": ["electronic soul", "ambient"]}];
+let currentIdx = 0;
+let player;
+
+// Build tracklist
+const listEl = document.getElementById('tracklist');
+tracks.forEach((t, i) => {
+  const row = document.createElement('div');
+  row.className = 'track';
+  row.id = 'track-' + i;
+  row.onclick = () => playIndex(i);
+  row.innerHTML = `
+    <div class="t-num">${String(i+1).padStart(2,'0')}</div>
+    <div class="t-time">${t.time}</div>
+    <div class="t-info">
+      <div class="t-artist">${t.artist}</div>
+      <div class="t-title">${t.title}</div>
+    </div>
+  `;
+  listEl.appendChild(row);
+});
+
+function updateNowPlaying(idx) {
+  const t = tracks[idx];
+  document.getElementById('np-artist').textContent = t.artist;
+  document.getElementById('np-title').textContent = t.title;
+  const gEl = document.getElementById('np-genres');
+  gEl.innerHTML = t.genres.map(g => `<span>${g}</span>`).join('');
+
+  document.querySelectorAll('.track').forEach(el => el.classList.remove('active'));
+  const active = document.getElementById('track-' + idx);
+  if (active) {
+    active.classList.add('active');
+    active.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+  currentIdx = idx;
+}
+
+function playIndex(idx) {
+  if (idx < 0 || idx >= tracks.length) return;
+  player.loadVideoById(tracks[idx].id);
+  updateNowPlaying(idx);
+}
+
+function nextTrack() { playIndex(currentIdx + 1); }
+function prevTrack() { playIndex(currentIdx - 1); }
+
+function togglePlay() {
+  const state = player.getPlayerState();
+  if (state === 1) {
+    player.pauseVideo();
+    document.getElementById('btn-play').textContent = 'Play';
+  } else {
+    player.playVideo();
+    document.getElementById('btn-play').textContent = 'Pause';
+  }
+}
+
+// YouTube IFrame API
+const tag = document.createElement('script');
+tag.src = 'https://www.youtube.com/iframe_api';
+document.head.appendChild(tag);
+
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    width: '100%',
+    height: '100%',
+    videoId: tracks[0].id,
+    playerVars: {
+      autoplay: 1,
+      modestbranding: 1,
+      rel: 0,
+    },
+    events: {
+      onReady: (e) => {
+        updateNowPlaying(0);
+        e.target.playVideo();
+      },
+      onStateChange: (e) => {
+        if (e.data === 0) nextTrack(); // auto-advance on end
+        if (e.data === 1) document.getElementById('btn-play').textContent = 'Pause';
+        if (e.data === 2) document.getElementById('btn-play').textContent = 'Play';
+      },
+    },
+  });
+}
+</script>
+</body>
+</html>

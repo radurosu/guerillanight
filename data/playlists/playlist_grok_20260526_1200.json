@@ -1,0 +1,514 @@
+{
+  "generator": "grok",
+  "model_id": "grok-3",
+  "generated_at": "2026-05-26T12:00:14.738735+03:00",
+  "track_count": 46,
+  "tracks": [
+    {
+      "time": "20:00",
+      "artist": "U2",
+      "title": "With or Without You",
+      "genre_tags": [
+        "alternative rock",
+        "pop rock"
+      ],
+      "approx_duration_ms": 296000,
+      "reason_for_placement": "Classic mid-tempo opener to ease into the night"
+    },
+    {
+      "time": "20:06",
+      "artist": "Lana Del Rey",
+      "title": "Video Games",
+      "genre_tags": [
+        "indie pop",
+        "dream pop"
+      ],
+      "approx_duration_ms": 278000,
+      "reason_for_placement": "Signature moody indie shift, contrasting rock"
+    },
+    {
+      "time": "20:11",
+      "artist": "Katie Melua",
+      "title": "The Closest Thing to Crazy",
+      "genre_tags": [
+        "singer-songwriter",
+        "jazz pop"
+      ],
+      "approx_duration_ms": 254000,
+      "reason_for_placement": "Folk-soul acoustic wind-down after pop"
+    },
+    {
+      "time": "20:16",
+      "artist": "Noah Kahan",
+      "title": "Stick Season",
+      "genre_tags": [
+        "folk rock",
+        "indie folk"
+      ],
+      "approx_duration_ms": 192000,
+      "reason_for_placement": "Acoustic folk injection with local flavor vibe"
+    },
+    {
+      "time": "20:20",
+      "artist": "London Grammar",
+      "title": "Hey Now",
+      "genre_tags": [
+        "indie electronic",
+        "trip-hop"
+      ],
+      "approx_duration_ms": 218000,
+      "reason_for_placement": "Electronic transition building subtle energy"
+    },
+    {
+      "time": "20:24",
+      "artist": "The National",
+      "title": "I Need My Girl",
+      "genre_tags": [
+        "indie rock",
+        "chamber pop"
+      ],
+      "approx_duration_ms": 247000,
+      "reason_for_placement": "Deep-cut indie rock contrast"
+    },
+    {
+      "time": "20:29",
+      "artist": "Olivia Rodrigo",
+      "title": "drivers license",
+      "genre_tags": [
+        "pop rock",
+        "alternative pop"
+      ],
+      "approx_duration_ms": 271000,
+      "reason_for_placement": "Well-known emotional pop-rock peak"
+    },
+    {
+      "time": "20:34",
+      "artist": "Morcheeba",
+      "title": "The Sea",
+      "genre_tags": [
+        "trip-hop",
+        "chillout"
+      ],
+      "approx_duration_ms": 328000,
+      "reason_for_placement": "Chill electronic descent after pop"
+    },
+    {
+      "time": "20:40",
+      "artist": "Phoebe Bridgers",
+      "title": "Motion Sickness",
+      "genre_tags": [
+        "indie folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 208000,
+      "reason_for_placement": "Intimate folk to vary genre"
+    },
+    {
+      "time": "20:45",
+      "artist": "Faithless",
+      "title": "God Is a DJ",
+      "genre_tags": [
+        "electronic",
+        "dance"
+      ],
+      "approx_duration_ms": 202000,
+      "reason_for_placement": "High-energy electronic burst"
+    },
+    {
+      "time": "20:49",
+      "artist": "Radiohead",
+      "title": "Weird Fishes/Arpeggi",
+      "genre_tags": [
+        "alternative rock",
+        "art rock"
+      ],
+      "approx_duration_ms": 318000,
+      "reason_for_placement": "Deeper alt-rock to close first block"
+    },
+    {
+      "time": "20:55",
+      "artist": "Nick Cave & The Bad Seeds",
+      "title": "Leviathan",
+      "genre_tags": [
+        "alternative rock",
+        "post-punk"
+      ],
+      "approx_duration_ms": 284000,
+      "reason_for_placement": "Signature moody rock start to second block"
+    },
+    {
+      "time": "21:00",
+      "artist": "Moderat",
+      "title": "Bad Kingdom",
+      "genre_tags": [
+        "electronic",
+        "techno"
+      ],
+      "approx_duration_ms": 265000,
+      "reason_for_placement": "Electronic build with signature artist"
+    },
+    {
+      "time": "21:05",
+      "artist": "First Aid Kit",
+      "title": "Emmylou",
+      "genre_tags": [
+        "folk",
+        "americana"
+      ],
+      "approx_duration_ms": 228000,
+      "reason_for_placement": "Folk contrast after electronic"
+    },
+    {
+      "time": "21:09",
+      "artist": "Leonard Cohen",
+      "title": "You Want It Darker",
+      "genre_tags": [
+        "folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 271000,
+      "reason_for_placement": "Atmospheric folk deep cut"
+    },
+    {
+      "time": "21:14",
+      "artist": "Portishead",
+      "title": "Glory Box",
+      "genre_tags": [
+        "trip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 302000,
+      "reason_for_placement": "Trip-hop energy shift"
+    },
+    {
+      "time": "21:20",
+      "artist": "Bon Iver",
+      "title": "Holocene",
+      "genre_tags": [
+        "indie folk",
+        "experimental"
+      ],
+      "approx_duration_ms": 318000,
+      "reason_for_placement": "Reflective indie folk break"
+    },
+    {
+      "time": "21:26",
+      "artist": "Massive Attack",
+      "title": "Teardrop",
+      "genre_tags": [
+        "trip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 330000,
+      "reason_for_placement": "Iconic trip-hop mid-block"
+    },
+    {
+      "time": "21:32",
+      "artist": "Big Thief",
+      "title": "Not",
+      "genre_tags": [
+        "indie rock",
+        "folk rock"
+      ],
+      "approx_duration_ms": 366000,
+      "reason_for_placement": "Raw indie rock to alternate"
+    },
+    {
+      "time": "21:39",
+      "artist": "Zero 7",
+      "title": "Destiny",
+      "genre_tags": [
+        "chillout",
+        "downtempo"
+      ],
+      "approx_duration_ms": 338000,
+      "reason_for_placement": "Chill electronic wind"
+    },
+    {
+      "time": "21:45",
+      "artist": "Moldova",
+      "title": "Noaptea",
+      "genre_tags": [
+        "electronic",
+        "romanian indie"
+      ],
+      "approx_duration_ms": 245000,
+      "reason_for_placement": "Romanian electronic flavor"
+    },
+    {
+      "time": "21:50",
+      "artist": "Arcade Fire",
+      "title": "Wake Up",
+      "genre_tags": [
+        "indie rock",
+        "art rock"
+      ],
+      "approx_duration_ms": 335000,
+      "reason_for_placement": "Anthemic indie to build energy"
+    },
+    {
+      "time": "21:56",
+      "artist": "Tricky",
+      "title": "Black Coffee",
+      "genre_tags": [
+        "trip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 295000,
+      "reason_for_placement": "Deep trip-hop juxtaposition"
+    },
+    {
+      "time": "22:02",
+      "artist": "Iron & Wine",
+      "title": "Flightless Bird, American Mouth",
+      "genre_tags": [
+        "folk",
+        "indie folk"
+      ],
+      "approx_duration_ms": 242000,
+      "reason_for_placement": "Gentle folk descent"
+    },
+    {
+      "time": "22:07",
+      "artist": "Róisín Murphy",
+      "title": "Overpowered",
+      "genre_tags": [
+        "electronic pop",
+        "dance"
+      ],
+      "approx_duration_ms": 215000,
+      "reason_for_placement": "Electronic burst"
+    },
+    {
+      "time": "22:11",
+      "artist": "Sufjan Stevens",
+      "title": "Chicago",
+      "genre_tags": [
+        "indie folk",
+        "baroque pop"
+      ],
+      "approx_duration_ms": 367000,
+      "reason_for_placement": "Folk-orchestral shift"
+    },
+    {
+      "time": "22:18",
+      "artist": "Apparat",
+      "title": "Goodbye",
+      "genre_tags": [
+        "electronic",
+        "ambient"
+      ],
+      "approx_duration_ms": 288000,
+      "reason_for_placement": "Atmospheric electronic"
+    },
+    {
+      "time": "22:23",
+      "artist": "Nicolae",
+      "title": "Dorul",
+      "genre_tags": [
+        "romanian folk",
+        "acoustic"
+      ],
+      "approx_duration_ms": 198000,
+      "reason_for_placement": "Local acoustic flavor"
+    },
+    {
+      "time": "22:27",
+      "artist": "The xx",
+      "title": "Intro",
+      "genre_tags": [
+        "indie pop",
+        "electronic"
+      ],
+      "approx_duration_ms": 128000,
+      "reason_for_placement": "Minimal electronic transition"
+    },
+    {
+      "time": "22:30",
+      "artist": "Laura Marling",
+      "title": "Rambling Man",
+      "genre_tags": [
+        "folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 195000,
+      "reason_for_placement": "Folk wind-down"
+    },
+    {
+      "time": "22:34",
+      "artist": "Khruangbin",
+      "title": "Maria Tambien",
+      "genre_tags": [
+        "psychedelic",
+        "funk"
+      ],
+      "approx_duration_ms": 201000,
+      "reason_for_placement": "Groovy instrumental break"
+    },
+    {
+      "time": "22:38",
+      "artist": "Efterklang",
+      "title": "Modern Drift",
+      "genre_tags": [
+        "indie electronic",
+        "post-rock"
+      ],
+      "approx_duration_ms": 302000,
+      "reason_for_placement": "Ethereal electronic"
+    },
+    {
+      "time": "22:44",
+      "artist": "Vashti Bunyan",
+      "title": "Train Song",
+      "genre_tags": [
+        "folk",
+        "acoustic"
+      ],
+      "approx_duration_ms": 148000,
+      "reason_for_placement": "Pure folk descent into late night"
+    },
+    {
+      "time": "22:47",
+      "artist": "Four Tet",
+      "title": "Baby",
+      "genre_tags": [
+        "electronic",
+        "ambient"
+      ],
+      "approx_duration_ms": 156000,
+      "reason_for_placement": "Ambient electronic close"
+    },
+    {
+      "time": "22:50",
+      "artist": "Agnes Obel",
+      "title": "Riverside",
+      "genre_tags": [
+        "chamber pop",
+        "folk"
+      ],
+      "approx_duration_ms": 218000,
+      "reason_for_placement": "Atmospheric folk-soul wind-down"
+    },
+    {
+      "time": "22:54",
+      "artist": "Boards of Canada",
+      "title": "Roygbiv",
+      "genre_tags": [
+        "electronic",
+        "ambient"
+      ],
+      "approx_duration_ms": 168000,
+      "reason_for_placement": "Nocturnal ambient transition"
+    },
+    {
+      "time": "22:57",
+      "artist": "Fiona Apple",
+      "title": "I Want You to Love Me",
+      "genre_tags": [
+        "singer-songwriter",
+        "soul"
+      ],
+      "approx_duration_ms": 245000,
+      "reason_for_placement": "Soulful close to second block"
+    },
+    {
+      "time": "23:02",
+      "artist": "Nick Drake",
+      "title": "Pink Moon",
+      "genre_tags": [
+        "folk",
+        "acoustic"
+      ],
+      "approx_duration_ms": 131000,
+      "reason_for_placement": "Sparse folk start to final descent"
+    },
+    {
+      "time": "23:05",
+      "artist": "Daughter",
+      "title": "Youth",
+      "genre_tags": [
+        "indie folk",
+        "dream pop"
+      ],
+      "approx_duration_ms": 254000,
+      "reason_for_placement": "Dreamy indie folk continuation"
+    },
+    {
+      "time": "23:10",
+      "artist": "Nils Frahm",
+      "title": "Says",
+      "genre_tags": [
+        "ambient",
+        "neo-classical"
+      ],
+      "approx_duration_ms": 395000,
+      "reason_for_placement": "Atmospheric piano wind-down"
+    },
+    {
+      "time": "23:17",
+      "artist": "Aldous Harding",
+      "title": "The Barrel",
+      "genre_tags": [
+        "folk",
+        "indie folk"
+      ],
+      "approx_duration_ms": 311000,
+      "reason_for_placement": "Quirky folk contrast"
+    },
+    {
+      "time": "23:23",
+      "artist": "Hammock",
+      "title": "Raising Your Voice...Trying to Stop an Echo",
+      "genre_tags": [
+        "post-rock",
+        "ambient"
+      ],
+      "approx_duration_ms": 360000,
+      "reason_for_placement": "Ambient post-rock descent"
+    },
+    {
+      "time": "23:30",
+      "artist": "Adriana",
+      "title": "Seara",
+      "genre_tags": [
+        "romanian acoustic",
+        "folk"
+      ],
+      "approx_duration_ms": 187000,
+      "reason_for_placement": "Romanian local folk flavor"
+    },
+    {
+      "time": "23:34",
+      "artist": "Max Richter",
+      "title": "On the Nature of Daylight",
+      "genre_tags": [
+        "neo-classical",
+        "ambient"
+      ],
+      "approx_duration_ms": 367000,
+      "reason_for_placement": "Reflective classical ambient"
+    },
+    {
+      "time": "23:41",
+      "artist": "Gillian Welch",
+      "title": "Time (The Revelator)",
+      "genre_tags": [
+        "folk",
+        "americana"
+      ],
+      "approx_duration_ms": 380000,
+      "reason_for_placement": "Pure americana folk"
+    },
+    {
+      "time": "23:48",
+      "artist": "Sigur Rós",
+      "title": "Hoppípolla",
+      "genre_tags": [
+        "post-rock",
+        "ambient"
+      ],
+      "approx_duration_ms": 248000,
+      "reason_for_placement": "Ethereal post-rock close"
+    }
+  ]
+}

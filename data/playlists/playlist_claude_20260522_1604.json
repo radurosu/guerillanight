@@ -1,0 +1,723 @@
+{
+  "generator": "claude",
+  "model_id": "claude-sonnet-4-20250514",
+  "generated_at": "2026-05-22T16:04:20.893193+03:00",
+  "track_count": 65,
+  "tracks": [
+    {
+      "time": "20:00",
+      "artist": "NICK CAVE & THE BAD SEEDS",
+      "title": "Red Right Hand",
+      "genre_tags": [
+        "post-punk",
+        "alternative rock"
+      ],
+      "approx_duration_ms": 380000,
+      "reason_for_placement": "Signature artist opener with dark energy to set the nocturnal tone"
+    },
+    {
+      "time": "20:06",
+      "artist": "KATIE MELUA",
+      "title": "Nine Million Bicycles",
+      "genre_tags": [
+        "folk pop",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 200000,
+      "reason_for_placement": "Signature artist with gentle contrast after Cave's intensity"
+    },
+    {
+      "time": "20:10",
+      "artist": "PHOENIX",
+      "title": "1901",
+      "genre_tags": [
+        "indie rock",
+        "alternative"
+      ],
+      "approx_duration_ms": 195000,
+      "reason_for_placement": "Mid-tempo indie to maintain energy flow into evening"
+    },
+    {
+      "time": "20:13",
+      "artist": "LONDON GRAMMAR",
+      "title": "Strong",
+      "genre_tags": [
+        "trip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 240000,
+      "reason_for_placement": "Signature artist bringing electronic texture with haunting vocals"
+    },
+    {
+      "time": "20:17",
+      "artist": "MORCHEEBA",
+      "title": "Rome Wasn't Built in a Day",
+      "genre_tags": [
+        "trip-hop",
+        "chillout"
+      ],
+      "approx_duration_ms": 210000,
+      "reason_for_placement": "Complementary trip-hop vibe with more upbeat energy"
+    },
+    {
+      "time": "20:21",
+      "artist": "LEONARD COHEN",
+      "title": "Everybody Knows",
+      "genre_tags": [
+        "folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 340000,
+      "reason_for_placement": "Signature artist with iconic track to anchor the early evening"
+    },
+    {
+      "time": "20:26",
+      "artist": "SUBCARPATI",
+      "title": "Rabdarea",
+      "genre_tags": [
+        "romanian folk",
+        "electronic fusion"
+      ],
+      "approx_duration_ms": 230000,
+      "reason_for_placement": "Romanian flavor with modern electronic folk fusion"
+    },
+    {
+      "time": "20:30",
+      "artist": "LANA DEL REY",
+      "title": "Venice Bitch",
+      "genre_tags": [
+        "dream pop",
+        "alternative"
+      ],
+      "approx_duration_ms": 570000,
+      "reason_for_placement": "Signature artist with extended dreamy track to build atmosphere"
+    },
+    {
+      "time": "20:39",
+      "artist": "THE CINEMATIC ORCHESTRA",
+      "title": "To Build a Home",
+      "genre_tags": [
+        "electronic",
+        "ambient"
+      ],
+      "approx_duration_ms": 450000,
+      "reason_for_placement": "Cinematic build-up track with emotional depth"
+    },
+    {
+      "time": "20:47",
+      "artist": "U2",
+      "title": "Where the Streets Have No Name",
+      "genre_tags": [
+        "rock",
+        "alternative rock"
+      ],
+      "approx_duration_ms": 340000,
+      "reason_for_placement": "Signature artist with anthemic energy to lift the mood"
+    },
+    {
+      "time": "20:52",
+      "artist": "PORTISHEAD",
+      "title": "Glory Box",
+      "genre_tags": [
+        "trip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 225000,
+      "reason_for_placement": "Trip-hop classic to transition into darker territory"
+    },
+    {
+      "time": "20:56",
+      "artist": "THIEVERY CORPORATION",
+      "title": "Lebanese Blonde",
+      "genre_tags": [
+        "chillout",
+        "electronic"
+      ],
+      "approx_duration_ms": 300000,
+      "reason_for_placement": "Smooth electronic to ease into deeper night vibes"
+    },
+    {
+      "time": "21:01",
+      "artist": "OLIVIA RODRIGO",
+      "title": "vampire",
+      "genre_tags": [
+        "pop rock",
+        "alternative pop"
+      ],
+      "approx_duration_ms": 210000,
+      "reason_for_placement": "Signature artist with moody pop energy"
+    },
+    {
+      "time": "21:05",
+      "artist": "RADIOHEAD",
+      "title": "No Surprises",
+      "genre_tags": [
+        "alternative rock",
+        "indie rock"
+      ],
+      "approx_duration_ms": 230000,
+      "reason_for_placement": "Melancholic indie to deepen the reflective mood"
+    },
+    {
+      "time": "21:09",
+      "artist": "TASH SULTANA",
+      "title": "Jungle",
+      "genre_tags": [
+        "indie folk",
+        "electronic"
+      ],
+      "approx_duration_ms": 460000,
+      "reason_for_placement": "Multi-layered performance piece with electronic elements"
+    },
+    {
+      "time": "21:17",
+      "artist": "BYRON",
+      "title": "Fever",
+      "genre_tags": [
+        "romanian pop",
+        "electronic"
+      ],
+      "approx_duration_ms": 180000,
+      "reason_for_placement": "Signature Romanian artist with contemporary edge"
+    },
+    {
+      "time": "21:20",
+      "artist": "MASSIVE ATTACK",
+      "title": "Teardrop",
+      "genre_tags": [
+        "trip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 330000,
+      "reason_for_placement": "Trip-hop masterpiece to build nocturnal intensity"
+    },
+    {
+      "time": "21:25",
+      "artist": "FKA TWIGS",
+      "title": "Two Weeks",
+      "genre_tags": [
+        "electronic",
+        "alternative R&B"
+      ],
+      "approx_duration_ms": 240000,
+      "reason_for_placement": "Experimental electronic with sensual energy"
+    },
+    {
+      "time": "21:29",
+      "artist": "ELECTRIC LIGHT ORCHESTRA",
+      "title": "Mr. Blue Sky",
+      "genre_tags": [
+        "classic rock",
+        "progressive rock"
+      ],
+      "approx_duration_ms": 320000,
+      "reason_for_placement": "Signature artist with uplifting classic to contrast the mood"
+    },
+    {
+      "time": "21:35",
+      "artist": "BILLIE EILISH",
+      "title": "when the party's over",
+      "genre_tags": [
+        "alternative pop",
+        "electronic"
+      ],
+      "approx_duration_ms": 195000,
+      "reason_for_placement": "Signature artist with intimate electronic ballad"
+    },
+    {
+      "time": "21:38",
+      "artist": "FOUR TET",
+      "title": "Two Thousand and Seventeen",
+      "genre_tags": [
+        "electronic",
+        "ambient"
+      ],
+      "approx_duration_ms": 360000,
+      "reason_for_placement": "Electronic texture to build toward midnight energy"
+    },
+    {
+      "time": "21:44",
+      "artist": "ALICE PHOEBE LOU",
+      "title": "Witches",
+      "genre_tags": [
+        "indie folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 250000,
+      "reason_for_placement": "Mystical folk to maintain the witching hour atmosphere"
+    },
+    {
+      "time": "21:48",
+      "artist": "FAITHLESS",
+      "title": "Insomnia",
+      "genre_tags": [
+        "electronic",
+        "dance"
+      ],
+      "approx_duration_ms": 480000,
+      "reason_for_placement": "Signature artist with late-night anthem building energy"
+    },
+    {
+      "time": "21:56",
+      "artist": "GLASS ANIMALS",
+      "title": "Black Mambo",
+      "genre_tags": [
+        "indie rock",
+        "electronic"
+      ],
+      "approx_duration_ms": 280000,
+      "reason_for_placement": "Psychedelic indie with electronic elements for variety"
+    },
+    {
+      "time": "22:01",
+      "artist": "BONOBO",
+      "title": "Kiara",
+      "genre_tags": [
+        "electronic",
+        "chillout"
+      ],
+      "approx_duration_ms": 390000,
+      "reason_for_placement": "Downtempo electronic to transition into deeper night"
+    },
+    {
+      "time": "22:07",
+      "artist": "DELIRIC X SILENT STRIKE",
+      "title": "Vis Lucid",
+      "genre_tags": [
+        "romanian hip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 220000,
+      "reason_for_placement": "Signature Romanian hip-hop with electronic production"
+    },
+    {
+      "time": "22:11",
+      "artist": "FEVER RAY",
+      "title": "If I Had a Heart",
+      "genre_tags": [
+        "electronic",
+        "dark ambient"
+      ],
+      "approx_duration_ms": 240000,
+      "reason_for_placement": "Dark electronic intensity for late night atmosphere"
+    },
+    {
+      "time": "22:15",
+      "artist": "COMA",
+      "title": "Nori de hârtie",
+      "genre_tags": [
+        "romanian rock",
+        "alternative"
+      ],
+      "approx_duration_ms": 270000,
+      "reason_for_placement": "Signature Romanian rock band with atmospheric track"
+    },
+    {
+      "time": "22:20",
+      "artist": "BURIAL",
+      "title": "Archangel",
+      "genre_tags": [
+        "electronic",
+        "dubstep"
+      ],
+      "approx_duration_ms": 240000,
+      "reason_for_placement": "UK electronic with nocturnal urban atmosphere"
+    },
+    {
+      "time": "22:24",
+      "artist": "PUSCIFER",
+      "title": "The Remedy",
+      "genre_tags": [
+        "alternative rock",
+        "electronic"
+      ],
+      "approx_duration_ms": 300000,
+      "reason_for_placement": "Alternative rock with electronic elements for edge"
+    },
+    {
+      "time": "22:29",
+      "artist": "EMANCIPATOR",
+      "title": "Soon It Will Be Cold Enough",
+      "genre_tags": [
+        "electronic",
+        "chillout"
+      ],
+      "approx_duration_ms": 270000,
+      "reason_for_placement": "Downtempo electronic with organic textures"
+    },
+    {
+      "time": "22:34",
+      "artist": "FAUST",
+      "title": "It's a Rainy Day, Sunshine Girl",
+      "genre_tags": [
+        "krautrock",
+        "experimental"
+      ],
+      "approx_duration_ms": 480000,
+      "reason_for_placement": "Signature experimental artist with extended atmospheric piece"
+    },
+    {
+      "time": "22:42",
+      "artist": "TRENTEMØLLER",
+      "title": "Moan",
+      "genre_tags": [
+        "electronic",
+        "ambient"
+      ],
+      "approx_duration_ms": 420000,
+      "reason_for_placement": "Hypnotic electronic to sustain late-night energy"
+    },
+    {
+      "time": "22:49",
+      "artist": "MODERAT",
+      "title": "A New Error",
+      "genre_tags": [
+        "electronic",
+        "techno"
+      ],
+      "approx_duration_ms": 360000,
+      "reason_for_placement": "Electronic collaboration with driving rhythm"
+    },
+    {
+      "time": "22:55",
+      "artist": "ARCHIVE",
+      "title": "Bullets",
+      "genre_tags": [
+        "trip-hop",
+        "electronic rock"
+      ],
+      "approx_duration_ms": 300000,
+      "reason_for_placement": "Trip-hop with rock elements building toward midnight"
+    },
+    {
+      "time": "23:00",
+      "artist": "TYCHO",
+      "title": "A Walk",
+      "genre_tags": [
+        "electronic",
+        "ambient"
+      ],
+      "approx_duration_ms": 270000,
+      "reason_for_placement": "Midnight ambient electronic for contemplative mood"
+    },
+    {
+      "time": "23:05",
+      "artist": "UNKLE",
+      "title": "Rabbit in Your Headlights",
+      "genre_tags": [
+        "trip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 330000,
+      "reason_for_placement": "Trip-hop classic with cinematic quality"
+    },
+    {
+      "time": "23:10",
+      "artist": "DARKSIDE",
+      "title": "Golden Arrow",
+      "genre_tags": [
+        "electronic",
+        "psychedelic"
+      ],
+      "approx_duration_ms": 240000,
+      "reason_for_placement": "Psychedelic electronic for deep night journey"
+    },
+    {
+      "time": "23:14",
+      "artist": "CIGARETTES AFTER SEX",
+      "title": "Nothing's Gonna Hurt You Baby",
+      "genre_tags": [
+        "dream pop",
+        "indie rock"
+      ],
+      "approx_duration_ms": 360000,
+      "reason_for_placement": "Dreamy indie for intimate late-night atmosphere"
+    },
+    {
+      "time": "23:20",
+      "artist": "BOARDS OF CANADA",
+      "title": "Roygbiv",
+      "genre_tags": [
+        "electronic",
+        "ambient"
+      ],
+      "approx_duration_ms": 140000,
+      "reason_for_placement": "Nostalgic electronic interlude"
+    },
+    {
+      "time": "23:22",
+      "artist": "KIASMOS",
+      "title": "Blurred EP",
+      "genre_tags": [
+        "electronic",
+        "techno"
+      ],
+      "approx_duration_ms": 420000,
+      "reason_for_placement": "Minimal techno for sustained electronic energy"
+    },
+    {
+      "time": "23:29",
+      "artist": "GOLDFRAPP",
+      "title": "Utopia",
+      "genre_tags": [
+        "electronic",
+        "trip-hop"
+      ],
+      "approx_duration_ms": 240000,
+      "reason_for_placement": "Electronic pop with atmospheric production"
+    },
+    {
+      "time": "23:33",
+      "artist": "LAMB",
+      "title": "Gabriel",
+      "genre_tags": [
+        "trip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 300000,
+      "reason_for_placement": "Trip-hop with ethereal vocals for late night"
+    },
+    {
+      "time": "23:38",
+      "artist": "ZERO 7",
+      "title": "In the Waiting Line",
+      "genre_tags": [
+        "chillout",
+        "electronic"
+      ],
+      "approx_duration_ms": 270000,
+      "reason_for_placement": "Downtempo classic for contemplative mood"
+    },
+    {
+      "time": "23:43",
+      "artist": "NILS FRAHM",
+      "title": "Says",
+      "genre_tags": [
+        "ambient",
+        "electronic"
+      ],
+      "approx_duration_ms": 600000,
+      "reason_for_placement": "Extended ambient piece for deep meditation"
+    },
+    {
+      "time": "23:53",
+      "artist": "MAX RICHTER",
+      "title": "On The Nature Of Daylight",
+      "genre_tags": [
+        "neoclassical",
+        "ambient"
+      ],
+      "approx_duration_ms": 380000,
+      "reason_for_placement": "Cinematic ambient transitioning toward dawn hours"
+    },
+    {
+      "time": "00:00",
+      "artist": "JEFF BUCKLEY",
+      "title": "Hallelujah",
+      "genre_tags": [
+        "alternative rock",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 420000,
+      "reason_for_placement": "Midnight spiritual moment with haunting vocals"
+    },
+    {
+      "time": "00:07",
+      "artist": "TOM WAITS",
+      "title": "Hold On",
+      "genre_tags": [
+        "blues",
+        "folk"
+      ],
+      "approx_duration_ms": 330000,
+      "reason_for_placement": "Gravelly blues for late night storytelling"
+    },
+    {
+      "time": "00:13",
+      "artist": "BON IVER",
+      "title": "Skinny Love",
+      "genre_tags": [
+        "indie folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 230000,
+      "reason_for_placement": "Intimate folk ballad for introspective hour"
+    },
+    {
+      "time": "00:17",
+      "artist": "SUFJAN STEVENS",
+      "title": "Mystery of Love",
+      "genre_tags": [
+        "indie folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 250000,
+      "reason_for_placement": "Delicate folk composition for contemplation"
+    },
+    {
+      "time": "00:21",
+      "artist": "NINA SIMONE",
+      "title": "Feeling Good",
+      "genre_tags": [
+        "jazz",
+        "soul"
+      ],
+      "approx_duration_ms": 180000,
+      "reason_for_placement": "Soulful classic for emotional depth"
+    },
+    {
+      "time": "00:24",
+      "artist": "JOSÉ GONZÁLEZ",
+      "title": "Heartbeats",
+      "genre_tags": [
+        "indie folk",
+        "acoustic"
+      ],
+      "approx_duration_ms": 170000,
+      "reason_for_placement": "Minimal acoustic for intimate late-night moment"
+    },
+    {
+      "time": "00:27",
+      "artist": "FLEET FOXES",
+      "title": "White Winter Hymnal",
+      "genre_tags": [
+        "indie folk",
+        "folk rock"
+      ],
+      "approx_duration_ms": 140000,
+      "reason_for_placement": "Harmonious folk for peaceful transition"
+    },
+    {
+      "time": "00:30",
+      "artist": "IRON & WINE",
+      "title": "Boy with a Coin",
+      "genre_tags": [
+        "indie folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 200000,
+      "reason_for_placement": "Gentle folk ballad maintaining intimate atmosphere"
+    },
+    {
+      "time": "00:33",
+      "artist": "THE NATIONAL",
+      "title": "I Need My Girl",
+      "genre_tags": [
+        "indie rock",
+        "alternative"
+      ],
+      "approx_duration_ms": 210000,
+      "reason_for_placement": "Melancholic indie rock for emotional resonance"
+    },
+    {
+      "time": "00:37",
+      "artist": "MAZZY STAR",
+      "title": "Fade Into You",
+      "genre_tags": [
+        "dream pop",
+        "alternative rock"
+      ],
+      "approx_duration_ms": 300000,
+      "reason_for_placement": "Dreamy alternative classic for late night drift"
+    },
+    {
+      "time": "00:42",
+      "artist": "COWBOY JUNKIES",
+      "title": "Sweet Jane",
+      "genre_tags": [
+        "alternative rock",
+        "folk rock"
+      ],
+      "approx_duration_ms": 420000,
+      "reason_for_placement": "Slow-burning cover version for contemplative mood"
+    },
+    {
+      "time": "00:49",
+      "artist": "NICK DRAKE",
+      "title": "River Man",
+      "genre_tags": [
+        "folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 240000,
+      "reason_for_placement": "Orchestral folk masterpiece for deep listening"
+    },
+    {
+      "time": "00:53",
+      "artist": "OTIS REDDING",
+      "title": "(Sittin' On) The Dock of the Bay",
+      "genre_tags": [
+        "soul",
+        "R&B"
+      ],
+      "approx_duration_ms": 165000,
+      "reason_for_placement": "Soulful classic for reflective late night"
+    },
+    {
+      "time": "00:56",
+      "artist": "EXPLOSIONS IN THE SKY",
+      "title": "Your Hand in Mine",
+      "genre_tags": [
+        "post-rock",
+        "instrumental"
+      ],
+      "approx_duration_ms": 480000,
+      "reason_for_placement": "Cinematic post-rock building toward dawn"
+    },
+    {
+      "time": "01:04",
+      "artist": "GODSPEED YOU! BLACK EMPEROR",
+      "title": "East Hastings",
+      "genre_tags": [
+        "post-rock",
+        "experimental"
+      ],
+      "approx_duration_ms": 1080000,
+      "reason_for_placement": "Extended post-rock epic for deep night immersion"
+    },
+    {
+      "time": "01:22",
+      "artist": "A WINGED VICTORY FOR THE SULLEN",
+      "title": "Requiem for the Static King Part One",
+      "genre_tags": [
+        "ambient",
+        "neoclassical"
+      ],
+      "approx_duration_ms": 480000,
+      "reason_for_placement": "Ambient neoclassical for final hour contemplation"
+    },
+    {
+      "time": "01:30",
+      "artist": "STARS OF THE LID",
+      "title": "Don't Bother They're Here",
+      "genre_tags": [
+        "ambient",
+        "drone"
+      ],
+      "approx_duration_ms": 600000,
+      "reason_for_placement": "Extended ambient piece for deep meditation"
+    },
+    {
+      "time": "01:40",
+      "artist": "TIM HECKER",
+      "title": "Harmony in Ultraviolet",
+      "genre_tags": [
+        "ambient",
+        "electronic"
+      ],
+      "approx_duration_ms": 360000,
+      "reason_for_placement": "Textural ambient for late night atmosphere"
+    },
+    {
+      "time": "01:46",
+      "artist": "WILLIAM BASINSKI",
+      "title": "The Disintegration Loops 1.1",
+      "genre_tags": [
+        "ambient",
+        "experimental"
+      ],
+      "approx_duration_ms": 960000,
+      "reason_for_placement": "Final extended ambient piece dissolving toward dawn"
+    }
+  ]
+}

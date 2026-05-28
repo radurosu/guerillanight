@@ -1,0 +1,128 @@
+{
+  "playlist": "data/playlists/playlist_grok_20260522_1603.json",
+  "composite_score": 80.5,
+  "baseline_score": 62.6,
+  "dimensions": {
+    "genre_match": {
+      "score": 90.8,
+      "weight": "35%"
+    },
+    "popularity_curve": {
+      "score": 0.0,
+      "weight": "0%"
+    },
+    "artist_diversity": {
+      "score": 100.0,
+      "weight": "15%"
+    },
+    "freshness": {
+      "score": 41.5,
+      "weight": "25%"
+    },
+    "romanian_presence": {
+      "score": 92.9,
+      "weight": "15%"
+    },
+    "track_count": {
+      "score": 94.6,
+      "weight": "10%"
+    }
+  },
+  "generated_features": {
+    "total_tracks": 39,
+    "unique_artists": 39,
+    "artist_diversity": 1.0,
+    "romanian_pct": 10.3,
+    "freshness_pct": 30.8,
+    "top_genres": [
+      [
+        "electronic",
+        17
+      ],
+      [
+        "rock",
+        16
+      ],
+      [
+        "folk",
+        15
+      ],
+      [
+        "pop",
+        12
+      ],
+      [
+        "alternative",
+        7
+      ],
+      [
+        "trip-hop",
+        5
+      ],
+      [
+        "blues",
+        2
+      ],
+      [
+        "ballad",
+        1
+      ],
+      [
+        "hip-hop",
+        1
+      ],
+      [
+        "soul",
+        1
+      ]
+    ]
+  },
+  "reference_features": {
+    "total_tracks": 1120,
+    "unique_artists": 589,
+    "artist_diversity": 0.526,
+    "romanian_pct": 8.8,
+    "top_genres": [
+      [
+        "rock",
+        1688
+      ],
+      [
+        "pop",
+        897
+      ],
+      [
+        "alternative",
+        805
+      ],
+      [
+        "electronic",
+        719
+      ],
+      [
+        "folk",
+        698
+      ],
+      [
+        "hip-hop",
+        341
+      ],
+      [
+        "soul",
+        291
+      ],
+      [
+        "trip-hop",
+        147
+      ],
+      [
+        "blues",
+        131
+      ],
+      [
+        "jazz",
+        122
+      ]
+    ]
+  }
+}

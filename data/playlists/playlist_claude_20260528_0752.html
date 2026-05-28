@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guerrilla Night — Claude Playlist</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a0a0f;
+    color: #e0ddd5;
+    font-family: 'Space Grotesk', system-ui, sans-serif;
+    min-height: 100vh;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1025 40%, #0f1a2a 70%, #0a0a0f 100%);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 30% 50%, rgba(180,120,255,0.08) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 30%, rgba(100,180,255,0.06) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  .hero h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: #fff;
+    position: relative;
+  }
+
+  .hero h1 span {
+    background: linear-gradient(135deg, #c084fc, #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero .meta {
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.4);
+    margin-top: 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    position: relative;
+  }
+
+  .score-bar {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+    position: relative;
+    flex-wrap: wrap;
+  }
+
+  .score-item {
+    text-align: center;
+  }
+
+  .score-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #c084fc;
+  }
+
+  .score-value.main {
+    font-size: 2.4rem;
+    background: linear-gradient(135deg, #c084fc, #60a5fa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .score-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.35);
+    margin-top: 0.2rem;
+  }
+
+  .verdict {
+    margin-top: 1.2rem;
+    font-size: 0.85rem;
+    color: rgba(180,160,255,0.7);
+    font-style: italic;
+    position: relative;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1.5rem;
+  }
+
+  .phase-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: rgba(255,255,255,0.25);
+    padding: 1.5rem 0 0.6rem;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    margin-top: 0.5rem;
+  }
+
+  .phase-label:first-child {
+    border-top: none;
+    margin-top: 0;
+  }
+
+  .track {
+    display: grid;
+    grid-template-columns: 52px 1fr auto;
+    gap: 0 1rem;
+    padding: 0.65rem 0.8rem;
+    border-radius: 8px;
+    transition: background 0.2s;
+    align-items: start;
+  }
+
+  .track:hover {
+    background: rgba(255,255,255,0.03);
+  }
+
+  .track-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.3);
+    padding-top: 2px;
+  }
+
+  .track-info {
+    min-width: 0;
+  }
+
+  .track-artist {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #f0ece4;
+  }
+
+  .track-title {
+    font-weight: 400;
+    font-size: 0.95rem;
+    color: rgba(255,255,255,0.55);
+    margin-left: 0.3rem;
+  }
+
+  .track-title::before {
+    content: '— ';
+    color: rgba(255,255,255,0.2);
+  }
+
+  .track-genres {
+    display: flex;
+    gap: 0.35rem;
+    margin-top: 0.3rem;
+    flex-wrap: wrap;
+  }
+
+  .genre-tag {
+    font-size: 0.65rem;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    background: rgba(255,255,255,0.04);
+    color: rgba(255,255,255,0.35);
+    white-space: nowrap;
+  }
+
+  .genre-tag.romanian { background: rgba(180,120,255,0.12); color: rgba(200,160,255,0.7); }
+  .genre-tag.electronic { background: rgba(100,180,255,0.1); color: rgba(130,190,255,0.7); }
+  .genre-tag.trip-hop { background: rgba(255,150,100,0.1); color: rgba(255,170,130,0.6); }
+  .genre-tag.folk { background: rgba(120,200,120,0.1); color: rgba(150,210,150,0.6); }
+
+  .track-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.15);
+    text-align: right;
+    padding-top: 3px;
+  }
+
+  .footer {
+    text-align: center;
+    padding: 2rem;
+    font-size: 0.7rem;
+    color: rgba(255,255,255,0.15);
+    font-family: 'JetBrains Mono', monospace;
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>Guerrilla <span>Night</span></h1>
+  <div class="meta">Claude (claude-sonnet-4) &middot; 43 tracks &middot; 28 May 2026</div>
+  <div class="score-bar">
+    <div class="score-item">
+      <div class="score-value main">84.9</div>
+      <div class="score-label">Style Score</div>
+    </div>
+    <div class="score-item">
+      <div class="score-value">88.4</div>
+      <div class="score-label">Genre</div>
+    </div>
+    <div class="score-item">
+      <div class="score-value">63.7</div>
+      <div class="score-label">Freshness</div>
+    </div>
+    <div class="score-item">
+      <div class="score-value">97.6</div>
+      <div class="score-label">Romanian</div>
+    </div>
+    <div class="score-item">
+      <div class="score-value">100</div>
+      <div class="score-label">Diversity</div>
+    </div>
+  </div>
+  <div class="verdict">Excellent — this playlist IS Guerrilla Night.</div>
+</div>
+
+<div class="container" id="tracklist"></div>
+
+<div class="footer">
+  Generated by Guerrilla Night AI &middot; guerillanight.eloquentix.com
+</div>
+
+<script>
+const tracks = [{"time":"20:00","artist":"LANA DEL REY","title":"Venice Bitch","genre_tags":["alternative pop","indie pop"]},{"time":"20:10","artist":"PHOENIX","title":"1901","genre_tags":["indie rock","alternative rock"]},{"time":"20:13","artist":"KATIE MELUA","title":"The Closest Thing to Crazy","genre_tags":["folk","singer-songwriter"]},{"time":"20:17","artist":"IRINA RIMES","title":"Cosmos","genre_tags":["romanian pop","alternative"]},{"time":"20:21","artist":"INTERPOL","title":"Evil","genre_tags":["post-punk","indie rock"]},{"time":"20:24","artist":"EMILIE SIMON","title":"Flowers","genre_tags":["electronic","trip-hop"]},{"time":"20:28","artist":"NOAH KAHAN","title":"Stick Season","genre_tags":["folk","indie folk"]},{"time":"20:31","artist":"CIGARETTES AFTER SEX","title":"Apocalypse","genre_tags":["indie rock","dream pop"]},{"time":"20:35","artist":"GRASU XXL","title":"Poveste","genre_tags":["romanian hip-hop","hip-hop"]},{"time":"20:38","artist":"THE NATIONAL","title":"Bloodbuzz Ohio","genre_tags":["indie rock","alternative rock"]},{"time":"20:43","artist":"PORTISHEAD","title":"Glory Box","genre_tags":["trip-hop","electronic"]},{"time":"20:47","artist":"OLIVIA RODRIGO","title":"vampire","genre_tags":["pop rock","alternative pop"]},{"time":"20:50","artist":"RADIOHEAD","title":"Weird Fishes/Arpeggi","genre_tags":["alternative rock","experimental"]},{"time":"20:56","artist":"MORCHEEBA","title":"The Sea","genre_tags":["trip-hop","chillout"]},{"time":"21:01","artist":"LONDON GRAMMAR","title":"Strong","genre_tags":["indie pop","electronic"]},{"time":"21:05","artist":"THOM YORKE","title":"Hearing Damage","genre_tags":["electronic","experimental"]},{"time":"21:09","artist":"PUSCIFER","title":"The Remedy","genre_tags":["alternative rock","progressive rock"]},{"time":"21:14","artist":"BONOBO","title":"Kiara","genre_tags":["electronic","downtempo"]},{"time":"21:20","artist":"NICK CAVE & THE BAD SEEDS","title":"The Ship Song","genre_tags":["alternative rock","post-punk"]},{"time":"21:24","artist":"MASSIVE ATTACK","title":"Angel","genre_tags":["trip-hop","electronic"]},{"time":"21:30","artist":"HOZIER","title":"Take Me to Church","genre_tags":["indie rock","blues rock"]},{"time":"21:34","artist":"FAITHLESS","title":"Insomnia","genre_tags":["electronic","trip-hop"]},{"time":"21:42","artist":"JEFF BUCKLEY","title":"Hallelujah","genre_tags":["alternative rock","folk"]},{"time":"21:49","artist":"MODERAT","title":"A New Error","genre_tags":["electronic","techno"]},{"time":"21:56","artist":"PJ HARVEY","title":"Down by the Water","genre_tags":["alternative rock","art rock"]},{"time":"22:01","artist":"ANOTR","title":"Relax My Eyes","genre_tags":["house","electronic"]},{"time":"22:07","artist":"LEONARD COHEN","title":"Suzanne","genre_tags":["folk","singer-songwriter"]},{"time":"22:11","artist":"TRENTEMØLLER","title":"Moan","genre_tags":["electronic","ambient"]},{"time":"22:18","artist":"U2","title":"Where the Streets Have No Name","genre_tags":["rock","alternative rock"]},{"time":"22:24","artist":"BURIAL","title":"Archangel","genre_tags":["dubstep","electronic"]},{"time":"22:28","artist":"DOLORES O'RIORDAN","title":"Ordinary Day","genre_tags":["alternative rock","indie"]},{"time":"22:33","artist":"CRISTIAN VASILE","title":"Liniste","genre_tags":["romanian rock","alternative"]},{"time":"22:38","artist":"FOUR TET","title":"Two Thousand and Seventeen","genre_tags":["electronic","ambient"]},{"time":"22:43","artist":"ALEX WARREN","title":"Carry You Home","genre_tags":["indie pop","singer-songwriter"]},{"time":"22:46","artist":"COMA","title":"Noapte Buna","genre_tags":["romanian rock","alternative rock"]},{"time":"22:52","artist":"ZERO 7","title":"In the Waiting Line","genre_tags":["chillout","electronic"]},{"time":"22:56","artist":"KINGS OF CONVENIENCE","title":"I'd Rather Dance With You","genre_tags":["indie pop","folk"]},{"time":"23:00","artist":"AGNES OBEL","title":"Riverside","genre_tags":["indie folk","ambient"]},{"time":"23:05","artist":"BON IVER","title":"Re: Stacks","genre_tags":["indie folk","experimental"]},{"time":"23:12","artist":"NILS FRAHM","title":"Says","genre_tags":["ambient","modern classical"]},{"time":"23:22","artist":"IRON & WINE","title":"Boy with a Coin","genre_tags":["indie folk","singer-songwriter"]},{"time":"23:27","artist":"GOLDFRAPP","title":"Utopia","genre_tags":["electronic","ambient"]},{"time":"23:31","artist":"FLEET FOXES","title":"White Winter Hymnal","genre_tags":["indie folk","folk"]}];
+
+const phases = [
+  { label: "Easing In — Mid-tempo rock / pop / indie", start: "20:00", end: "22:00" },
+  { label: "Building Energy — Electronic / trip-hop / deep alternative", start: "22:00", end: "01:00" },
+  { label: "Winding Down — Atmospheric / folk / soul", start: "01:00", end: "02:00" }
+];
+
+function timeToMin(t) {
+  const [h, m] = t.split(':').map(Number);
+  return h < 6 ? (h + 24) * 60 + m : h * 60 + m;
+}
+
+function genreClass(tag) {
+  const t = tag.toLowerCase();
+  if (t.includes('romanian')) return 'romanian';
+  if (t.includes('electronic') || t.includes('ambient') || t.includes('techno') || t.includes('house') || t.includes('dubstep') || t.includes('chillout') || t.includes('downtempo')) return 'electronic';
+  if (t.includes('trip-hop') || t.includes('trip hop')) return 'trip-hop';
+  if (t.includes('folk') || t.includes('acoustic') || t.includes('singer-songwriter')) return 'folk';
+  return '';
+}
+
+const container = document.getElementById('tracklist');
+let currentPhase = -1;
+
+tracks.forEach((t, i) => {
+  const mins = timeToMin(t.time);
+  const phaseIdx = phases.findIndex((p, pi) => {
+    const s = timeToMin(p.start), e = timeToMin(p.end);
+    return mins >= s && mins < e;
+  });
+
+  if (phaseIdx !== currentPhase && phaseIdx >= 0) {
+    currentPhase = phaseIdx;
+    const label = document.createElement('div');
+    label.className = 'phase-label';
+    label.textContent = phases[phaseIdx].label;
+    container.appendChild(label);
+  }
+
+  const row = document.createElement('div');
+  row.className = 'track';
+  row.innerHTML = `
+    <div class="track-time">${t.time}</div>
+    <div class="track-info">
+      <div>
+        <span class="track-artist">${t.artist}</span>
+        <span class="track-title">${t.title}</span>
+      </div>
+      <div class="track-genres">
+        ${t.genre_tags.map(g => `<span class="genre-tag ${genreClass(g)}">${g}</span>`).join('')}
+      </div>
+    </div>
+    <div class="track-num">${String(i + 1).padStart(2, '0')}</div>
+  `;
+  container.appendChild(row);
+});
+</script>
+</body>
+</html>

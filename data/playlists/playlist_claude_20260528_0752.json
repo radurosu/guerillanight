@@ -1,0 +1,524 @@
+{
+  "generator": "claude",
+  "model_id": "claude-sonnet-4-20250514",
+  "generated_at": "2026-05-28T07:52:49.542285+03:00",
+  "track_count": 43,
+  "tracks": [
+    {
+      "time": "20:00",
+      "artist": "LANA DEL REY",
+      "title": "Venice Bitch",
+      "genre_tags": [
+        "alternative pop",
+        "indie pop"
+      ],
+      "approx_duration_ms": 588000,
+      "reason_for_placement": "Dreamy opener to ease into the night with signature artist",
+      "youtube_id": "Qg3DxELVPj4"
+    },
+    {
+      "time": "20:10",
+      "artist": "PHOENIX",
+      "title": "1901",
+      "genre_tags": [
+        "indie rock",
+        "alternative rock"
+      ],
+      "approx_duration_ms": 195000,
+      "reason_for_placement": "Mid-tempo indie rock energy to build momentum",
+      "youtube_id": "36_4xjLFjM0"
+    },
+    {
+      "time": "20:13",
+      "artist": "KATIE MELUA",
+      "title": "The Closest Thing to Crazy",
+      "genre_tags": [
+        "folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 251000,
+      "reason_for_placement": "Signature artist, gentle folk transition",
+      "youtube_id": "C-BnRZ52jHs"
+    },
+    {
+      "time": "20:17",
+      "artist": "IRINA RIMES",
+      "title": "Cosmos",
+      "genre_tags": [
+        "romanian pop",
+        "alternative"
+      ],
+      "approx_duration_ms": 218000,
+      "reason_for_placement": "Romanian flavor with atmospheric qualities",
+      "youtube_id": "CPcYPtOdWJg"
+    },
+    {
+      "time": "20:21",
+      "artist": "INTERPOL",
+      "title": "Evil",
+      "genre_tags": [
+        "post-punk",
+        "indie rock"
+      ],
+      "approx_duration_ms": 207000,
+      "reason_for_placement": "Darker indie rock to deepen the mood",
+      "youtube_id": "dkpgz3uQ58U"
+    },
+    {
+      "time": "20:24",
+      "artist": "EMILIE SIMON",
+      "title": "Flowers",
+      "genre_tags": [
+        "electronic",
+        "trip-hop"
+      ],
+      "approx_duration_ms": 243000,
+      "reason_for_placement": "Electronic textures to add variety",
+      "youtube_id": "_V53PB3jXio"
+    },
+    {
+      "time": "20:28",
+      "artist": "NOAH KAHAN",
+      "title": "Stick Season",
+      "genre_tags": [
+        "folk",
+        "indie folk"
+      ],
+      "approx_duration_ms": 201000,
+      "reason_for_placement": "Signature artist, introspective folk moment",
+      "youtube_id": "JKrDdsgXuso"
+    },
+    {
+      "time": "20:31",
+      "artist": "CIGARETTES AFTER SEX",
+      "title": "Apocalypse",
+      "genre_tags": [
+        "indie rock",
+        "dream pop"
+      ],
+      "approx_duration_ms": 233000,
+      "reason_for_placement": "Atmospheric indie to maintain nocturnal vibe",
+      "youtube_id": "wbpCa2SDr_I"
+    },
+    {
+      "time": "20:35",
+      "artist": "GRASU XXL",
+      "title": "Poveste",
+      "genre_tags": [
+        "romanian hip-hop",
+        "hip-hop"
+      ],
+      "approx_duration_ms": 195000,
+      "reason_for_placement": "Romanian hip-hop for local flavor contrast",
+      "youtube_id": "IQ5VKiPs4e8"
+    },
+    {
+      "time": "20:38",
+      "artist": "THE NATIONAL",
+      "title": "Bloodbuzz Ohio",
+      "genre_tags": [
+        "indie rock",
+        "alternative rock"
+      ],
+      "approx_duration_ms": 271000,
+      "reason_for_placement": "Moody indie rock building toward prime time",
+      "youtube_id": "yfySK7CLEEg"
+    },
+    {
+      "time": "20:43",
+      "artist": "PORTISHEAD",
+      "title": "Glory Box",
+      "genre_tags": [
+        "trip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 230000,
+      "reason_for_placement": "Classic trip-hop entering deeper night territory",
+      "youtube_id": "4qQyUi4zfDs"
+    },
+    {
+      "time": "20:47",
+      "artist": "OLIVIA RODRIGO",
+      "title": "vampire",
+      "genre_tags": [
+        "pop rock",
+        "alternative pop"
+      ],
+      "approx_duration_ms": 219000,
+      "reason_for_placement": "Signature artist, contemporary edge before 9pm",
+      "youtube_id": "RlPNh_PBZb4"
+    },
+    {
+      "time": "20:50",
+      "artist": "RADIOHEAD",
+      "title": "Weird Fishes/Arpeggi",
+      "genre_tags": [
+        "alternative rock",
+        "experimental"
+      ],
+      "approx_duration_ms": 318000,
+      "reason_for_placement": "Complex alternative to bridge into deeper night",
+      "youtube_id": "pcEJyvv6_kc"
+    },
+    {
+      "time": "20:56",
+      "artist": "MORCHEEBA",
+      "title": "The Sea",
+      "genre_tags": [
+        "trip-hop",
+        "chillout"
+      ],
+      "approx_duration_ms": 294000,
+      "reason_for_placement": "Signature artist, atmospheric trip-hop for transition",
+      "youtube_id": "--wy8QmLlM8"
+    },
+    {
+      "time": "21:01",
+      "artist": "LONDON GRAMMAR",
+      "title": "Strong",
+      "genre_tags": [
+        "indie pop",
+        "electronic"
+      ],
+      "approx_duration_ms": 266000,
+      "reason_for_placement": "Signature artist, ethereal vocals for 9pm slot",
+      "youtube_id": "6drfp_3823I"
+    },
+    {
+      "time": "21:05",
+      "artist": "THOM YORKE",
+      "title": "Hearing Damage",
+      "genre_tags": [
+        "electronic",
+        "experimental"
+      ],
+      "approx_duration_ms": 219000,
+      "reason_for_placement": "Electronic experimentation building energy",
+      "youtube_id": "HSTFlBpNnvk"
+    },
+    {
+      "time": "21:09",
+      "artist": "PUSCIFER",
+      "title": "The Remedy",
+      "genre_tags": [
+        "alternative rock",
+        "progressive rock"
+      ],
+      "approx_duration_ms": 303000,
+      "reason_for_placement": "Heavier alternative for mid-evening energy",
+      "youtube_id": "HivxFBB87-Y"
+    },
+    {
+      "time": "21:14",
+      "artist": "BONOBO",
+      "title": "Kiara",
+      "genre_tags": [
+        "electronic",
+        "downtempo"
+      ],
+      "approx_duration_ms": 347000,
+      "reason_for_placement": "Sophisticated electronic textures",
+      "youtube_id": "L-kyRh7N-kE"
+    },
+    {
+      "time": "21:20",
+      "artist": "NICK CAVE & THE BAD SEEDS",
+      "title": "The Ship Song",
+      "genre_tags": [
+        "alternative rock",
+        "post-punk"
+      ],
+      "approx_duration_ms": 263000,
+      "reason_for_placement": "Signature artist, classic Cave for prime evening",
+      "youtube_id": "T0spQCw35D4"
+    },
+    {
+      "time": "21:24",
+      "artist": "MASSIVE ATTACK",
+      "title": "Angel",
+      "genre_tags": [
+        "trip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 318000,
+      "reason_for_placement": "Trip-hop depth building to late night",
+      "youtube_id": "hbe3CQamF8k"
+    },
+    {
+      "time": "21:30",
+      "artist": "HOZIER",
+      "title": "Take Me to Church",
+      "genre_tags": [
+        "indie rock",
+        "blues rock"
+      ],
+      "approx_duration_ms": 242000,
+      "reason_for_placement": "Powerful vocals and spiritual themes",
+      "youtube_id": "MYSVMgRr6pw"
+    },
+    {
+      "time": "21:34",
+      "artist": "FAITHLESS",
+      "title": "Insomnia",
+      "genre_tags": [
+        "electronic",
+        "trip-hop"
+      ],
+      "approx_duration_ms": 481000,
+      "reason_for_placement": "Signature artist, perfect late-night anthem",
+      "youtube_id": "P8JEm4d6Wu4"
+    },
+    {
+      "time": "21:42",
+      "artist": "JEFF BUCKLEY",
+      "title": "Hallelujah",
+      "genre_tags": [
+        "alternative rock",
+        "folk"
+      ],
+      "approx_duration_ms": 427000,
+      "reason_for_placement": "Emotional depth and spiritual beauty",
+      "youtube_id": "y8AWFf7EAc4"
+    },
+    {
+      "time": "21:49",
+      "artist": "MODERAT",
+      "title": "A New Error",
+      "genre_tags": [
+        "electronic",
+        "techno"
+      ],
+      "approx_duration_ms": 393000,
+      "reason_for_placement": "Signature artist, driving electronic energy",
+      "youtube_id": "QpxFcMYRV08"
+    },
+    {
+      "time": "21:56",
+      "artist": "PJ HARVEY",
+      "title": "Down by the Water",
+      "genre_tags": [
+        "alternative rock",
+        "art rock"
+      ],
+      "approx_duration_ms": 296000,
+      "reason_for_placement": "Dark alternative edge approaching 10pm",
+      "youtube_id": "lbq4G1TjKYg"
+    },
+    {
+      "time": "22:01",
+      "artist": "ANOTR",
+      "title": "Relax My Eyes",
+      "genre_tags": [
+        "house",
+        "electronic"
+      ],
+      "approx_duration_ms": 331000,
+      "reason_for_placement": "Signature artist, deep house for late night building",
+      "youtube_id": "-SLc9v10wV4"
+    },
+    {
+      "time": "22:07",
+      "artist": "LEONARD COHEN",
+      "title": "Suzanne",
+      "genre_tags": [
+        "folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 230000,
+      "reason_for_placement": "Signature artist, poetic introspection",
+      "youtube_id": "svitEEpI07E"
+    },
+    {
+      "time": "22:11",
+      "artist": "TRENTEMØLLER",
+      "title": "Moan",
+      "genre_tags": [
+        "electronic",
+        "ambient"
+      ],
+      "approx_duration_ms": 444000,
+      "reason_for_placement": "Atmospheric electronic depth for late night",
+      "youtube_id": "5vkj-t1ytzo"
+    },
+    {
+      "time": "22:18",
+      "artist": "U2",
+      "title": "Where the Streets Have No Name",
+      "genre_tags": [
+        "rock",
+        "alternative rock"
+      ],
+      "approx_duration_ms": 337000,
+      "reason_for_placement": "Signature artist, epic late night anthem",
+      "youtube_id": "GzZWSrr5wFI"
+    },
+    {
+      "time": "22:24",
+      "artist": "BURIAL",
+      "title": "Archangel",
+      "genre_tags": [
+        "dubstep",
+        "electronic"
+      ],
+      "approx_duration_ms": 233000,
+      "reason_for_placement": "Dark electronic atmosphere building tension",
+      "youtube_id": "8k_f2QK77ew"
+    },
+    {
+      "time": "22:28",
+      "artist": "DOLORES O'RIORDAN",
+      "title": "Ordinary Day",
+      "genre_tags": [
+        "alternative rock",
+        "indie"
+      ],
+      "approx_duration_ms": 291000,
+      "reason_for_placement": "Ethereal vocals for deep night territory",
+      "youtube_id": "Lxc3O4mQV74"
+    },
+    {
+      "time": "22:33",
+      "artist": "CRISTIAN VASILE",
+      "title": "Liniste",
+      "genre_tags": [
+        "romanian rock",
+        "alternative"
+      ],
+      "approx_duration_ms": 267000,
+      "reason_for_placement": "Signature Romanian artist for local depth",
+      "youtube_id": "aJh8U1ZArvA"
+    },
+    {
+      "time": "22:38",
+      "artist": "FOUR TET",
+      "title": "Two Thousand and Seventeen",
+      "genre_tags": [
+        "electronic",
+        "ambient"
+      ],
+      "approx_duration_ms": 294000,
+      "reason_for_placement": "Textural electronic building to midnight",
+      "youtube_id": "CUYboWbVe0A"
+    },
+    {
+      "time": "22:43",
+      "artist": "ALEX WARREN",
+      "title": "Carry You Home",
+      "genre_tags": [
+        "indie pop",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 203000,
+      "reason_for_placement": "Signature artist, emotional indie pop",
+      "youtube_id": "d4iGZ_jP-1U"
+    },
+    {
+      "time": "22:46",
+      "artist": "COMA",
+      "title": "Noapte Buna",
+      "genre_tags": [
+        "romanian rock",
+        "alternative rock"
+      ],
+      "approx_duration_ms": 312000,
+      "reason_for_placement": "Signature Romanian band for local flavor",
+      "youtube_id": "Bk4BzmvFDJY"
+    },
+    {
+      "time": "22:52",
+      "artist": "ZERO 7",
+      "title": "In the Waiting Line",
+      "genre_tags": [
+        "chillout",
+        "electronic"
+      ],
+      "approx_duration_ms": 264000,
+      "reason_for_placement": "Downtempo building toward midnight transition",
+      "youtube_id": "V1zrEGsj234"
+    },
+    {
+      "time": "22:56",
+      "artist": "KINGS OF CONVENIENCE",
+      "title": "I'd Rather Dance With You",
+      "genre_tags": [
+        "indie pop",
+        "folk"
+      ],
+      "approx_duration_ms": 244000,
+      "reason_for_placement": "Gentle indie folk approaching late night descent",
+      "youtube_id": "OczRpuGKTfY"
+    },
+    {
+      "time": "23:00",
+      "artist": "AGNES OBEL",
+      "title": "Riverside",
+      "genre_tags": [
+        "indie folk",
+        "ambient"
+      ],
+      "approx_duration_ms": 281000,
+      "reason_for_placement": "Atmospheric folk beginning wind-down phase",
+      "youtube_id": "vjncyiuwwXQ"
+    },
+    {
+      "time": "23:05",
+      "artist": "BON IVER",
+      "title": "Re: Stacks",
+      "genre_tags": [
+        "indie folk",
+        "experimental"
+      ],
+      "approx_duration_ms": 391000,
+      "reason_for_placement": "Intimate folk for late night introspection",
+      "youtube_id": "3w68krri0bw"
+    },
+    {
+      "time": "23:12",
+      "artist": "NILS FRAHM",
+      "title": "Says",
+      "genre_tags": [
+        "ambient",
+        "modern classical"
+      ],
+      "approx_duration_ms": 611000,
+      "reason_for_placement": "Ambient instrumental journey toward dawn",
+      "youtube_id": "xLNeZogTsK8"
+    },
+    {
+      "time": "23:22",
+      "artist": "IRON & WINE",
+      "title": "Boy with a Coin",
+      "genre_tags": [
+        "indie folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 264000,
+      "reason_for_placement": "Gentle folk maintaining wind-down atmosphere",
+      "youtube_id": "KHw7gdJ14uQ"
+    },
+    {
+      "time": "23:27",
+      "artist": "GOLDFRAPP",
+      "title": "Utopia",
+      "genre_tags": [
+        "electronic",
+        "ambient"
+      ],
+      "approx_duration_ms": 245000,
+      "reason_for_placement": "Ethereal electronic textures for late night",
+      "youtube_id": "QUB7e3BtnvU"
+    },
+    {
+      "time": "23:31",
+      "artist": "FLEET FOXES",
+      "title": "White Winter Hymnal",
+      "genre_tags": [
+        "indie folk",
+        "folk"
+      ],
+      "approx_duration_ms": 165000,
+      "reason_for_placement": "Harmonious folk approaching final hour transition",
+      "youtube_id": "DrQRS40OKNE"
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "generator": "grok",
+  "model_id": "grok-3",
+  "generated_at": "2026-05-22T15:40:52.856431+03:00",
+  "track_count": 7,
+  "tracks": [
+    {
+      "time": "20:00",
+      "artist": "Alexandra Usurelu",
+      "title": "Cantec de leagan",
+      "genres": [
+        "folk",
+        "singer-songwriter",
+        "romanian"
+      ],
+      "mood": "mellow",
+      "why": "Opens the night with intimate Romanian folk warmth to ease listeners into the evening."
+    },
+    {
+      "time": "20:04",
+      "artist": "The National",
+      "title": "About Today",
+      "genres": [
+        "indie rock",
+        "alternative",
+        "rock"
+      ],
+      "mood": "introspective",
+      "why": "Builds a reflective rock mood with subtle tension fitting early-night pacing."
+    },
+    {
+      "time": "20:09",
+      "artist": "Portishead",
+      "title": "Roads",
+      "genres": [
+        "trip-hop",
+        "electronic",
+        "alternative"
+      ],
+      "mood": "atmospheric",
+      "why": "Introduces trip-hop chill after indie rock for a smooth genre shift."
+    },
+    {
+      "time": "20:14",
+      "artist": "Subcarpati",
+      "title": "In the Name of the Father",
+      "genres": [
+        "romanian",
+        "hip-hop",
+        "electronic"
+      ],
+      "mood": "brooding",
+      "why": "Adds Romanian urban edge while keeping the underground electronic vibe."
+    },
+    {
+      "time": "20:18",
+      "artist": "Cat Power",
+      "title": "The Greatest",
+      "genres": [
+        "indie",
+        "singer-songwriter",
+        "folk"
+      ],
+      "mood": "soulful",
+      "why": "Keeps the soulful introspection flowing with American indie warmth."
+    },
+    {
+      "time": "20:23",
+      "artist": "The xx",
+      "title": "Intro",
+      "genres": [
+        "indie",
+        "electronic",
+        "chillout"
+      ],
+      "mood": "minimal",
+      "why": "Minimal electronic interlude bridges to deeper late-evening territory."
+    },
+    {
+      "time": "20:27",
+      "artist": "Adrian Enescu",
+      "title": "Ritmuri 1",
+      "genres": [
+        "romanian",
+        "experimental",
+        "electronic"
+      ],
+      "mood": "evolving",
+      "why": "Romanian experimental classic adds historic depth in the early flow."
+    }
+  ]
+}

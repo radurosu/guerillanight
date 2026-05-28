@@ -1,0 +1,416 @@
+{
+  "generator": "grok",
+  "model_id": "grok-3",
+  "generated_at": "2026-05-28T07:52:01.578832+03:00",
+  "track_count": 34,
+  "tracks": [
+    {
+      "time": "20:00",
+      "artist": "Olivia Rodrigo",
+      "title": "drivers license",
+      "genre_tags": [
+        "indie pop",
+        "alternative"
+      ],
+      "approx_duration_ms": 242000,
+      "reason_for_placement": "Signature artist, mid-tempo emotional opener for 20-22 slot",
+      "youtube_id": "ZmDBbnmKpqQ"
+    },
+    {
+      "time": "20:04",
+      "artist": "The National",
+      "title": "Fake Empire",
+      "genre_tags": [
+        "indie rock",
+        "alternative"
+      ],
+      "approx_duration_ms": 224000,
+      "reason_for_placement": "New artist, classic indie rock shift after pop",
+      "youtube_id": "8WRWno_c_W8"
+    },
+    {
+      "time": "20:08",
+      "artist": "Noah Kahan",
+      "title": "Stick Season",
+      "genre_tags": [
+        "folk pop",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 187000,
+      "reason_for_placement": "Signature artist, acoustic-leaning contrast",
+      "youtube_id": "JKrDdsgXuso"
+    },
+    {
+      "time": "20:11",
+      "artist": "Cigarettes After Sex",
+      "title": "Apocalypse",
+      "genre_tags": [
+        "dream pop",
+        "indie"
+      ],
+      "approx_duration_ms": 286000,
+      "reason_for_placement": "New dreamy indie, nocturnal vibe",
+      "youtube_id": "sElE_BfQ67s"
+    },
+    {
+      "time": "20:16",
+      "artist": "U2",
+      "title": "Every Breaking Wave",
+      "genre_tags": [
+        "alternative rock",
+        "rock"
+      ],
+      "approx_duration_ms": 258000,
+      "reason_for_placement": "Signature artist, mid-tempo rock energy",
+      "youtube_id": "iYVEik7Lvc4"
+    },
+    {
+      "time": "20:20",
+      "artist": "Phoebe Bridgers",
+      "title": "Motion Sickness",
+      "genre_tags": [
+        "indie folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 216000,
+      "reason_for_placement": "New folk-indie artist, fresh contrast",
+      "youtube_id": "9sfYpolGCu8"
+    },
+    {
+      "time": "20:24",
+      "artist": "Lana Del Rey",
+      "title": "Venice Bitch",
+      "genre_tags": [
+        "art pop",
+        "indie"
+      ],
+      "approx_duration_ms": 589000,
+      "reason_for_placement": "Signature artist, moody extended cut",
+      "youtube_id": "Qg3DxELVPj4"
+    },
+    {
+      "time": "20:34",
+      "artist": "Foals",
+      "title": "My Number",
+      "genre_tags": [
+        "indie rock",
+        "dance rock"
+      ],
+      "approx_duration_ms": 244000,
+      "reason_for_placement": "New indie rock, upbeat transition",
+      "youtube_id": "QRR_pvZcu-o"
+    },
+    {
+      "time": "20:38",
+      "artist": "Katie Melua",
+      "title": "The Closest Thing to Crazy",
+      "genre_tags": [
+        "jazz pop",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 250000,
+      "reason_for_placement": "Signature artist, reflective ballad",
+      "youtube_id": "C-BnRZ52jHs"
+    },
+    {
+      "time": "20:42",
+      "artist": "Daughter",
+      "title": "Youth",
+      "genre_tags": [
+        "indie folk",
+        "ambient"
+      ],
+      "approx_duration_ms": 254000,
+      "reason_for_placement": "New atmospheric indie for night flow",
+      "youtube_id": "2QT5eGHCJdE"
+    },
+    {
+      "time": "22:00",
+      "artist": "Moderat",
+      "title": "Bad Kingdom",
+      "genre_tags": [
+        "electronic",
+        "techno"
+      ],
+      "approx_duration_ms": 266000,
+      "reason_for_placement": "Signature artist, subtle electronic build starts",
+      "youtube_id": "3NPxqXMZq7o"
+    },
+    {
+      "time": "22:04",
+      "artist": "Portishead",
+      "title": "Glory Box",
+      "genre_tags": [
+        "trip-hop",
+        "downtempo"
+      ],
+      "approx_duration_ms": 308000,
+      "reason_for_placement": "New trip-hop classic, genre shift",
+      "youtube_id": "4qQyUi4zfDs"
+    },
+    {
+      "time": "22:09",
+      "artist": "Faithless",
+      "title": "Insomnia",
+      "genre_tags": [
+        "electronic",
+        "dance"
+      ],
+      "approx_duration_ms": 502000,
+      "reason_for_placement": "Signature artist, high-energy electronic burst",
+      "youtube_id": "P8JEm4d6Wu4"
+    },
+    {
+      "time": "22:18",
+      "artist": "Bonobo",
+      "title": "Kerala",
+      "genre_tags": [
+        "electronic",
+        "chillout"
+      ],
+      "approx_duration_ms": 238000,
+      "reason_for_placement": "New chill electronic, cool down",
+      "youtube_id": "S0Q4gqBUs7c"
+    },
+    {
+      "time": "22:22",
+      "artist": "M83",
+      "title": "Midnight City",
+      "genre_tags": [
+        "synthwave",
+        "indie electronic"
+      ],
+      "approx_duration_ms": 244000,
+      "reason_for_placement": "New artist, energetic indie-electronic",
+      "youtube_id": "dX3k_QDnzHE"
+    },
+    {
+      "time": "22:26",
+      "artist": "Morcheeba",
+      "title": "The Sea",
+      "genre_tags": [
+        "trip-hop",
+        "downtempo"
+      ],
+      "approx_duration_ms": 324000,
+      "reason_for_placement": "Signature artist, deep trip-hop cut",
+      "youtube_id": "--wy8QmLlM8"
+    },
+    {
+      "time": "22:31",
+      "artist": "The xx",
+      "title": "Intro",
+      "genre_tags": [
+        "indie electronic",
+        "minimal"
+      ],
+      "approx_duration_ms": 128000,
+      "reason_for_placement": "New minimal electronic, juxtaposition",
+      "youtube_id": "xMV6l2y67rk"
+    },
+    {
+      "time": "22:33",
+      "artist": "Anotr",
+      "title": "Relax My Eyes",
+      "genre_tags": [
+        "house",
+        "electronic"
+      ],
+      "approx_duration_ms": 204000,
+      "reason_for_placement": "Signature artist, dance-house energy",
+      "youtube_id": "-SLc9v10wV4"
+    },
+    {
+      "time": "22:37",
+      "artist": "Massive Attack",
+      "title": "Teardrop",
+      "genre_tags": [
+        "trip-hop",
+        "electronic"
+      ],
+      "approx_duration_ms": 328000,
+      "reason_for_placement": "New trip-hop staple, nocturnal depth",
+      "youtube_id": "u7K72X4eo_s"
+    },
+    {
+      "time": "22:42",
+      "artist": "London Grammar",
+      "title": "Hey Now",
+      "genre_tags": [
+        "indie electronic",
+        "alternative"
+      ],
+      "approx_duration_ms": 216000,
+      "reason_for_placement": "Signature artist, atmospheric build",
+      "youtube_id": "nMEHJPuggHQ"
+    },
+    {
+      "time": "22:46",
+      "artist": "Zero 7",
+      "title": "Destiny",
+      "genre_tags": [
+        "chillout",
+        "downtempo"
+      ],
+      "approx_duration_ms": 338000,
+      "reason_for_placement": "New chillout, smooth contrast",
+      "youtube_id": "U_OKigBRqBI"
+    },
+    {
+      "time": "22:52",
+      "artist": "Coma",
+      "title": "Spiders",
+      "genre_tags": [
+        "indie rock",
+        "electronic"
+      ],
+      "approx_duration_ms": 242000,
+      "reason_for_placement": "Signature artist, indie-electronic hybrid",
+      "youtube_id": "5K7mGiCPNmI"
+    },
+    {
+      "time": "22:56",
+      "artist": "Agnes Obel",
+      "title": "Riverside",
+      "genre_tags": [
+        "chamber folk",
+        "ambient"
+      ],
+      "approx_duration_ms": 186000,
+      "reason_for_placement": "New folk-ambient, genre pivot",
+      "youtube_id": "vjncyiuwwXQ"
+    },
+    {
+      "time": "01:00",
+      "artist": "Leonard Cohen",
+      "title": "You Want It Darker",
+      "genre_tags": [
+        "folk",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 278000,
+      "reason_for_placement": "Signature artist, deep folk descent begins",
+      "youtube_id": "v0nmHymgM7Y"
+    },
+    {
+      "time": "01:04",
+      "artist": "Fiona Apple",
+      "title": "Criminal",
+      "genre_tags": [
+        "soul",
+        "alternative"
+      ],
+      "approx_duration_ms": 312000,
+      "reason_for_placement": "New soulful alternative, fresh energy dip",
+      "youtube_id": "FFOzayDpWoI"
+    },
+    {
+      "time": "01:10",
+      "artist": "Nick Cave & The Bad Seeds",
+      "title": "Higgs Boson Blues",
+      "genre_tags": [
+        "alternative rock",
+        "blues"
+      ],
+      "approx_duration_ms": 430000,
+      "reason_for_placement": "Signature artist, moody blues-rock",
+      "youtube_id": "1GWsdqCYvgw"
+    },
+    {
+      "time": "01:17",
+      "artist": "Tom Waits",
+      "title": "Hold On",
+      "genre_tags": [
+        "blues",
+        "singer-songwriter"
+      ],
+      "approx_duration_ms": 268000,
+      "reason_for_placement": "New blues-folk, raw nocturnal tone",
+      "youtube_id": "0P5jV4lHHR0"
+    },
+    {
+      "time": "01:21",
+      "artist": "Alex Warren",
+      "title": "Carry You Home",
+      "genre_tags": [
+        "indie pop",
+        "folk pop"
+      ],
+      "approx_duration_ms": 176000,
+      "reason_for_placement": "Signature artist, reflective mid-tempo",
+      "youtube_id": "d4iGZ_jP-1U"
+    },
+    {
+      "time": "01:24",
+      "artist": "Radiohead",
+      "title": "Pyramid Song",
+      "genre_tags": [
+        "art rock",
+        "ambient"
+      ],
+      "approx_duration_ms": 288000,
+      "reason_for_placement": "New art-rock deep cut, atmospheric",
+      "youtube_id": "3M_Gg1xAHE4"
+    },
+    {
+      "time": "01:29",
+      "artist": "Cristian Vasile",
+      "title": "Strada Speranței",
+      "genre_tags": [
+        "romanian tango",
+        "folk"
+      ],
+      "approx_duration_ms": 198000,
+      "reason_for_placement": "Signature Romanian artist, local flavor wind-down",
+      "youtube_id": "5kjTREsDob0"
+    },
+    {
+      "time": "01:32",
+      "artist": "Nick Drake",
+      "title": "Pink Moon",
+      "genre_tags": [
+        "folk",
+        "acoustic"
+      ],
+      "approx_duration_ms": 124000,
+      "reason_for_placement": "New classic folk, intimate close",
+      "youtube_id": "xqe6TF2y8i4"
+    },
+    {
+      "time": "01:34",
+      "artist": "Carla Bruni",
+      "title": "Quelqu'un m'a dit",
+      "genre_tags": [
+        "chanson",
+        "acoustic"
+      ],
+      "approx_duration_ms": 146000,
+      "reason_for_placement": "New French acoustic, gentle European close",
+      "youtube_id": "EelX_LwPHbA"
+    },
+    {
+      "time": "01:37",
+      "artist": "ROA",
+      "title": "D-Aia",
+      "genre_tags": [
+        "romanian",
+        "electronic"
+      ],
+      "approx_duration_ms": 218000,
+      "reason_for_placement": "Romanian electronic, local deep cut",
+      "youtube_id": "XSkbM0Ijl-g"
+    },
+    {
+      "time": "01:40",
+      "artist": "James Blake",
+      "title": "Retrograde",
+      "genre_tags": [
+        "electronic soul",
+        "ambient"
+      ],
+      "approx_duration_ms": 220000,
+      "reason_for_placement": "New ambient soul, final atmospheric descent",
+      "youtube_id": "6p6PcFFUm5I"
+    }
+  ]
+}

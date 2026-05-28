@@ -1,0 +1,879 @@
+{
+  "generator": "claude",
+  "model_id": "claude-sonnet-4-20250514",
+  "generated_at": "2026-05-22T15:43:14.278814+03:00",
+  "track_count": 79,
+  "tracks": [
+    {
+      "time": "20:00",
+      "artist": "Thom Yorke",
+      "title": "Hearing Damage",
+      "genres": [
+        "alternative",
+        "electronic"
+      ],
+      "mood": "atmospheric",
+      "why": "Opens with moody electronic textures to ease into the night."
+    },
+    {
+      "time": "20:04",
+      "artist": "Cigarettes After Sex",
+      "title": "K.",
+      "genres": [
+        "indie",
+        "dream pop"
+      ],
+      "mood": "dreamy",
+      "why": "Smooth transition into ethereal indie territory."
+    },
+    {
+      "time": "20:09",
+      "artist": "Subcarpați",
+      "title": "Dă-o în față",
+      "genres": [
+        "romanian",
+        "folk",
+        "electronic"
+      ],
+      "mood": "rhythmic",
+      "why": "Romanian act blending traditional with modern electronic beats."
+    },
+    {
+      "time": "20:13",
+      "artist": "Kings of Convenience",
+      "title": "I'd Rather Dance With You",
+      "genres": [
+        "indie pop",
+        "acoustic"
+      ],
+      "mood": "warm",
+      "why": "Gentle acoustic warmth maintains evening comfort."
+    },
+    {
+      "time": "20:17",
+      "artist": "Massive Attack",
+      "title": "Angel",
+      "genres": [
+        "trip-hop",
+        "electronic"
+      ],
+      "mood": "hypnotic",
+      "why": "Classic trip-hop foundation for deeper night progression."
+    },
+    {
+      "time": "20:22",
+      "artist": "Beach House",
+      "title": "Space Song",
+      "genres": [
+        "dream pop",
+        "indie"
+      ],
+      "mood": "floating",
+      "why": "Ethereal textures build the contemplative atmosphere."
+    },
+    {
+      "time": "20:27",
+      "artist": "Norah Jones",
+      "title": "Lonestar",
+      "genres": [
+        "jazz",
+        "singer-songwriter"
+      ],
+      "mood": "intimate",
+      "why": "Jazz-tinged intimacy for evening wind-down."
+    },
+    {
+      "time": "20:31",
+      "artist": "Portishead",
+      "title": "The Rip",
+      "genres": [
+        "trip-hop",
+        "alternative"
+      ],
+      "mood": "melancholic",
+      "why": "Deeper into trip-hop territory with emotional weight."
+    },
+    {
+      "time": "20:35",
+      "artist": "Vama",
+      "title": "Copilul care alearga",
+      "genres": [
+        "romanian",
+        "alternative rock"
+      ],
+      "mood": "nostalgic",
+      "why": "Romanian alternative rock with nostalgic undertones."
+    },
+    {
+      "time": "20:40",
+      "artist": "The National",
+      "title": "Bloodbuzz Ohio",
+      "genres": [
+        "indie rock",
+        "alternative"
+      ],
+      "mood": "brooding",
+      "why": "Builds emotional intensity with characteristic brooding style."
+    },
+    {
+      "time": "20:44",
+      "artist": "Agnes Obel",
+      "title": "Riverside",
+      "genres": [
+        "indie",
+        "chamber pop"
+      ],
+      "mood": "delicate",
+      "why": "Delicate piano-driven piece maintains introspective flow."
+    },
+    {
+      "time": "20:49",
+      "artist": "Zero 7",
+      "title": "In the Waiting Line",
+      "genres": [
+        "downtempo",
+        "electronic"
+      ],
+      "mood": "contemplative",
+      "why": "Downtempo electronic perfectly bridges evening into night."
+    },
+    {
+      "time": "20:54",
+      "artist": "Bon Jovi",
+      "title": "Wanted Dead or Alive",
+      "genres": [
+        "rock",
+        "classic rock"
+      ],
+      "mood": "anthemic",
+      "why": "Classic rock energy injection before settling deeper."
+    },
+    {
+      "time": "20:59",
+      "artist": "Fever Ray",
+      "title": "If I Had a Heart",
+      "genres": [
+        "electronic",
+        "experimental"
+      ],
+      "mood": "dark",
+      "why": "Dark electronic textures signal night's deeper phase."
+    },
+    {
+      "time": "21:04",
+      "artist": "Cat Power",
+      "title": "The Greatest",
+      "genres": [
+        "indie",
+        "singer-songwriter"
+      ],
+      "mood": "vulnerable",
+      "why": "Vulnerable indie songwriting maintains emotional intimacy."
+    },
+    {
+      "time": "21:08",
+      "artist": "Parov Stelar",
+      "title": "Booty Swing",
+      "genres": [
+        "electronic",
+        "jazz"
+      ],
+      "mood": "playful",
+      "why": "Electro-swing brings unexpected playfulness to the mix."
+    },
+    {
+      "time": "21:12",
+      "artist": "Grimus",
+      "title": "The Switch",
+      "genres": [
+        "romanian",
+        "alternative"
+      ],
+      "mood": "edgy",
+      "why": "Romanian alternative with edge maintains local flavor."
+    },
+    {
+      "time": "21:17",
+      "artist": "Radiohead",
+      "title": "Codex",
+      "genres": [
+        "alternative",
+        "experimental"
+      ],
+      "mood": "ethereal",
+      "why": "Atmospheric Radiohead deepens the introspective mood."
+    },
+    {
+      "time": "21:21",
+      "artist": "Bonobo",
+      "title": "Kong",
+      "genres": [
+        "downtempo",
+        "electronic"
+      ],
+      "mood": "hypnotic",
+      "why": "Downtempo builds hypnotic foundation for late evening."
+    },
+    {
+      "time": "21:26",
+      "artist": "Mazzy Star",
+      "title": "Fade Into You",
+      "genres": [
+        "alternative",
+        "dream pop"
+      ],
+      "mood": "dreamy",
+      "why": "Dream pop classic fits the nocturnal atmosphere perfectly."
+    },
+    {
+      "time": "21:31",
+      "artist": "Thievery Corporation",
+      "title": "Lebanese Blonde",
+      "genres": [
+        "downtempo",
+        "trip-hop"
+      ],
+      "mood": "sultry",
+      "why": "Sultry trip-hop maintains the evening's sophisticated edge."
+    },
+    {
+      "time": "21:36",
+      "artist": "Trooper",
+      "title": "Floare de iris",
+      "genres": [
+        "romanian",
+        "rock"
+      ],
+      "mood": "nostalgic",
+      "why": "Romanian rock classic adds nostalgic weight."
+    },
+    {
+      "time": "21:41",
+      "artist": "Porcupine Tree",
+      "title": "Trains",
+      "genres": [
+        "progressive rock",
+        "alternative"
+      ],
+      "mood": "expansive",
+      "why": "Progressive rock expands the sonic palette as night deepens."
+    },
+    {
+      "time": "21:46",
+      "artist": "Morcheeba",
+      "title": "Rome Wasn't Built in a Day",
+      "genres": [
+        "trip-hop",
+        "downtempo"
+      ],
+      "mood": "smooth",
+      "why": "Smooth trip-hop maintains the sophisticated late evening vibe."
+    },
+    {
+      "time": "21:51",
+      "artist": "Interpol",
+      "title": "Evil",
+      "genres": [
+        "indie rock",
+        "post-punk"
+      ],
+      "mood": "driving",
+      "why": "Post-punk energy cuts through the ambient textures."
+    },
+    {
+      "time": "21:55",
+      "artist": "Sade",
+      "title": "No Ordinary Love",
+      "genres": [
+        "soul",
+        "r&b"
+      ],
+      "mood": "sensual",
+      "why": "Soul classic brings sensual sophistication to the night."
+    },
+    {
+      "time": "22:01",
+      "artist": "Emiliana Torrini",
+      "title": "Jungle Drum",
+      "genres": [
+        "indie",
+        "electronic"
+      ],
+      "mood": "playful",
+      "why": "Quirky indie-electronic blend adds unexpected texture."
+    },
+    {
+      "time": "22:05",
+      "artist": "Trentemøller",
+      "title": "Moan",
+      "genres": [
+        "electronic",
+        "ambient"
+      ],
+      "mood": "atmospheric",
+      "why": "Atmospheric electronic piece deepens the nocturnal journey."
+    },
+    {
+      "time": "22:11",
+      "artist": "Jeff Buckley",
+      "title": "Lilac Wine",
+      "genres": [
+        "alternative",
+        "singer-songwriter"
+      ],
+      "mood": "haunting",
+      "why": "Haunting vocal performance intensifies emotional depth."
+    },
+    {
+      "time": "22:16",
+      "artist": "Subcarpați",
+      "title": "Urma",
+      "genres": [
+        "romanian",
+        "folk",
+        "electronic"
+      ],
+      "mood": "mystical",
+      "why": "Romanian folk-electronic fusion maintains cultural connection."
+    },
+    {
+      "time": "22:21",
+      "artist": "Boards of Canada",
+      "title": "Roygbiv",
+      "genres": [
+        "electronic",
+        "ambient"
+      ],
+      "mood": "nostalgic",
+      "why": "Nostalgic electronic textures prepare for deeper night territory."
+    },
+    {
+      "time": "22:26",
+      "artist": "PJ Harvey",
+      "title": "Down by the Water",
+      "genres": [
+        "alternative",
+        "rock"
+      ],
+      "mood": "intense",
+      "why": "Alternative rock intensity cuts through ambient layers."
+    },
+    {
+      "time": "22:30",
+      "artist": "Air",
+      "title": "Playground Love",
+      "genres": [
+        "electronic",
+        "chillout"
+      ],
+      "mood": "dreamy",
+      "why": "Dreamy electronic chillout maintains late evening sophistication."
+    },
+    {
+      "time": "22:34",
+      "artist": "Morphine",
+      "title": "Buena",
+      "genres": [
+        "alternative",
+        "blues"
+      ],
+      "mood": "sultry",
+      "why": "Blues-tinged alternative adds sultry edge to the night."
+    },
+    {
+      "time": "22:39",
+      "artist": "Burial",
+      "title": "Archangel",
+      "genres": [
+        "electronic",
+        "dubstep"
+      ],
+      "mood": "ethereal",
+      "why": "Ethereal electronic textures signal deeper night progression."
+    },
+    {
+      "time": "22:44",
+      "artist": "Dinu Lipatti",
+      "title": "Chopin Waltz No. 7",
+      "genres": [
+        "classical",
+        "romanian"
+      ],
+      "mood": "elegant",
+      "why": "Romanian classical pianist brings elegant sophistication."
+    },
+    {
+      "time": "22:48",
+      "artist": "Goldfrapp",
+      "title": "Lovely Head",
+      "genres": [
+        "electronic",
+        "trip-hop"
+      ],
+      "mood": "seductive",
+      "why": "Seductive electronic trip-hop maintains nocturnal atmosphere."
+    },
+    {
+      "time": "22:53",
+      "artist": "Tom Waits",
+      "title": "Hold On",
+      "genres": [
+        "blues",
+        "experimental"
+      ],
+      "mood": "gritty",
+      "why": "Gritty blues brings raw emotion to the late night."
+    },
+    {
+      "time": "22:58",
+      "artist": "Moby",
+      "title": "Porcelain",
+      "genres": [
+        "electronic",
+        "ambient"
+      ],
+      "mood": "melancholic",
+      "why": "Melancholic electronic builds toward midnight territory."
+    },
+    {
+      "time": "23:03",
+      "artist": "Phoenix",
+      "title": "1901",
+      "genres": [
+        "indie rock",
+        "alternative"
+      ],
+      "mood": "energetic",
+      "why": "Indie rock energy injection before midnight depth."
+    },
+    {
+      "time": "23:07",
+      "artist": "Dan Bittman",
+      "title": "Dincolo de nori",
+      "genres": [
+        "romanian",
+        "pop rock"
+      ],
+      "mood": "nostalgic",
+      "why": "Romanian rock veteran brings nostalgic weight."
+    },
+    {
+      "time": "23:12",
+      "artist": "Four Tet",
+      "title": "Two Thousand and Seventeen",
+      "genres": [
+        "electronic",
+        "ambient"
+      ],
+      "mood": "hypnotic",
+      "why": "Hypnotic electronic patterns prepare for midnight crossing."
+    },
+    {
+      "time": "23:17",
+      "artist": "The Cure",
+      "title": "Pictures of You",
+      "genres": [
+        "alternative",
+        "post-punk"
+      ],
+      "mood": "melancholic",
+      "why": "Classic alternative melancholy deepens emotional resonance."
+    },
+    {
+      "time": "23:23",
+      "artist": "Slowdive",
+      "title": "When the Sun Hits",
+      "genres": [
+        "shoegaze",
+        "dream pop"
+      ],
+      "mood": "ethereal",
+      "why": "Shoegaze textures create ethereal pre-midnight atmosphere."
+    },
+    {
+      "time": "23:28",
+      "artist": "Archive",
+      "title": "Bullets",
+      "genres": [
+        "trip-hop",
+        "alternative"
+      ],
+      "mood": "dark",
+      "why": "Dark trip-hop intensity signals midnight approach."
+    },
+    {
+      "time": "23:34",
+      "artist": "Sigur Rós",
+      "title": "Hoppípolla",
+      "genres": [
+        "post-rock",
+        "ambient"
+      ],
+      "mood": "uplifting",
+      "why": "Post-rock crescendo provides emotional lift before midnight."
+    },
+    {
+      "time": "23:40",
+      "artist": "Nina Simone",
+      "title": "Sinnerman",
+      "genres": [
+        "jazz",
+        "soul"
+      ],
+      "mood": "intense",
+      "why": "Soul intensity builds toward midnight crossing."
+    },
+    {
+      "time": "23:47",
+      "artist": "Leftfield",
+      "title": "Song of Life",
+      "genres": [
+        "electronic",
+        "big beat"
+      ],
+      "mood": "euphoric",
+      "why": "Electronic euphoria carries into midnight territory."
+    },
+    {
+      "time": "23:53",
+      "artist": "Ozana Barabancea",
+      "title": "Pe drum",
+      "genres": [
+        "romanian",
+        "folk"
+      ],
+      "mood": "contemplative",
+      "why": "Romanian folk brings contemplative depth to midnight hour."
+    },
+    {
+      "time": "23:58",
+      "artist": "Aphex Twin",
+      "title": "Xtal",
+      "genres": [
+        "electronic",
+        "ambient"
+      ],
+      "mood": "otherworldly",
+      "why": "Otherworldly electronic marks midnight crossing into deepest night."
+    },
+    {
+      "time": "00:04",
+      "artist": "Godspeed You! Black Emperor",
+      "title": "East Hastings",
+      "genres": [
+        "post-rock",
+        "experimental"
+      ],
+      "mood": "apocalyptic",
+      "why": "Post-rock intensity embraces midnight's experimental territory."
+    },
+    {
+      "time": "00:13",
+      "artist": "Ott",
+      "title": "Queen of All Everything",
+      "genres": [
+        "electronic",
+        "dub"
+      ],
+      "mood": "hypnotic",
+      "why": "Dub-electronic hypnosis deepens late night journey."
+    },
+    {
+      "time": "00:20",
+      "artist": "Lykke Li",
+      "title": "I Follow Rivers",
+      "genres": [
+        "indie pop",
+        "electronic"
+      ],
+      "mood": "haunting",
+      "why": "Haunting indie-electronic maintains midnight atmosphere."
+    },
+    {
+      "time": "00:24",
+      "artist": "Squarepusher",
+      "title": "Come On My Selector",
+      "genres": [
+        "electronic",
+        "experimental"
+      ],
+      "mood": "frantic",
+      "why": "Experimental electronic brings frantic energy to deep night."
+    },
+    {
+      "time": "00:29",
+      "artist": "Mircea Baniciu",
+      "title": "Drum liber",
+      "genres": [
+        "romanian",
+        "folk"
+      ],
+      "mood": "reflective",
+      "why": "Romanian folk legend brings reflective pause."
+    },
+    {
+      "time": "00:34",
+      "artist": "Autechre",
+      "title": "Amber",
+      "genres": [
+        "electronic",
+        "ambient"
+      ],
+      "mood": "abstract",
+      "why": "Abstract electronic textures embrace midnight's experimental zone."
+    },
+    {
+      "time": "00:40",
+      "artist": "Múm",
+      "title": "We Have a Map of the Piano",
+      "genres": [
+        "electronic",
+        "ambient"
+      ],
+      "mood": "delicate",
+      "why": "Delicate electronic soundscapes maintain deep night intimacy."
+    },
+    {
+      "time": "00:45",
+      "artist": "King Crimson",
+      "title": "In the Court of the Crimson King",
+      "genres": [
+        "progressive rock",
+        "experimental"
+      ],
+      "mood": "epic",
+      "why": "Progressive rock epic fits deep night's experimental territory."
+    },
+    {
+      "time": "00:53",
+      "artist": "Tim Hecker",
+      "title": "Ravedeath, 1972",
+      "genres": [
+        "ambient",
+        "experimental"
+      ],
+      "mood": "ethereal",
+      "why": "Ambient experimental maintains deep night's otherworldly atmosphere."
+    },
+    {
+      "time": "00:58",
+      "artist": "Coil",
+      "title": "The Snow",
+      "genres": [
+        "electronic",
+        "experimental"
+      ],
+      "mood": "haunting",
+      "why": "Experimental electronic haunts the deep night hours."
+    },
+    {
+      "time": "01:05",
+      "artist": "Klaus Schulze",
+      "title": "Cyborg",
+      "genres": [
+        "electronic",
+        "ambient"
+      ],
+      "mood": "cosmic",
+      "why": "Cosmic electronic takes the night into space-time territory."
+    },
+    {
+      "time": "01:14",
+      "artist": "Kauf",
+      "title": "Relocate",
+      "genres": [
+        "electronic",
+        "indie"
+      ],
+      "mood": "atmospheric",
+      "why": "Atmospheric indie-electronic maintains deep night's introspective flow."
+    },
+    {
+      "time": "01:19",
+      "artist": "Biosphere",
+      "title": "Kobresia",
+      "genres": [
+        "ambient",
+        "electronic"
+      ],
+      "mood": "meditative",
+      "why": "Meditative ambient creates space for deep night contemplation."
+    },
+    {
+      "time": "01:26",
+      "artist": "Delia Matache",
+      "title": "Ce are ea",
+      "genres": [
+        "romanian",
+        "pop"
+      ],
+      "mood": "sultry",
+      "why": "Romanian pop brings sultry contrast to experimental territory."
+    },
+    {
+      "time": "01:30",
+      "artist": "Brian Eno",
+      "title": "An Ending (Ascent)",
+      "genres": [
+        "ambient",
+        "electronic"
+      ],
+      "mood": "transcendent",
+      "why": "Ambient pioneer creates transcendent deep night atmosphere."
+    },
+    {
+      "time": "01:37",
+      "artist": "Max Richter",
+      "title": "On the Nature of Daylight",
+      "genres": [
+        "modern classical",
+        "ambient"
+      ],
+      "mood": "emotional",
+      "why": "Modern classical brings emotional weight to deep night."
+    },
+    {
+      "time": "01:45",
+      "artist": "Oval",
+      "title": "Do While",
+      "genres": [
+        "electronic",
+        "glitch"
+      ],
+      "mood": "abstract",
+      "why": "Glitch electronic embraces deep night's abstract territory."
+    },
+    {
+      "time": "01:50",
+      "artist": "Stars of the Lid",
+      "title": "Don't Bother They're Here",
+      "genres": [
+        "ambient",
+        "drone"
+      ],
+      "mood": "expansive",
+      "why": "Ambient drone creates expansive deep night soundscape."
+    },
+    {
+      "time": "01:59",
+      "artist": "Fennesz",
+      "title": "Rivers of Sand",
+      "genres": [
+        "electronic",
+        "ambient"
+      ],
+      "mood": "textural",
+      "why": "Electronic ambient maintains deep night's textural exploration."
+    },
+    {
+      "time": "02:05",
+      "artist": "William Basinski",
+      "title": "The Disintegration Loops 1.1",
+      "genres": [
+        "ambient",
+        "experimental"
+      ],
+      "mood": "haunting",
+      "why": "Ambient experimental haunts the deepest night hours."
+    },
+    {
+      "time": "02:14",
+      "artist": "Mariana Nicolesco",
+      "title": "Cântec de leagăn",
+      "genres": [
+        "romanian",
+        "classical"
+      ],
+      "mood": "serene",
+      "why": "Romanian classical soprano brings serene beauty to deep night."
+    },
+    {
+      "time": "02:19",
+      "artist": "Helios",
+      "title": "Halving the Compass",
+      "genres": [
+        "ambient",
+        "electronic"
+      ],
+      "mood": "peaceful",
+      "why": "Peaceful ambient electronic begins subtle pre-dawn shift."
+    },
+    {
+      "time": "02:25",
+      "artist": "Kiasmos",
+      "title": "Blurred EP",
+      "genres": [
+        "electronic",
+        "techno"
+      ],
+      "mood": "minimal",
+      "why": "Minimal techno maintains deep night's hypnotic state."
+    },
+    {
+      "time": "02:30",
+      "artist": "Nils Frahm",
+      "title": "Says",
+      "genres": [
+        "electronic",
+        "modern classical"
+      ],
+      "mood": "building",
+      "why": "Electronic classical builds toward pre-dawn transformation."
+    },
+    {
+      "time": "02:40",
+      "artist": "Kiln",
+      "title": "Sunbox",
+      "genres": [
+        "electronic",
+        "ambient"
+      ],
+      "mood": "warming",
+      "why": "Warming electronic textures hint at approaching dawn."
+    },
+    {
+      "time": "02:45",
+      "artist": "Tycho",
+      "title": "A Walk",
+      "genres": [
+        "electronic",
+        "ambient"
+      ],
+      "mood": "uplifting",
+      "why": "Uplifting ambient electronic signals dawn's approach."
+    },
+    {
+      "time": "02:50",
+      "artist": "Holograf",
+      "title": "Să nu-mi iei niciodată dragostea",
+      "genres": [
+        "romanian",
+        "rock"
+      ],
+      "mood": "nostalgic",
+      "why": "Romanian rock classic brings nostalgic warmth to pre-dawn."
+    },
+    {
+      "time": "02:55",
+      "artist": "Emancipator",
+      "title": "Soon It Will Be Cold Enough",
+      "genres": [
+        "downtempo",
+        "ambient"
+      ],
+      "mood": "hopeful",
+      "why": "Hopeful downtempo maintains pre-dawn's gentle energy."
+    },
+    {
+      "time": "03:00",
+      "artist": "Ólafur Arnalds",
+      "title": "Near Light",
+      "genres": [
+        "modern classical",
+        "ambient"
+      ],
+      "mood": "illuminating",
+      "why": "Modern classical perfectly captures approaching light."
+    }
+  ]
+}

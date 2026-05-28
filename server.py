@@ -18,6 +18,7 @@ import os
 import subprocess
 import sys
 import time
+import urllib.parse
 from collections import Counter
 from datetime import datetime
 from pathlib import Path
@@ -259,7 +260,7 @@ async def stats_page():
     unique = len(artists)
 
     artist_rows = "".join(
-        f'<tr><td>{a}</td><td>{c}</td><td><div class="bar" style="width:{c/top_artists[0][1]*100:.0f}%"></div></td></tr>'
+        f'<tr><td><a href="/tracks?artist={urllib.parse.quote(a)}">{a}</a></td><td>{c}</td><td><div class="bar" style="width:{c/top_artists[0][1]*100:.0f}%"></div></td></tr>'
         for a, c in top_artists
     )
     genre_rows = "".join(
@@ -296,6 +297,8 @@ async def stats_page():
   td:nth-child(3){{width:50%}}
   .bar{{height:4px;background:linear-gradient(90deg,#c084fc,#60a5fa);border-radius:2px;min-width:2px}}
   .bar.g{{background:linear-gradient(90deg,#60a5fa,#34d399)}}
+  td a{{color:#e0ddd5;text-decoration:none}}
+  td a:hover{{color:#c084fc}}
   tr:hover td:first-child{{color:#fff}}
   .cols{{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}}
   @media(max-width:600px){{.cols{{grid-template-columns:1fr}}}}
@@ -304,7 +307,7 @@ async def stats_page():
 <body>
 <div class="wrap">
   <h1>Knowledge <span>Base</span></h1>
-  <div class="sub"><a href="/">← Back to player</a> · Updated {db.get("last_updated","?")[:10]}</div>
+  <div class="sub"><a href="/">← Player</a> · <a href="/tracks">All tracks</a> · Updated {db.get("last_updated","?")[:10]}</div>
 
   <div class="cards">
     <div class="card"><div class="n"><span>{total}</span></div><div class="l">Tracks</div></div>
@@ -328,6 +331,100 @@ async def stats_page():
       <table>{genre_rows}</table>
     </div>
   </div>
+</div>
+</body>
+</html>"""
+
+
+@app.get("/tracks", response_class=HTMLResponse)
+async def tracks_page(artist: str = "", genre: str = ""):
+    """Full track listing with optional filters."""
+    db = load_knowledge_base()
+    tracks = db.get("tracks", [])
+
+    # Collect filter options
+    all_artists = sorted(set(t["artist"] for t in tracks), key=str.lower)
+    all_genres = sorted(set(g for t in tracks for g in t.get("genres", [])[:3]))
+
+    # Apply filters
+    filtered = tracks
+    if artist:
+        filtered = [t for t in filtered if t["artist"].lower() == artist.lower()]
+    if genre:
+        filtered = [t for t in filtered if genre.lower() in [g.lower() for g in t.get("genres", [])]]
+
+    # Sort by date desc, then time desc
+    filtered.sort(key=lambda t: (t["date"], t["time"]), reverse=True)
+
+    # Build rows
+    track_rows = []
+    for t in filtered:
+        genres_html = " ".join(f'<a href="/tracks?genre={urllib.parse.quote(g)}" class="tag">{g}</a>' for g in t.get("genres", [])[:3])
+        meta = t.get("metadata", {})
+        album = f'<span class="album">{meta["album"]}</span>' if meta.get("album") else ""
+        artist_link = f'<a href="/tracks?artist={urllib.parse.quote(t["artist"])}">{t["artist"]}</a>'
+        track_rows.append(
+            f'<tr><td class="td-date">{t["date"]}</td><td class="td-time">{t["time"]}</td>'
+            f'<td class="td-artist">{artist_link}</td><td class="td-title">{t["title"]}{album}</td>'
+            f'<td class="td-genres">{genres_html}</td></tr>'
+        )
+    rows_html = "".join(track_rows)
+
+    # Active filter display
+    filter_desc = ""
+    if artist:
+        filter_desc = f' · Filtered by <strong>{artist}</strong> <a href="/tracks" class="clear">✕ clear</a>'
+    elif genre:
+        filter_desc = f' · Filtered by genre <strong>{genre}</strong> <a href="/tracks" class="clear">✕ clear</a>'
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guerrilla Night — All Tracks</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  *{{margin:0;padding:0;box-sizing:border-box}}
+  body{{background:#0a0a0f;color:#e0ddd5;font-family:'Space Grotesk',sans-serif;min-height:100vh}}
+  .wrap{{max-width:1100px;margin:0 auto;padding:2rem 1rem}}
+  h1{{font-size:1.8rem;font-weight:700;color:#fff;margin-bottom:.3rem}}
+  h1 span{{background:linear-gradient(135deg,#c084fc,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}}
+  .sub{{color:rgba(255,255,255,.3);font-size:.85rem;margin-bottom:1.5rem}}
+  .sub a{{color:rgba(192,132,252,.5);text-decoration:none}}
+  .sub strong{{color:rgba(255,255,255,.6)}}
+  .clear{{color:rgba(255,100,100,.5);margin-left:.3rem}}
+  .count{{font-family:'JetBrains Mono',monospace;font-size:.75rem;color:rgba(255,255,255,.2);margin-bottom:1rem}}
+  table{{width:100%;border-collapse:collapse}}
+  th{{text-align:left;font-size:.6rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.15);padding:.5rem;border-bottom:1px solid rgba(255,255,255,.06)}}
+  td{{padding:.4rem .5rem;font-size:.8rem;border-bottom:1px solid rgba(255,255,255,.02)}}
+  tr:hover{{background:rgba(255,255,255,.02)}}
+  .td-date{{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:rgba(255,255,255,.2);white-space:nowrap}}
+  .td-time{{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:rgba(255,255,255,.25);white-space:nowrap}}
+  .td-artist{{font-weight:600;white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis}}
+  .td-artist a{{color:#e0ddd5;text-decoration:none}}
+  .td-artist a:hover{{color:#c084fc}}
+  .td-title{{color:rgba(255,255,255,.5);max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+  .album{{color:rgba(255,255,255,.15);font-size:.7rem;margin-left:.4rem}}
+  .album::before{{content:"· "}}
+  .td-genres{{white-space:nowrap}}
+  .tag{{display:inline-block;font-size:.55rem;font-family:'JetBrains Mono',monospace;padding:.1rem .35rem;border-radius:3px;background:rgba(96,165,250,.08);color:rgba(96,165,250,.5);margin-right:.2rem;cursor:pointer;text-decoration:none}}
+  a.tag:hover{{background:rgba(96,165,250,.15);color:rgba(96,165,250,.8)}}
+  @media(max-width:700px){{
+    .td-genres,.td-date{{display:none}}
+    .td-title{{max-width:150px}}
+  }}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>All <span>Tracks</span></h1>
+  <div class="sub"><a href="/">← Player</a> · <a href="/stats">Stats</a>{filter_desc}</div>
+  <div class="count">{len(filtered)} tracks</div>
+  <table>
+    <thead><tr><th>Date</th><th>Time</th><th>Artist</th><th>Title</th><th>Genres</th></tr></thead>
+    <tbody>{rows_html}</tbody>
+  </table>
 </div>
 </body>
 </html>"""

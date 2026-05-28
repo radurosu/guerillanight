@@ -337,12 +337,13 @@ def get_app_html() -> str:
   .tagline{margin-top:.5rem;font-size:.95rem;color:rgba(255,255,255,.4);line-height:1.5}
 
   /* Generate section */
-  .generate{text-align:center;padding:1.5rem;margin:1rem 0}
+  .generate{text-align:center;padding:1rem 0 0}
   .model-btns{display:flex;gap:.5rem;justify-content:center;flex-wrap:wrap;margin-top:1rem}
   .model-btn{padding:.6rem 1.4rem;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);color:rgba(255,255,255,.6);border-radius:8px;font-family:'Space Grotesk',sans-serif;font-size:.9rem;cursor:pointer;transition:all .15s}
   .model-btn:hover{background:rgba(192,132,252,.1);border-color:rgba(192,132,252,.3);color:#fff}
   .model-btn.active{background:linear-gradient(135deg,#c084fc,#7c3aed);color:#fff;border-color:transparent;box-shadow:0 4px 20px rgba(124,58,237,.3)}
   .model-btn:disabled{opacity:.4;cursor:wait}
+  .gen-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.2)}
 
   /* Progress */
   .progress{margin:1.5rem auto;max-width:500px;display:none}
@@ -404,11 +405,11 @@ def get_app_html() -> str:
 
   <div class="header">
     <h1>Guerrilla <span>Night</span></h1>
-    <p class="tagline">AI-curated overnight radio inspired by Radio Guerrilla.<br>Pick a model, generate a fresh 6-hour set, press play.</p>
-  </div>
-
-  <div class="generate">
-    <div class="model-btns" id="model-btns">Loading models...</div>
+    <p class="tagline">AI-curated overnight radio inspired by Radio Guerrilla.<br>6 hours of alternative, electronic, trip-hop, folk. Press play.</p>
+    <div class="generate" id="generate-section">
+      <div class="gen-label">Generate a fresh playlist</div>
+      <div class="model-btns" id="model-btns">Loading models...</div>
+    </div>
   </div>
 
   <div class="progress" id="progress">
@@ -438,7 +439,7 @@ def get_app_html() -> str:
   </div>
 
   <div class="existing" id="existing" style="display:none">
-    <h2>Recent Playlists</h2>
+    <h2>Previous Playlists</h2>
     <div class="ex-list" id="ex-list"></div>
   </div>
 
@@ -510,7 +511,17 @@ function addTrackToList(t) {
 
 function initPlayer(trackList) {
   tracks = trackList;
+  currentIdx = 0;
   if (!tracks.length) return;
+
+  // Destroy old player if re-loading
+  if (playerCreated && ytPlayer && ytPlayer.destroy) {
+    try { ytPlayer.destroy(); } catch(e) {}
+    document.getElementById('yt-player-wrap').innerHTML = '<div id="yt-player"></div>';
+    playerCreated = false;
+  }
+  playerStarted = true;
+
   document.getElementById('player').classList.add('show');
   const el = document.getElementById('tracklist');
   el.innerHTML = '';
@@ -522,11 +533,9 @@ function initPlayer(trackList) {
     row.innerHTML = `<div class="trk-n">${String(i+1).padStart(2,'0')}</div><div class="trk-t">${t.time}</div><div><div class="trk-a">${t.artist}</div><div class="trk-s">${t.title}</div></div>`;
     el.appendChild(row);
   });
-  if (!playerCreated) {
-    playerStarted = true;
-    if (ytReady) createYTPlayer();
-    else { const c = setInterval(() => { if (ytReady) { clearInterval(c); createYTPlayer(); } }, 200); }
-  }
+
+  if (ytReady) createYTPlayer();
+  else { const c = setInterval(() => { if (ytReady) { clearInterval(c); createYTPlayer(); } }, 200); }
 }
 
 function updateNP(idx) {
@@ -632,26 +641,6 @@ async function generate(modelKey) {
   document.querySelectorAll('.model-btn').forEach(b => b.disabled = false);
 }
 
-// ── Load existing playlists ──
-async function loadExisting() {
-  try {
-    const resp = await fetch('/api/playlists');
-    const playlists = await resp.json();
-    const withYT = playlists.filter(p => p.has_youtube);
-    if (!withYT.length) return;
-
-    document.getElementById('existing').style.display = '';
-    const list = document.getElementById('ex-list');
-    withYT.slice(0, 5).forEach(p => {
-      const el = document.createElement('div');
-      el.className = 'ex-item';
-      el.onclick = () => loadPlaylist(p.filename);
-      el.innerHTML = `<span class="ex-model">${p.generator}</span><span class="ex-info">${p.track_count} tracks &middot; ${p.model_id}</span>`;
-      list.appendChild(el);
-    });
-  } catch(e) {}
-}
-
 async function loadPlaylist(filename) {
   try {
     const resp = await fetch('/api/playlist/' + filename);
@@ -662,18 +651,43 @@ async function loadPlaylist(filename) {
 
 // ── Init ──
 async function init() {
-  const resp = await fetch('/api/models');
-  const models = await resp.json();
+  // Load models + playlists in parallel
+  const [modelsResp, playlistsResp] = await Promise.all([
+    fetch('/api/models'),
+    fetch('/api/playlists')
+  ]);
+  const models = await modelsResp.json();
+  const playlists = await playlistsResp.json();
+
+  // Populate generate buttons
   const container = document.getElementById('model-btns');
   if (!models.length) {
     container.innerHTML = '<span style="color:rgba(255,255,255,.3)">No API keys configured</span>';
-    return;
+  } else {
+    container.innerHTML = models.map(m =>
+      `<button class="model-btn" onclick="generate('${m.key}')">${m.name}</button>`
+    ).join('');
   }
-  container.innerHTML = models.map(m =>
-    `<button class="model-btn" onclick="generate('${m.key}')">${m.name}</button>`
-  ).join('');
 
-  loadExisting();
+  // Auto-load best existing playlist (first with YouTube IDs)
+  const withYT = playlists.filter(p => p.has_youtube);
+  if (withYT.length) {
+    // Load the most recent one automatically
+    await loadPlaylist(withYT[0].filename);
+
+    // Show remaining as "Previous Playlists"
+    if (withYT.length > 1) {
+      document.getElementById('existing').style.display = '';
+      const list = document.getElementById('ex-list');
+      withYT.slice(1, 6).forEach(p => {
+        const el = document.createElement('div');
+        el.className = 'ex-item';
+        el.onclick = () => loadPlaylist(p.filename);
+        el.innerHTML = `<span class="ex-model">${p.generator}</span><span class="ex-info">${p.track_count} tracks &middot; ${p.model_id}</span>`;
+        list.appendChild(el);
+      });
+    }
+  }
 }
 
 init();

@@ -236,6 +236,103 @@ async def api_config():
     return {"youtube_enabled": bool(client_id), "google_client_id": client_id}
 
 
+@app.get("/stats", response_class=HTMLResponse)
+async def stats_page():
+    """Knowledge base stats page."""
+    db = load_knowledge_base()
+    tracks = db.get("tracks", [])
+    dates = sorted(set(t["date"] for t in tracks))
+    artists = {}
+    genre_counts = Counter()
+    has_genres = 0
+    for t in tracks:
+        a = t["artist"]
+        artists[a] = artists.get(a, 0) + 1
+        if t.get("genres"):
+            has_genres += 1
+            for g in t["genres"][:3]:
+                genre_counts[g] += 1
+
+    top_artists = sorted(artists.items(), key=lambda x: -x[1])[:20]
+    top_genres = genre_counts.most_common(20)
+    total = len(tracks)
+    unique = len(artists)
+
+    artist_rows = "".join(
+        f'<tr><td>{a}</td><td>{c}</td><td><div class="bar" style="width:{c/top_artists[0][1]*100:.0f}%"></div></td></tr>'
+        for a, c in top_artists
+    )
+    genre_rows = "".join(
+        f'<tr><td>{g}</td><td>{c}</td><td><div class="bar g" style="width:{c/top_genres[0][1]*100:.0f}%"></div></td></tr>'
+        for g, c in top_genres
+    )
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guerrilla Night — Knowledge Base Stats</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  *{{margin:0;padding:0;box-sizing:border-box}}
+  body{{background:#0a0a0f;color:#e0ddd5;font-family:'Space Grotesk',sans-serif;min-height:100vh}}
+  .wrap{{max-width:900px;margin:0 auto;padding:2rem 1rem}}
+  h1{{font-size:1.8rem;font-weight:700;color:#fff;margin-bottom:.3rem}}
+  h1 span{{background:linear-gradient(135deg,#c084fc,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}}
+  .sub{{color:rgba(255,255,255,.3);font-size:.85rem;margin-bottom:2rem}}
+  .sub a{{color:rgba(192,132,252,.5);text-decoration:none}}
+  .cards{{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.8rem;margin-bottom:2rem}}
+  .card{{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.06);border-radius:10px;padding:1.2rem;text-align:center}}
+  .card .n{{font-size:2rem;font-weight:700;color:#fff;font-family:'JetBrains Mono',monospace}}
+  .card .n span{{background:linear-gradient(135deg,#c084fc,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}}
+  .card .l{{font-size:.65rem;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.25);margin-top:.3rem}}
+  .section{{margin-bottom:2rem}}
+  .section h2{{font-size:.7rem;text-transform:uppercase;letter-spacing:.15em;color:rgba(255,255,255,.2);margin-bottom:.8rem}}
+  table{{width:100%;border-collapse:collapse}}
+  td{{padding:.3rem .5rem;font-size:.8rem;vertical-align:middle}}
+  td:first-child{{color:#e0ddd5;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}}
+  td:nth-child(2){{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:rgba(255,255,255,.3);width:40px;text-align:right}}
+  td:nth-child(3){{width:50%}}
+  .bar{{height:4px;background:linear-gradient(90deg,#c084fc,#60a5fa);border-radius:2px;min-width:2px}}
+  .bar.g{{background:linear-gradient(90deg,#60a5fa,#34d399)}}
+  tr:hover td:first-child{{color:#fff}}
+  .cols{{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}}
+  @media(max-width:600px){{.cols{{grid-template-columns:1fr}}}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Knowledge <span>Base</span></h1>
+  <div class="sub"><a href="/">← Back to player</a> · Updated {db.get("last_updated","?")[:10]}</div>
+
+  <div class="cards">
+    <div class="card"><div class="n"><span>{total}</span></div><div class="l">Tracks</div></div>
+    <div class="card"><div class="n"><span>{unique}</span></div><div class="l">Artists</div></div>
+    <div class="card"><div class="n"><span>{has_genres}</span></div><div class="l">Genre-tagged</div></div>
+    <div class="card"><div class="n"><span>{len(dates)}</span></div><div class="l">Days scraped</div></div>
+  </div>
+
+  <div class="cards" style="grid-template-columns:1fr 1fr">
+    <div class="card"><div class="n" style="font-size:1rem"><span>{dates[0] if dates else '?'}</span></div><div class="l">First date</div></div>
+    <div class="card"><div class="n" style="font-size:1rem"><span>{dates[-1] if dates else '?'}</span></div><div class="l">Last date</div></div>
+  </div>
+
+  <div class="cols">
+    <div class="section">
+      <h2>Top Artists</h2>
+      <table>{artist_rows}</table>
+    </div>
+    <div class="section">
+      <h2>Top Genres</h2>
+      <table>{genre_rows}</table>
+    </div>
+  </div>
+</div>
+</body>
+</html>"""
+
+
 @app.get("/api/generate/{model_key}")
 async def api_generate(model_key: str):
     if model_key not in MODELS:

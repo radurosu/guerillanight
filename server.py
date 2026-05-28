@@ -485,10 +485,11 @@ function createYTPlayer() {
     videoId: tracks[0].id,
     playerVars: { autoplay: 1, modestbranding: 1, rel: 0 },
     events: {
-      onReady: (e) => { updateNP(0); e.target.playVideo(); },
+      onReady: (e) => { updateNP(0); updateMediaSession(); e.target.playVideo(); },
       onStateChange: (e) => {
         if (e.data === 0) nextTrack();
         document.getElementById('btn-play').textContent = e.data === 1 ? 'Pause' : 'Play';
+        if (e.data === 1) updateMediaSession();
       }
     }
   });
@@ -549,12 +550,46 @@ function updateNP(idx) {
   currentIdx = idx;
 }
 
-function playIdx(i) { if (i >= 0 && i < tracks.length) { ytPlayer.loadVideoById(tracks[i].id); updateNP(i); } }
+function playIdx(i) { if (i >= 0 && i < tracks.length) { ytPlayer.loadVideoById(tracks[i].id); updateNP(i); updateMediaSession(); } }
 function nextTrack() { playIdx(currentIdx + 1); }
 function prevTrack() { playIdx(currentIdx - 1); }
 function togglePlay() {
   if (ytPlayer.getPlayerState() === 1) ytPlayer.pauseVideo();
   else ytPlayer.playVideo();
+}
+
+// ── Background playback ──
+let wasPlayingBeforeHidden = false;
+document.addEventListener('visibilitychange', () => {
+  if (!ytPlayer || !playerStarted) return;
+  if (document.hidden) {
+    wasPlayingBeforeHidden = ytPlayer.getPlayerState() === 1;
+    if (wasPlayingBeforeHidden) {
+      // Try to keep playing in background
+      setTimeout(() => { try { ytPlayer.playVideo(); } catch(e) {} }, 200);
+      setTimeout(() => { try { ytPlayer.playVideo(); } catch(e) {} }, 1000);
+    }
+  } else {
+    // Resumed — restart if it was paused by the browser
+    if (wasPlayingBeforeHidden && ytPlayer.getPlayerState() !== 1) {
+      ytPlayer.playVideo();
+    }
+  }
+});
+
+// ── Media Session (lock screen controls) ──
+function updateMediaSession() {
+  if (!('mediaSession' in navigator) || !tracks[currentIdx]) return;
+  const t = tracks[currentIdx];
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: t.title,
+    artist: t.artist,
+    album: 'Guerrilla Night',
+  });
+  navigator.mediaSession.setActionHandler('previoustrack', prevTrack);
+  navigator.mediaSession.setActionHandler('nexttrack', nextTrack);
+  navigator.mediaSession.setActionHandler('play', () => ytPlayer.playVideo());
+  navigator.mediaSession.setActionHandler('pause', () => ytPlayer.pauseVideo());
 }
 
 // ── Generate ──

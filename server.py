@@ -76,14 +76,27 @@ def get_available_models() -> list[dict]:
 
 
 def search_youtube(artist: str, title: str) -> str | None:
-    query = f"{artist} {title}"
+    """Search YouTube via web scrape — no API key or yt-dlp needed."""
+    import re
+    import urllib.request
+    import urllib.parse
+
+    query = urllib.parse.quote(f"{artist} {title}")
+    url = f"https://www.youtube.com/results?search_query={query}&sp=EgIQAQ%3D%3D"
+    req = urllib.request.Request(url, headers={
+        "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                      "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept-Language": "en-US,en;q=0.9",
+    })
     try:
-        result = subprocess.run(
-            ["yt-dlp", f"ytsearch1:{query}", "--get-id", "--no-download"],
-            capture_output=True, text=True, timeout=15,
-        )
-        vid = result.stdout.strip()
-        return vid if vid and len(vid) < 20 else None
+        resp = urllib.request.urlopen(req, timeout=10)
+        html = resp.read().decode("utf-8", errors="ignore")
+        ids = re.findall(r'watch\?v=([a-zA-Z0-9_-]{11})', html)
+        seen = []
+        for vid in ids:
+            if vid not in seen:
+                seen.append(vid)
+        return seen[0] if seen else None
     except Exception:
         return None
 

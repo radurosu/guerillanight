@@ -137,17 +137,28 @@ async def generate_stream(model_key: str):
         path = save_playlist(playlist, model_key)
         await asyncio.sleep(0.1)
 
-        # Resolve YouTube IDs
-        yield event("status", {"message": f"Finding YouTube videos (0/{len(playlist)})..."})
+        # Resolve YouTube IDs — stream each track as it's found
+        yield event("status", {"message": f"Finding YouTube videos..."})
         found = 0
         for i, t in enumerate(playlist):
             vid = await loop.run_in_executor(None, search_youtube, t["artist"], t["title"])
             if vid:
                 t["youtube_id"] = vid
                 found += 1
+                # Stream each resolved track immediately
+                yield event("track", {
+                    "id": vid,
+                    "time": t.get("time", ""),
+                    "artist": t["artist"],
+                    "title": t["title"],
+                    "genres": t.get("genre_tags", [])[:2],
+                    "index": i,
+                    "found": found,
+                    "total": len(playlist),
+                })
             if (i + 1) % 5 == 0 or i == len(playlist) - 1:
                 yield event("progress", {
-                    "message": f"Finding YouTube videos ({i+1}/{len(playlist)})...",
+                    "message": f"Finding videos ({i+1}/{len(playlist)}, {found} found)...",
                     "current": i + 1,
                     "total": len(playlist),
                     "found": found,
@@ -429,6 +440,8 @@ def get_app_html() -> str:
 <!-- YouTube IFrame API -->
 <script>
 let ytPlayer, currentIdx = 0, tracks = [];
+let playerStarted = false, playerCreated = false;
+const START_AFTER = 3; // start playing after this many tracks found
 
 // Load YouTube API
 const tag = document.createElement('script');
@@ -437,12 +450,10 @@ document.head.appendChild(tag);
 let ytReady = false;
 function onYouTubeIframeAPIReady() { ytReady = true; }
 
-function initPlayer(trackList) {
-  tracks = trackList;
-  if (!tracks.length) return;
-
+function startPlayer() {
+  if (playerStarted || tracks.length < 1) return;
+  playerStarted = true;
   document.getElementById('player').classList.add('show');
-  buildTracklist();
 
   if (ytReady) createYTPlayer();
   else {
@@ -453,6 +464,8 @@ function initPlayer(trackList) {
 }
 
 function createYTPlayer() {
+  if (playerCreated) return;
+  playerCreated = true;
   ytPlayer = new YT.Player('yt-player', {
     width: '100%', height: '100%',
     videoId: tracks[0].id,
@@ -467,7 +480,25 @@ function createYTPlayer() {
   });
 }
 
-function buildTracklist() {
+function addTrackToList(t) {
+  const i = tracks.length;
+  tracks.push(t);
+  const el = document.getElementById('tracklist');
+  const row = document.createElement('div');
+  row.className = 'trk';
+  row.id = 'trk-' + i;
+  row.onclick = () => playIdx(i);
+  row.innerHTML = `<div class="trk-n">${String(i+1).padStart(2,'0')}</div><div class="trk-t">${t.time}</div><div><div class="trk-a">${t.artist}</div><div class="trk-s">${t.title}</div></div>`;
+  el.appendChild(row);
+
+  // Start player after enough tracks
+  if (tracks.length >= START_AFTER && !playerStarted) startPlayer();
+}
+
+function initPlayer(trackList) {
+  tracks = trackList;
+  if (!tracks.length) return;
+  document.getElementById('player').classList.add('show');
   const el = document.getElementById('tracklist');
   el.innerHTML = '';
   tracks.forEach((t, i) => {
@@ -478,6 +509,11 @@ function buildTracklist() {
     row.innerHTML = `<div class="trk-n">${String(i+1).padStart(2,'0')}</div><div class="trk-t">${t.time}</div><div><div class="trk-a">${t.artist}</div><div class="trk-s">${t.title}</div></div>`;
     el.appendChild(row);
   });
+  if (!playerCreated) {
+    playerStarted = true;
+    if (ytReady) createYTPlayer();
+    else { const c = setInterval(() => { if (ytReady) { clearInterval(c); createYTPlayer(); } }, 200); }
+  }
 }
 
 function updateNP(idx) {
@@ -501,7 +537,17 @@ function togglePlay() {
 
 // ── Generate ──
 async function generate(modelKey) {
-  // Disable buttons
+  // Reset state
+  tracks = [];
+  playerStarted = false;
+  playerCreated = false;
+  document.getElementById('tracklist').innerHTML = '';
+  document.getElementById('player').classList.remove('show');
+  const oldPlayer = document.getElementById('yt-player');
+  if (oldPlayer && oldPlayer.tagName === 'IFRAME') {
+    oldPlayer.parentNode.innerHTML = '<div id="yt-player"></div>';
+  }
+
   document.querySelectorAll('.model-btn').forEach(b => b.disabled = true);
   const prog = document.getElementById('progress');
   const fill = document.getElementById('progress-fill');
@@ -535,22 +581,30 @@ async function generate(modelKey) {
           log.textContent += data.message + '\\n';
           log.scrollTop = log.scrollHeight;
           if (data.message.includes('Generating')) fill.style.width = '20%';
-          if (data.message.includes('Finding')) fill.style.width = '50%';
-          if (data.message.includes('Building')) fill.style.width = '90%';
+          if (data.message.includes('Finding')) fill.style.width = '40%';
+        }
+        if (data.type === 'track') {
+          // Stream track into player as it's found
+          addTrackToList({
+            id: data.id, time: data.time,
+            artist: data.artist, title: data.title,
+            genres: data.genres
+          });
+          text.textContent = playerStarted
+            ? `Playing! Still finding videos (${data.found}/${data.total})...`
+            : `Found ${data.found} tracks, starting after ${START_AFTER}...`;
         }
         if (data.type === 'progress') {
-          const pct = 50 + (data.current / data.total) * 40;
+          const pct = 40 + (data.current / data.total) * 55;
           fill.style.width = pct + '%';
-          text.textContent = data.message;
+          if (!playerStarted) text.textContent = data.message;
         }
         if (data.type === 'complete') {
           fill.style.width = '100%';
           text.textContent = data.message;
-          // Start player
-          setTimeout(() => {
-            prog.classList.remove('show');
-            initPlayer(data.tracks);
-          }, 800);
+          setTimeout(() => { prog.classList.remove('show'); }, 2000);
+          // If player never started (< 3 tracks found), start now
+          if (!playerStarted && tracks.length > 0) startPlayer();
         }
         if (data.type === 'error') {
           text.textContent = data.message;

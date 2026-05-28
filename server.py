@@ -714,6 +714,8 @@ function loadGIS(clientId) {
       client_id: clientId,
       scope: 'https://www.googleapis.com/auth/youtube',
       callback: (resp) => {
+        console.log('GIS token response:', resp);
+        console.log('Scope granted:', resp.scope);
         if (resp.error) {
           console.error('OAuth error:', resp);
           document.getElementById('yt-save-btn').textContent = 'Auth error: ' + resp.error;
@@ -750,8 +752,10 @@ async function doCreatePlaylist(token) {
         status: { privacyStatus: 'unlisted' }
       })
     });
+    console.log('Playlist API response status:', plResp.status);
     const pl = await plResp.json();
-    if (!pl.id) { btn.textContent = 'Error: ' + (pl.error?.message || pl.error?.status || JSON.stringify(pl.error) || 'failed'); btn.disabled = false; console.error('YT API error:', pl); return; }
+    console.log('Playlist API response body:', JSON.stringify(pl));
+    if (!pl.id) { btn.textContent = 'Error: ' + (pl.error?.errors?.[0]?.reason || pl.error?.message || JSON.stringify(pl.error)); btn.disabled = false; console.error('YT API error:', pl); return; }
 
     // Add tracks sequentially with throttle to avoid 403 rateLimitExceeded
     for (let i = 0; i < tracks.length; i++) {

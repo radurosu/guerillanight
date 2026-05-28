@@ -714,6 +714,12 @@ function loadGIS(clientId) {
       client_id: clientId,
       scope: 'https://www.googleapis.com/auth/youtube',
       callback: (resp) => {
+        if (resp.error) {
+          console.error('OAuth error:', resp);
+          document.getElementById('yt-save-btn').textContent = 'Auth error: ' + resp.error;
+          document.getElementById('yt-save-btn').disabled = false;
+          return;
+        }
         if (resp.access_token) doCreatePlaylist(resp.access_token);
       },
     });
@@ -745,7 +751,7 @@ async function doCreatePlaylist(token) {
       })
     });
     const pl = await plResp.json();
-    if (!pl.id) { btn.textContent = 'Error: ' + (pl.error?.message || 'failed'); btn.disabled = false; return; }
+    if (!pl.id) { btn.textContent = 'Error: ' + (pl.error?.message || pl.error?.status || JSON.stringify(pl.error) || 'failed'); btn.disabled = false; console.error('YT API error:', pl); return; }
 
     // Add tracks sequentially with throttle to avoid 403 rateLimitExceeded
     for (let i = 0; i < tracks.length; i++) {

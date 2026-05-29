@@ -29,6 +29,7 @@ ROMANIA_TZ = ZoneInfo("Europe/Bucharest")
 DATA_DIR = os.path.join(os.path.dirname(__file__), "data")
 DB_PATH = os.path.join(DATA_DIR, "guerrilla_knowledge.json")
 OUTPUT_DIR = os.path.join(DATA_DIR, "playlists")
+LASTFM_API = "https://ws.audioscrobbler.com/2.0/"
 
 MODELS = {
     "claude": {
@@ -201,6 +202,8 @@ def compute_style_profile(tracks: list[dict]) -> dict:
 
 
 def build_prompt(profile: dict) -> str:
+    import random
+
     # Anchor artists
     anchors = [a for a, _ in profile["top_recurring_artists"][:15]]
     anchor_str = ", ".join(anchors)
@@ -236,8 +239,12 @@ def build_prompt(profile: dict) -> str:
             seq_lines.append(f"    {t}")
     sample_text = "\n".join(seq_lines)
 
-    # Known artists for freshness control
-    known_sample = ", ".join(profile["known_artists"][:100])
+    # Known artists for freshness control — representative sample, NOT alphabetical.
+    # (The old [:100] slice was just the A-names, giving a skewed view of the universe.)
+    recurring = [a for a, _ in profile["top_recurring_artists"]]
+    rest = [a for a in profile["known_artists"] if a not in recurring]
+    random.shuffle(rest)
+    known_sample = ", ".join(recurring + rest[:max(0, 100 - len(recurring))])
 
     return f"""You are the AI music director for Radio Guerrilla's overnight block.
 Curate a 6-hour playlist of EXACTLY 37 tracks (no more, no fewer) starting at 20:00.
@@ -268,8 +275,12 @@ put these together, but it works."
 ## How Actual Nights Sound (study the sequencing carefully)
 {sample_text}
 
-## Anchor Artists (appear most often on the real station)
+## Signature Artists (the station's BACKBONE — these recur constantly, they ARE Guerrilla)
 {anchor_str}
+A real Guerrilla night is built ON these artists — Nick Cave especially is the single
+most-played act on the station. A night without its signature spine is not Guerrilla Night,
+no matter how good the genre mix looks. But they are a SPINE, not the body: pick a small
+handful that fit tonight and build fresh discovery around them.
 
 ## Sequencing Rules
 1. NEVER play the same genre back-to-back. 95% of real transitions are cross-genre.
@@ -278,13 +289,19 @@ put these together, but it works."
    After something famous, go obscure.
 3. Vary popularity constantly — mainstream hit → deep cut → known artist → underground.
    Never cluster similar popularity levels.
-4. Romanian/local artists (~{profile['romanian_artist_pct']}%) should appear naturally woven in,
+4. Include 4-6 Signature Artists — and NO MORE THAN 6. This is a hard window in BOTH
+   directions: fewer than 4 loses the identity; more than 6 makes every night sound
+   identical and starves the freshness. Count them. Pick the 4-6 that best fit tonight's
+   flow, spread across the night, then fill everything else with discovery.
+5. Romanian/local artists (~{profile['romanian_artist_pct']}%) should appear naturally woven in,
    not clustered. A Romanian track after an international one and before another international one.
-5. No two tracks by the same artist.
-6. Real tracks only — every entry must be a real, existing song.
-7. At least 50% of artists should be NEW — not from this already-played list:
+6. No two tracks by the same artist.
+7. Real tracks only — every entry must be a real, existing song.
+8. Beyond the signature spine, at least 50% of the REMAINING artists should be NEW —
+   not from this already-played list:
    {known_sample}
-   Introduce new artists that FIT the style but keep it fresh for repeat listeners.
+   Fresh discovery around a familiar backbone. Keep it new for repeat listeners
+   without losing the station's identity.
 
 ## Output Format
 
@@ -305,6 +322,105 @@ describe the track. Example: "After Nick Cave's brooding intensity, this Carla B
 whisper feels like exhaling. French chanson after post-punk — the contrast is the point."
 
 Generate the full 6-hour block now."""
+
+
+# ── Last.fm enrichment of generated tracks ────────────────────────────────────
+
+def _lastfm_get(method: str, **params) -> dict | None:
+    import requests
+    key = os.environ.get("LASTFM_API_KEY", "")
+    if not key:
+        return None
+    params.update({"method": method, "api_key": key, "format": "json"})
+    try:
+        r = requests.get(LASTFM_API, params=params, timeout=8)
+        r.raise_for_status()
+        d = r.json()
+        return None if "error" in d else d
+    except Exception:
+        return None
+
+
+def enrich_generated(tracks: list[dict]) -> tuple[list[dict], list[str]]:
+    """Attach Last.fm listeners/album/duration + artist tags to generated tracks.
+
+    Returns (tracks, unmatched) where unmatched lists tracks Last.fm couldn't
+    resolve — a strong signal the model hallucinated a non-existent song.
+    """
+    import time
+    unmatched = []
+    artist_cache: dict[str, list[str]] = {}
+
+    for t in tracks:
+        artist = t.get("artist", "")
+        title = t.get("title", "")
+        ak = artist.lower()
+
+        if ak not in artist_cache:
+            d = _lastfm_get("artist.getTopTags", artist=artist, autocorrect="1")
+            tags = []
+            if d:
+                tags = [x["name"].lower() for x in d.get("toptags", {}).get("tag", [])[:10]
+                        if int(x.get("count", 0)) > 0]
+            artist_cache[ak] = tags
+            time.sleep(0.2)
+
+        if artist_cache[ak]:
+            t["lastfm_genres"] = artist_cache[ak]
+
+        matched = False
+        if title:
+            d = _lastfm_get("track.getInfo", artist=artist, track=title, autocorrect="1")
+            info = {}
+            if d and d.get("track"):
+                tr = d["track"]
+                if tr.get("listeners"):
+                    info["lastfm_listeners"] = int(tr["listeners"])
+                if tr.get("playcount"):
+                    info["lastfm_playcount"] = int(tr["playcount"])
+                if tr.get("album"):
+                    info["album"] = tr["album"].get("title", "")
+                if tr.get("duration") and tr["duration"] != "0":
+                    info["duration_ms"] = int(tr["duration"])
+                matched = bool(info.get("lastfm_listeners"))
+            if info:
+                md = t.get("metadata", {})
+                md.update(info)
+                t["metadata"] = md
+            time.sleep(0.2)
+
+        if not matched:
+            unmatched.append(f"{artist} — {title}")
+
+    return tracks, unmatched
+
+
+# ── Anchor-window enforcement (deterministic, post-generation) ─────────────────
+
+def anchor_rank_from_profile(profile: dict, top_n: int = 20) -> dict[str, int]:
+    """Signature artists → recurrence count, keyed lowercase. Drives anchor enforcement."""
+    return {a.lower(): c for a, c in profile.get("top_recurring_artists", [])[:top_n]}
+
+
+def trim_anchors(tracks: list[dict], anchor_rank: dict[str, int], hi: int = 6) -> tuple[list[dict], int, int]:
+    """Cap signature-artist count at `hi`. The model overshoots the prompt window,
+    so enforce it in code: keep the `hi` most-signature anchor tracks (highest
+    knowledge-base recurrence), drop the surplus. Returns (tracks, before, after).
+
+    Dropping (not replacing) is deliberate: it's deterministic, preserves the flow
+    of every surviving track, and removing over-used known artists *raises* freshness.
+    """
+    anchor_idxs = [i for i, t in enumerate(tracks) if t.get("artist", "").lower() in anchor_rank]
+    before = len(anchor_idxs)
+    if before <= hi:
+        return tracks, before, before
+
+    # Rank surplus by signature strength (KB recurrence); keep the strongest `hi`.
+    ranked = sorted(anchor_idxs, key=lambda i: -anchor_rank.get(tracks[i]["artist"].lower(), 0))
+    keep = set(ranked[:hi])
+    drop = set(ranked[hi:])
+    trimmed = [t for i, t in enumerate(tracks) if i not in drop]
+    return trimmed, before, len(keep)
 
 
 # ── Model calls ──────────────────────────────────────────────────────────────
@@ -554,10 +670,15 @@ def main():
         print(f"\n  API error: {e}")
         sys.exit(1)
 
-    # Parse and save
+    # Parse
     playlist = parse_playlist(raw)
     if not playlist:
         sys.exit(1)
+
+    # Enforce the signature-artist ceiling (the model overshoots the prompt window).
+    playlist, before, after = trim_anchors(playlist, anchor_rank_from_profile(profile), hi=6)
+    if before != after:
+        print(f"  Anchor trim: {before} → {after} signature artists (capped at 6).")
 
     path = save_playlist(playlist, model_key)
 

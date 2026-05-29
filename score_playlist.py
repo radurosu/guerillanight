@@ -200,7 +200,8 @@ def extract_features(tracks: list[dict]) -> dict:
 
 # ── Scoring ──────────────────────────────────────────────────────────────────
 
-def score_playlist(generated: list[dict], reference: list[dict], all_known_artists: set) -> dict:
+def score_playlist(generated: list[dict], reference: list[dict], all_known_artists: set,
+                   anchors: set | None = None) -> dict:
     """Score a generated playlist against the reference. Returns per-dimension scores."""
     gen_f = extract_features(generated)
     ref_f = extract_features(reference)
@@ -238,8 +239,45 @@ def score_playlist(generated: list[dict], reference: list[dict], all_known_artis
     count_diff = abs(gen_f["total_tracks"] - TARGET_TRACKS) / TARGET_TRACKS
     count_score = max(0, 1.0 - count_diff)
 
+    # 7. Anchor presence — are the station's signature artists actually here?
+    # Real Guerrilla runs ~11% top-recurring artists (Nick Cave et al). Target 4-6.
+    # Genre/freshness are artist-blind, so without this a playlist can score high while
+    # missing the entire backbone. anchors=None disables (back-compat).
+    anchor_count = 0
+    if anchors:
+        gen_artists = set(t["artist"].lower() for t in generated)
+        anchor_count = len(gen_artists & anchors)
+        if 4 <= anchor_count <= 6:
+            anchor_score = 1.0
+        elif anchor_count < 4:
+            anchor_score = anchor_count / 4.0           # 0 → 0.0, 3 → 0.75
+        else:
+            anchor_score = max(0.0, 1.0 - (anchor_count - 6) / 6.0)  # too many → penalize
+    else:
+        anchor_score = 0.0
+
     # Weighted composite — redistribute popularity weight if no data
-    if pop_available:
+    if anchors and pop_available:
+        weights = {
+            "genre_match": (genre_sim, 0.25),
+            "popularity_curve": (pop_sim, 0.15),
+            "artist_diversity": (diversity_score, 0.10),
+            "freshness": (freshness_score, 0.15),
+            "romanian_presence": (romanian_score, 0.10),
+            "track_count": (count_score, 0.10),
+            "anchor_presence": (anchor_score, 0.15),
+        }
+    elif anchors and not pop_available:
+        weights = {
+            "genre_match": (genre_sim, 0.30),
+            "popularity_curve": (pop_sim, 0.00),
+            "artist_diversity": (diversity_score, 0.10),
+            "freshness": (freshness_score, 0.20),
+            "romanian_presence": (romanian_score, 0.10),
+            "track_count": (count_score, 0.10),
+            "anchor_presence": (anchor_score, 0.20),
+        }
+    elif pop_available:
         weights = {
             "genre_match": (genre_sim, 0.30),
             "popularity_curve": (pop_sim, 0.15),
@@ -276,6 +314,7 @@ def score_playlist(generated: list[dict], reference: list[dict], all_known_artis
             "artist_diversity": round(gen_f["artist_diversity"], 3),
             "romanian_pct": round(gen_f["romanian_pct"] * 100, 1),
             "freshness_pct": round(freshness * 100, 1),
+            "anchor_count": anchor_count,
             "top_genres": [(g, c) for g, c in gen_f["top_genres"]],
         },
         "reference_features": {
@@ -319,6 +358,10 @@ def main():
     test_set = [t for t in all_tracks if t["date"] in test_dates]
     all_known_artists = set(t["artist"].lower() for t in all_tracks)
 
+    # Signature artists = top-20 most recurring in the knowledge base
+    artist_counts = Counter(t["artist"] for t in all_tracks)
+    anchors = set(a.lower() for a, _ in artist_counts.most_common(20))
+
     print("=" * 55)
     print("  Guerrilla Night — Style Scorer")
     print("=" * 55)
@@ -329,10 +372,10 @@ def main():
     print()
 
     # Score against reference (style match)
-    ref_scores = score_playlist(generated, reference, all_known_artists)
+    ref_scores = score_playlist(generated, reference, all_known_artists, anchors)
 
     # Score test set against reference (baseline — how consistent is Guerrilla itself?)
-    baseline = score_playlist(test_set, reference, all_known_artists)
+    baseline = score_playlist(test_set, reference, all_known_artists, anchors)
 
     print(f"  {'DIMENSION':<22} {'GENERATED':>10} {'BASELINE':>10} {'WEIGHT':>8}")
     print(f"  {'─' * 52}")
@@ -367,7 +410,7 @@ def main():
         gf = ref_scores["generated_features"]
         print(f"    Tracks: {gf['total_tracks']}, Unique artists: {gf['unique_artists']}")
         print(f"    Diversity: {gf['artist_diversity']}, Fresh: {gf['freshness_pct']}%")
-        print(f"    Romanian: {gf['romanian_pct']}%")
+        print(f"    Romanian: {gf['romanian_pct']}%, Anchors: {gf.get('anchor_count', '?')}")
         print(f"    Top genres: {', '.join(f'{g}({c})' for g, c in gf['top_genres'][:8])}")
 
         print(f"\n  Reference features:")

@@ -58,7 +58,7 @@ load_env()
 sys.path.insert(0, SCRIPT_DIR)
 from generate_playlist import (
     compute_style_profile, build_prompt, parse_playlist, save_playlist,
-    MODELS, CALLERS
+    trim_anchors, anchor_rank_from_profile, MODELS, CALLERS
 )
 from score_playlist import score_playlist as run_score, extract_features
 
@@ -147,7 +147,13 @@ async def generate_stream(model_key: str):
             yield event("error", {"message": "Failed to parse playlist from model response"})
             return
 
-        yield event("status", {"message": f"Generated {len(playlist)} tracks. Saving..."})
+        # Enforce the signature-artist ceiling (the model overshoots the prompt window).
+        playlist, before, after = trim_anchors(playlist, anchor_rank_from_profile(profile), hi=6)
+        msg = f"Generated {len(playlist)} tracks. Saving..."
+        if before != after:
+            msg = f"Generated {len(playlist)} tracks ({before}→{after} signature artists). Saving..."
+
+        yield event("status", {"message": msg})
         path = save_playlist(playlist, model_key)
         await asyncio.sleep(0.1)
 

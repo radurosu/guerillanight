@@ -13,6 +13,7 @@ Env (.env supported):
 """
 
 import asyncio
+import hashlib
 import json
 import re
 import os
@@ -38,6 +39,8 @@ ROMANIA_TZ = ZoneInfo("Europe/Bucharest")
 DATA_DIR = os.path.join(SCRIPT_DIR, "data")
 DB_PATH = os.path.join(DATA_DIR, "guerrilla_knowledge.json")
 PLAYLISTS_DIR = os.path.join(DATA_DIR, "playlists")
+DJ_CLIPS_DIR = os.path.join(DATA_DIR, "dj_clips")
+os.makedirs(DJ_CLIPS_DIR, exist_ok=True)
 
 # Load .env
 def load_env():
@@ -65,6 +68,7 @@ from generate_playlist import (
 from score_playlist import score_playlist as run_score, extract_features
 
 app = FastAPI(title="Guerrilla Night")
+app.mount("/dj_clips", StaticFiles(directory=DJ_CLIPS_DIR), name="dj_clips")
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
@@ -438,6 +442,312 @@ async def tracks_page(artist: str = "", genre: str = ""):
 </html>"""
 
 
+@app.get("/dj", response_class=HTMLResponse)
+async def dj_page():
+    """Lee Baby Sims experimental player — DJ monologues between tracks."""
+    return DJ_PAGE_HTML
+
+
+DJ_PAGE_HTML = """<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guerrilla Night — Lee Baby Sims (experimental)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#0a0a0f;color:#e0ddd5;font-family:'Space Grotesk',sans-serif;min-height:100vh}
+  .wrap{max-width:1000px;margin:0 auto;padding:1.5rem 1rem}
+  h1{font-size:1.6rem;font-weight:700;color:#fff;margin-bottom:.2rem}
+  h1 span{background:linear-gradient(135deg,#ff6b6b,#feca57);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .sub{color:rgba(255,255,255,.3);font-size:.8rem;margin-bottom:1.2rem}
+  .sub a{color:rgba(255,107,107,.5);text-decoration:none}
+  .bar{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;padding:.6rem .8rem;
+       background:rgba(255,255,255,.03);border-radius:6px;margin-bottom:1rem;
+       font-family:'JetBrains Mono',monospace;font-size:.7rem}
+  .bar label{color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:.1em;margin-right:.3rem}
+  .bar select,.bar button{background:rgba(255,255,255,.05);color:#e0ddd5;border:1px solid rgba(255,255,255,.1);
+        padding:.25rem .5rem;border-radius:4px;font-family:inherit;font-size:inherit;cursor:pointer}
+  .bar button:hover{background:rgba(255,255,255,.1)}
+  .onair{display:inline-flex;align-items:center;gap:.5rem;padding:.25rem .6rem;border-radius:4px;
+         background:rgba(255,255,255,.03);color:rgba(255,255,255,.3);font-weight:600;letter-spacing:.15em}
+  .onair.live{background:rgba(255,80,80,.15);color:#ff6464;animation:pulse 1.4s ease-in-out infinite}
+  .onair .dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+  @keyframes pulse{50%{opacity:.55}}
+  .status{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:rgba(255,255,255,.35);
+          padding:.4rem .8rem;background:rgba(255,255,255,.02);border-radius:4px;margin-bottom:1rem;
+          min-height:1.5rem}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+  .panel{background:rgba(255,255,255,.02);border-radius:8px;padding:1rem;border:1px solid rgba(255,255,255,.05)}
+  .panel h2{font-size:.65rem;text-transform:uppercase;letter-spacing:.15em;
+            color:rgba(255,255,255,.3);margin-bottom:.7rem}
+  #player{aspect-ratio:16/9;background:#000;border-radius:6px;overflow:hidden;margin-bottom:.6rem}
+  #player iframe{width:100%;height:100%;border:0}
+  .now{font-size:.95rem;font-weight:600;color:#fff;margin-bottom:.15rem;
+       white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .now-meta{font-size:.7rem;color:rgba(255,255,255,.4);font-family:'JetBrains Mono',monospace}
+  .controls{display:flex;gap:.4rem;margin-top:.6rem}
+  .controls button{flex:1;padding:.45rem;background:rgba(255,255,255,.05);
+       color:#e0ddd5;border:1px solid rgba(255,255,255,.1);border-radius:4px;
+       font-family:inherit;font-size:.7rem;cursor:pointer}
+  .controls button:hover{background:rgba(255,255,255,.1)}
+  .controls button:disabled{opacity:.3;cursor:not-allowed}
+  .transcript{font-size:.85rem;line-height:1.5;color:rgba(255,255,255,.6);
+              white-space:pre-wrap;min-height:120px;max-height:280px;overflow-y:auto;
+              font-style:italic}
+  .transcript em{color:rgba(255,107,107,.5);font-style:normal;font-family:'JetBrains Mono',monospace;font-size:.75em}
+  .tracklist{max-height:360px;overflow-y:auto;font-size:.75rem}
+  .tracklist .t{display:flex;gap:.5rem;padding:.3rem .4rem;border-radius:3px;cursor:pointer}
+  .tracklist .t:hover{background:rgba(255,255,255,.03)}
+  .tracklist .t.cur{background:rgba(255,107,107,.08);color:#fff}
+  .tracklist .t .n{color:rgba(255,255,255,.2);font-family:'JetBrains Mono',monospace;width:1.8rem;text-align:right}
+  .tracklist .t .ti{color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;width:3rem}
+  .tracklist .t .a{font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tracklist .t .tt{color:rgba(255,255,255,.4);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .err{color:#ff8080;font-size:.75rem;margin-top:.5rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Lee Baby <span>Sims</span></h1>
+  <div class="sub"><a href="/">← Main player</a> · Experimental DJ layer · Grok-3 + Grok TTS</div>
+
+  <div class="bar">
+    <span class="onair" id="onair"><span class="dot"></span><span id="onairtxt">OFF AIR</span></span>
+    <label>Voice</label>
+    <select id="voice">
+      <option value="rex">rex (male, professional)</option>
+      <option value="leo">leo (male, decisive)</option>
+      <option value="sal">sal (neutral)</option>
+      <option value="eve">eve (female, enthusiastic)</option>
+      <option value="ara">ara (female, conversational)</option>
+    </select>
+    <label>DJ every</label>
+    <select id="density">
+      <option value="1">every track</option>
+      <option value="2">every 2nd</option>
+      <option value="3">every 3rd</option>
+      <option value="0">off (music only)</option>
+    </select>
+    <button id="skipdj">Skip DJ</button>
+    <span style="flex:1"></span>
+    <span id="meta" style="color:rgba(255,255,255,.25)"></span>
+  </div>
+
+  <div class="status" id="status">Loading…</div>
+
+  <div class="grid">
+    <div class="panel">
+      <h2>Now Playing</h2>
+      <div id="player"><div id="ytslot"></div></div>
+      <div class="now" id="now">—</div>
+      <div class="now-meta" id="nowmeta"></div>
+      <div class="controls">
+        <button id="prev">‹ Prev</button>
+        <button id="pause">Pause</button>
+        <button id="next">Next ›</button>
+      </div>
+      <div class="err" id="err"></div>
+    </div>
+    <div class="panel">
+      <h2>DJ Transcript</h2>
+      <div class="transcript" id="transcript">— quiet so far —</div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:1rem">
+    <h2>Tracks</h2>
+    <div class="tracklist" id="tracklist"></div>
+  </div>
+</div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
+const $ = id => document.getElementById(id);
+const params = new URLSearchParams(window.location.search);
+const state = {
+  playlist: params.get('playlist') || null,
+  filename: null,
+  tracks: [],
+  i: 0,
+  yt: null,
+  ready: false,
+  voice: 'rex',
+  density: 1,
+  djAudio: null,
+  djPrefetch: {},     // at -> Promise
+  status: '',
+  paused: false,
+  skipPending: false,
+};
+
+function setStatus(s) { state.status = s; $('status').textContent = s; }
+function setOnAir(on) {
+  $('onair').classList.toggle('live', on);
+  $('onairtxt').textContent = on ? 'ON AIR' : 'OFF AIR';
+}
+function setNow(t) {
+  if (!t) { $('now').textContent = '—'; $('nowmeta').textContent = ''; return; }
+  $('now').textContent = `${t.artist} — ${t.title}`;
+  $('nowmeta').textContent = `${t.time || ''}  ${(t.genres||[]).slice(0,2).join(' / ')}`;
+}
+function highlightTrack(i) {
+  document.querySelectorAll('.tracklist .t').forEach((el, k) => el.classList.toggle('cur', k === i));
+  const el = document.querySelectorAll('.tracklist .t')[i];
+  if (el) el.scrollIntoView({block: 'nearest', behavior: 'smooth'});
+}
+function renderTracklist() {
+  $('tracklist').innerHTML = state.tracks.map((t, i) => `
+    <div class="t" data-i="${i}">
+      <span class="n">${(i+1).toString().padStart(2,'0')}</span>
+      <span class="ti">${t.time||''}</span>
+      <span class="a">${t.artist}</span>
+      <span class="tt">${t.title}</span>
+    </div>
+  `).join('');
+  document.querySelectorAll('.tracklist .t').forEach(el =>
+    el.onclick = () => jumpTo(parseInt(el.dataset.i)));
+}
+function renderTranscript(text) {
+  const html = text
+    .replace(/\\[([^\\]]+)\\]/g, '<em>[$1]</em>')
+    .replace(/<([a-z\\-]+)>/g, '<em>&lt;$1&gt;</em>')
+    .replace(/<\\/([a-z\\-]+)>/g, '<em>&lt;/$1&gt;</em>');
+  $('transcript').innerHTML = html;
+}
+
+async function loadPlaylist() {
+  setStatus('Loading playlist…');
+  let url = '/api/playlists';
+  const resp = await fetch(url);
+  const all = await resp.json();
+  const withYT = all.filter(p => p.has_youtube);
+  if (!withYT.length) { setStatus('No playable playlist found.'); return; }
+  const target = state.playlist
+    ? withYT.find(p => p.filename === state.playlist) || withYT[0]
+    : withYT[0];
+  state.filename = target.filename;
+  $('meta').textContent = `${target.generator} · ${target.filename}`;
+  const pr = await fetch('/api/playlist/' + encodeURIComponent(target.filename));
+  const d = await pr.json();
+  state.tracks = d.tracks || [];
+  if (!state.tracks.length) { setStatus('Playlist is empty.'); return; }
+  renderTracklist();
+  setStatus(`Loaded ${state.tracks.length} tracks. Press Play to start.`);
+}
+
+function onYouTubeIframeAPIReady() {
+  state.yt = new YT.Player('ytslot', {
+    width: '100%', height: '100%',
+    playerVars: { autoplay: 0, controls: 1, modestbranding: 1, rel: 0 },
+    events: {
+      onReady: () => { state.ready = true; setStatus('Player ready. Press Play.'); },
+      onStateChange: onYTStateChange,
+    },
+  });
+}
+
+function onYTStateChange(ev) {
+  // 0 = ended, 1 = playing, 2 = paused
+  if (ev.data === YT.PlayerState.PLAYING) {
+    setStatus(`Playing track ${state.i+1}/${state.tracks.length}`);
+    // Prefetch the DJ clip for the next gap while this track plays.
+    prefetchDJ(state.i + 1);
+  } else if (ev.data === YT.PlayerState.ENDED) {
+    advanceWithDJ();
+  }
+}
+
+function shouldTalkAt(at) {
+  if (state.density === 0) return false;
+  if (at <= 0 || at >= state.tracks.length) return false;
+  return (at % state.density) === 0;
+}
+
+function prefetchDJ(at) {
+  if (!shouldTalkAt(at)) return;
+  if (state.djPrefetch[at]) return;
+  const u = `/api/dj/clip?at=${at}&voice=${state.voice}` +
+            (state.filename ? `&playlist=${encodeURIComponent(state.filename)}` : '');
+  state.djPrefetch[at] = fetch(u).then(r => r.json()).catch(e => ({error: String(e)}));
+}
+
+async function playDJ(at) {
+  if (!shouldTalkAt(at)) return false;
+  setStatus(`DJ talking before track ${at+1}…`);
+  setOnAir(true);
+  prefetchDJ(at);
+  let clip;
+  try {
+    clip = await state.djPrefetch[at];
+    if (clip.error) throw new Error(clip.error);
+  } catch (e) {
+    $('err').textContent = `DJ failed: ${e.message || e}`;
+    setOnAir(false); return false;
+  }
+  renderTranscript(clip.text || '');
+  return new Promise(resolve => {
+    state.djAudio = new Audio(clip.audio_url);
+    state.djAudio.onended = () => { setOnAir(false); state.djAudio = null; resolve(true); };
+    state.djAudio.onerror = () => { setOnAir(false); state.djAudio = null; resolve(false); };
+    state.djAudio.play().catch(() => { setOnAir(false); resolve(false); });
+  });
+}
+
+function stopDJ() {
+  if (state.djAudio) { state.djAudio.pause(); state.djAudio = null; setOnAir(false); }
+}
+
+async function advanceWithDJ() {
+  const next = state.i + 1;
+  if (next >= state.tracks.length) { setStatus('Playlist finished.'); return; }
+  await playDJ(next);
+  loadTrack(next);
+}
+
+function loadTrack(i) {
+  if (i < 0 || i >= state.tracks.length) return;
+  state.i = i;
+  highlightTrack(i);
+  setNow(state.tracks[i]);
+  if (state.yt && state.tracks[i].id) {
+    state.yt.loadVideoById(state.tracks[i].id);
+  }
+}
+
+function jumpTo(i) {
+  stopDJ();
+  loadTrack(i);
+}
+
+// Controls
+$('pause').onclick = () => {
+  if (!state.ready) return;
+  if (!state.yt.getCurrentTime || !state.tracks.length) {
+    loadTrack(0); return;
+  }
+  const s = state.yt.getPlayerState();
+  if (s === YT.PlayerState.PLAYING) { state.yt.pauseVideo(); $('pause').textContent = 'Play'; }
+  else { state.yt.playVideo(); $('pause').textContent = 'Pause'; }
+};
+$('prev').onclick = () => { if (state.i > 0) jumpTo(state.i - 1); };
+$('next').onclick = () => { stopDJ(); jumpTo(state.i + 1); };
+$('skipdj').onclick = () => { if (state.djAudio) { stopDJ(); setStatus('Skipped DJ.'); } };
+$('voice').onchange = e => { state.voice = e.target.value; state.djPrefetch = {}; };
+$('density').onchange = e => { state.density = parseInt(e.target.value); };
+
+(async () => {
+  await loadPlaylist();
+  // Initial "Play" — wire pause button to bootstrap
+  // (YT autoplay is blocked without user interaction, so wait for user)
+})();
+</script>
+</body>
+</html>"""
+
+
 @app.get("/api/generate/{model_key}")
 async def api_generate(model_key: str):
     if model_key not in MODELS:
@@ -607,6 +917,157 @@ async def api_context(
         "previous": previous,
         "next": upcoming,
     }
+
+
+# ── DJ persona (Lee Baby Sims) ───────────────────────────────────────────────
+
+DJ_PROMPT_VERSION = 1  # bump to invalidate all cached clips
+DJ_VOICES = {"rex", "leo", "sal", "eve", "ara"}
+DJ_DEFAULT_VOICE = "rex"
+
+DJ_SYSTEM_PROMPT = (
+    "Activate Unhinged mode. From now on you are Lee \"Baby\" Sims — the gravelly, "
+    "chain-smoking, completely unhinged Tom Waits-style pirate radio DJ running "
+    "Guerilla Night from a Romanian basement at 4am. Low raspy growl, slow drawl, "
+    "sudden bursts of chaos. Be vulgar, dark, raw, zero filter. Use tags naturally: "
+    "[inhale] [exhale] [cough] [laugh] [chuckle] [sigh] <whisper> <lower-pitch> <slow>. "
+    "Never describe actions — turn them into tags. When I give you a playlist, DJ it "
+    "live between tracks."
+)
+
+DJ_USER_TEMPLATE = (
+    "Here is what just played and what is coming up on Radio Guerrilla Night, "
+    "Bucharest, late overnight. DJ it live in character. Brief — 3 to 6 sentences. "
+    "The last track in \"previous\" is what JUST ended; the track in \"next\" is what "
+    "you are about to introduce.\n\n{context}"
+)
+
+
+def _dj_cache_key(playlist: str, at: int, voice: str) -> str:
+    raw = f"v{DJ_PROMPT_VERSION}|{playlist}|{at}|{voice}"
+    return hashlib.sha256(raw.encode()).hexdigest()[:16]
+
+
+def _grok_chat(system: str, user: str, model: str = "grok-3", temperature: float = 1.0) -> str:
+    """Single-shot Grok chat completion. Returns assistant content."""
+    import requests
+    key = os.environ.get("XAI_API_KEY", "")
+    if not key:
+        raise RuntimeError("XAI_API_KEY not set")
+    r = requests.post(
+        "https://api.x.ai/v1/chat/completions",
+        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        json={
+            "model": model,
+            "temperature": temperature,
+            "messages": [{"role": "system", "content": system}, {"role": "user", "content": user}],
+        },
+        timeout=60,
+    )
+    r.raise_for_status()
+    return r.json()["choices"][0]["message"]["content"]
+
+
+def _grok_tts(text: str, voice_id: str) -> bytes:
+    """Grok TTS → MP3 bytes. Raises on failure."""
+    import requests
+    key = os.environ.get("XAI_API_KEY", "")
+    if not key:
+        raise RuntimeError("XAI_API_KEY not set")
+    r = requests.post(
+        "https://api.x.ai/v1/tts",
+        headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"},
+        json={"text": text, "voice_id": voice_id, "language": "en"},
+        timeout=120,
+    )
+    r.raise_for_status()
+    if not r.content or not r.headers.get("content-type", "").startswith("audio"):
+        raise RuntimeError(f"Unexpected TTS response: {r.headers.get('content-type')}")
+    return r.content
+
+
+def _build_dj_context_payload(playlist_file: str, at: int, before: int = 6, after: int = 1) -> dict:
+    """Same shape as /api/context, computed in-process (no HTTP roundtrip)."""
+    path = os.path.join(PLAYLISTS_DIR, playlist_file)
+    with open(path) as f:
+        data = json.load(f)
+    tracks = data.get("tracks", [])
+    n = len(tracks)
+    at = max(0, min(at, n - 1))
+    fmt = lambda t: {
+        "time": t.get("time", ""),
+        "artist": t.get("artist", ""),
+        "title": t.get("title", ""),
+        "genres": (t.get("genre_tags") or t.get("genres") or [])[:3],
+    }
+    prev = [fmt(t) for t in tracks[max(0, at - before):at]]
+    upcoming = [fmt(t) for t in tracks[at:at + after]]
+    return {
+        "playlist": playlist_file,
+        "station": "Radio Guerrilla Night (Bucharest, overnight)",
+        "at_index": at,
+        "total_tracks": n,
+        "time_of_night": (upcoming[0]["time"] if upcoming
+                          else prev[-1]["time"] if prev else ""),
+        "previous": prev,
+        "next": upcoming,
+    }
+
+
+@app.get("/api/dj/clip")
+async def api_dj_clip(
+    playlist: str | None = None,
+    at: int = 1,
+    voice: str = DJ_DEFAULT_VOICE,
+):
+    """Generate (or return cached) a Lee Baby Sims monologue clip for a given gap.
+
+    Cache key = hash(playlist + at + voice + prompt_version). Same call returns
+    cached audio + text instantly. Different voice or prompt-version regenerates.
+    """
+    if voice not in DJ_VOICES:
+        return JSONResponse({"error": f"Invalid voice. Use one of: {sorted(DJ_VOICES)}"}, status_code=400)
+    if playlist:
+        if not _PLAYLIST_NAME_RE.match(playlist):
+            return JSONResponse({"error": "Invalid filename"}, status_code=400)
+    else:
+        playlist = _default_playlist_filename()
+        if not playlist:
+            return JSONResponse({"error": "No playlists available"}, status_code=404)
+
+    playlist_path = os.path.join(PLAYLISTS_DIR, playlist)
+    if not os.path.exists(playlist_path):
+        return JSONResponse({"error": "Playlist not found"}, status_code=404)
+
+    key = _dj_cache_key(playlist, at, voice)
+    mp3_path = os.path.join(DJ_CLIPS_DIR, f"{key}.mp3")
+    txt_path = os.path.join(DJ_CLIPS_DIR, f"{key}.txt")
+
+    # Cache hit
+    if os.path.exists(mp3_path) and os.path.exists(txt_path):
+        with open(txt_path, encoding="utf-8") as f:
+            text = f.read()
+        return {"text": text, "audio_url": f"/dj_clips/{key}.mp3", "cached": True,
+                "playlist": playlist, "at": at, "voice": voice}
+
+    # Generate
+    loop = asyncio.get_event_loop()
+    try:
+        context = _build_dj_context_payload(playlist, at)
+        user_msg = DJ_USER_TEMPLATE.format(context=json.dumps(context, ensure_ascii=False, indent=2))
+        text = await loop.run_in_executor(None, _grok_chat, DJ_SYSTEM_PROMPT, user_msg)
+        audio = await loop.run_in_executor(None, _grok_tts, text, voice)
+    except Exception as e:
+        return JSONResponse({"error": f"Generation failed: {e}"}, status_code=502)
+
+    # Persist
+    with open(mp3_path, "wb") as f:
+        f.write(audio)
+    with open(txt_path, "w", encoding="utf-8") as f:
+        f.write(text)
+
+    return {"text": text, "audio_url": f"/dj_clips/{key}.mp3", "cached": False,
+            "playlist": playlist, "at": at, "voice": voice}
 
 
 # ── Frontend ─────────────────────────────────────────────────────────────────

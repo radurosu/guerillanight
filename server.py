@@ -502,6 +502,9 @@ DJ_PAGE_HTML = """<!DOCTYPE html>
   .tracklist .t{display:flex;gap:.5rem;padding:.3rem .4rem;border-radius:3px;cursor:pointer}
   .tracklist .t:hover{background:rgba(255,255,255,.03)}
   .tracklist .t.cur{background:rgba(255,107,107,.08);color:#fff}
+  .tracklist .t .mic{width:.55rem;height:.55rem;border-radius:50%;background:transparent;flex-shrink:0;align-self:center}
+  .tracklist .t.dj .mic{background:#ff6464;box-shadow:0 0 6px rgba(255,100,100,.5)}
+  .tracklist .t.dj{border-left:2px solid rgba(255,100,100,.35);padding-left:calc(.4rem - 2px)}
   .tracklist .t .n{color:rgba(255,255,255,.2);font-family:'JetBrains Mono',monospace;width:1.8rem;text-align:right}
   .tracklist .t .ti{color:rgba(255,255,255,.3);font-family:'JetBrains Mono',monospace;width:3rem}
   .tracklist .t .a{font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -599,14 +602,17 @@ function highlightTrack(i) {
   if (el) el.scrollIntoView({block: 'nearest', behavior: 'smooth'});
 }
 function renderTracklist() {
-  $('tracklist').innerHTML = state.tracks.map((t, i) => `
-    <div class="t" data-i="${i}">
+  $('tracklist').innerHTML = state.tracks.map((t, i) => {
+    const dj = shouldTalkAt(i);
+    return `
+    <div class="t ${dj ? 'dj' : ''}" data-i="${i}" title="${dj ? 'DJ speaks before this track' : ''}">
+      <span class="mic"></span>
       <span class="n">${(i+1).toString().padStart(2,'0')}</span>
       <span class="ti">${t.time||''}</span>
       <span class="a">${t.artist}</span>
       <span class="tt">${t.title}</span>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
   document.querySelectorAll('.tracklist .t').forEach(el =>
     el.onclick = () => jumpTo(parseInt(el.dataset.i)));
 }
@@ -634,8 +640,8 @@ async function loadPlaylist() {
   const d = await pr.json();
   state.tracks = d.tracks || [];
   if (!state.tracks.length) { setStatus('Playlist is empty.'); return; }
-  renderTracklist();
   state.djGaps = buildDJGaps(state.filename, state.tracks.length);
+  renderTracklist();
   const preview = [...state.djGaps].slice(0, 10).map(i => i+1).join(', ');
   setStatus(`Loaded ${state.tracks.length} tracks. DJ before tracks: ${preview}${state.djGaps.size > 10 ? '…' : ''}. Press Play.`);
 }
@@ -762,7 +768,7 @@ $('prev').onclick = () => { if (state.i > 0) jumpTo(state.i - 1); };
 $('next').onclick = () => { stopDJ(); jumpTo(state.i + 1); };
 $('skipdj').onclick = () => { if (state.djAudio) { stopDJ(); setStatus('Skipped DJ.'); } };
 $('voice').onchange = e => { state.voice = e.target.value; state.djPrefetch = {}; };
-$('density').onchange = e => { state.density = e.target.value; };
+$('density').onchange = e => { state.density = e.target.value; renderTracklist(); highlightTrack(state.i); };
 
 (async () => {
   await loadPlaylist();

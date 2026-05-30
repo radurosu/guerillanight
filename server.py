@@ -524,12 +524,11 @@ DJ_PAGE_HTML = """<!DOCTYPE html>
       <option value="eve">eve (female, enthusiastic)</option>
       <option value="ara">ara (female, conversational)</option>
     </select>
-    <label>DJ every</label>
+    <label>DJ density</label>
     <select id="density">
-      <option value="1">every track</option>
-      <option value="2">every 2nd</option>
-      <option value="3">every 3rd</option>
-      <option value="0">off (music only)</option>
+      <option value="random">random (every 3-7 tracks)</option>
+      <option value="all">every track</option>
+      <option value="off">off (music only)</option>
     </select>
     <button id="skipdj">Skip DJ</button>
     <span style="flex:1"></span>
@@ -575,7 +574,8 @@ const state = {
   yt: null,
   ready: false,
   voice: 'rex',
-  density: 1,
+  density: 'random',     // 'random' | 'all' | 'off'
+  djGaps: new Set(),     // gap indices that should have DJ (random mode)
   djAudio: null,
   djPrefetch: {},     // at -> Promise
   status: '',
@@ -635,7 +635,9 @@ async function loadPlaylist() {
   state.tracks = d.tracks || [];
   if (!state.tracks.length) { setStatus('Playlist is empty.'); return; }
   renderTracklist();
-  setStatus(`Loaded ${state.tracks.length} tracks. Press Play to start.`);
+  state.djGaps = buildDJGaps(state.filename, state.tracks.length);
+  const preview = [...state.djGaps].slice(0, 10).map(i => i+1).join(', ');
+  setStatus(`Loaded ${state.tracks.length} tracks. DJ before tracks: ${preview}${state.djGaps.size > 10 ? '…' : ''}. Press Play.`);
 }
 
 function onYouTubeIframeAPIReady() {
@@ -660,10 +662,34 @@ function onYTStateChange(ev) {
   }
 }
 
+// Deterministic gap set: same playlist always has DJ at the same indices,
+// so the audio cache hits on every replay. Range is "next DJ in 3-7 tracks."
+function buildDJGaps(seedStr, total) {
+  let seed = 0;
+  for (let i = 0; i < seedStr.length; i++) {
+    seed = ((seed << 5) - seed + seedStr.charCodeAt(i)) | 0;
+  }
+  const rng = () => {
+    seed = (seed + 0x6D2B79F5) | 0;
+    let t = seed;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  const gaps = new Set();
+  let i = 3 + Math.floor(rng() * 5);     // first DJ at gap 3-7
+  while (i < total) {
+    gaps.add(i);
+    i += 3 + Math.floor(rng() * 5);      // next 3-7 later
+  }
+  return gaps;
+}
+
 function shouldTalkAt(at) {
-  if (state.density === 0) return false;
+  if (state.density === 'off') return false;
   if (at <= 0 || at >= state.tracks.length) return false;
-  return (at % state.density) === 0;
+  if (state.density === 'all') return true;
+  return state.djGaps.has(at);
 }
 
 function prefetchDJ(at) {
@@ -736,7 +762,7 @@ $('prev').onclick = () => { if (state.i > 0) jumpTo(state.i - 1); };
 $('next').onclick = () => { stopDJ(); jumpTo(state.i + 1); };
 $('skipdj').onclick = () => { if (state.djAudio) { stopDJ(); setStatus('Skipped DJ.'); } };
 $('voice').onchange = e => { state.voice = e.target.value; state.djPrefetch = {}; };
-$('density').onchange = e => { state.density = parseInt(e.target.value); };
+$('density').onchange = e => { state.density = e.target.value; };
 
 (async () => {
   await loadPlaylist();

@@ -16,6 +16,7 @@ import asyncio
 import json
 import re
 import os
+import random
 import subprocess
 import sys
 import time
@@ -512,6 +513,99 @@ async def api_playlist(filename: str):
         "generated_at": data.get("generated_at"),
         "track_count": len(data.get("tracks", [])),
         "tracks": player_tracks,
+    }
+
+
+def _default_playlist_filename() -> str | None:
+    """Pick the most recent playlist with YouTube IDs (same logic the frontend uses)."""
+    candidates = []
+    if not os.path.exists(PLAYLISTS_DIR):
+        return None
+    for f in os.listdir(PLAYLISTS_DIR):
+        if not (f.startswith("playlist_") and f.endswith(".json") and not f.endswith("_score.json")):
+            continue
+        try:
+            with open(os.path.join(PLAYLISTS_DIR, f)) as fh:
+                d = json.load(fh)
+        except Exception:
+            continue
+        if any(t.get("youtube_id") for t in d.get("tracks", [])):
+            candidates.append((d.get("generated_at") or f, f))
+    if not candidates:
+        return None
+    candidates.sort(key=lambda x: x[0], reverse=True)
+    return candidates[0][1]
+
+
+@app.get("/api/context")
+async def api_context(
+    playlist: str | None = None,
+    before: int = 5,
+    after: int = 1,
+    at: int | None = None,
+):
+    """Window of tracks around a DJ-intervention point, shaped for downstream LLM prompts
+    (e.g. a Lee Baby Sims persona riffing on what just played and intro'ing what's next).
+
+    Query params:
+      playlist  — filename (default: most-recent playlist with YouTube IDs)
+      before    — count of previous tracks (default 5, clamped 0-10)
+      after     — count of upcoming tracks (default 1, clamped 0-3)
+      at        — intervention index (DJ talks BEFORE tracks[at]).
+                  Default: random valid position so each call gives fresh material.
+    """
+    before = max(0, min(int(before), 10))
+    after = max(0, min(int(after), 3))
+
+    # Resolve playlist filename + load
+    if playlist:
+        if not _PLAYLIST_NAME_RE.match(playlist):
+            return JSONResponse({"error": "Invalid filename"}, status_code=400)
+    else:
+        playlist = _default_playlist_filename()
+        if not playlist:
+            return JSONResponse({"error": "No playlists available"}, status_code=404)
+
+    path = os.path.join(PLAYLISTS_DIR, playlist)
+    if not os.path.exists(path):
+        return JSONResponse({"error": "Not found"}, status_code=404)
+    with open(path) as f:
+        data = json.load(f)
+    tracks = data.get("tracks", [])
+    if not tracks:
+        return JSONResponse({"error": "Empty playlist"}, status_code=404)
+
+    n = len(tracks)
+    if at is None:
+        lo = before
+        hi = n - after
+        at_pos = random.randint(lo, hi) if hi >= lo else min(max(n // 2, 0), n - 1)
+    else:
+        at_pos = max(0, min(int(at), n - 1))
+
+    def fmt(t: dict) -> dict:
+        return {
+            "time": t.get("time", ""),
+            "artist": t.get("artist", ""),
+            "title": t.get("title", ""),
+            "genres": (t.get("genre_tags") or t.get("genres") or [])[:3],
+        }
+
+    previous = [fmt(t) for t in tracks[max(0, at_pos - before):at_pos]]
+    upcoming = [fmt(t) for t in tracks[at_pos:at_pos + after]]
+
+    # Time-of-night hint: use the next track's time if available, else the last previous.
+    time_hint = (upcoming[0]["time"] if upcoming
+                 else previous[-1]["time"] if previous else "")
+
+    return {
+        "playlist": playlist,
+        "station": "Radio Guerrilla Night (Bucharest, overnight)",
+        "at_index": at_pos,
+        "total_tracks": n,
+        "time_of_night": time_hint,
+        "previous": previous,
+        "next": upcoming,
     }
 
 

@@ -14,6 +14,7 @@ Env (.env supported):
 
 import asyncio
 import json
+import re
 import os
 import subprocess
 import sys
@@ -480,9 +481,16 @@ async def api_playlists():
     return playlists[:10]  # last 10
 
 
+_PLAYLIST_NAME_RE = re.compile(r"^playlist_[A-Za-z0-9_.-]+\.json$")
+
+
 @app.get("/api/playlist/{filename}")
 async def api_playlist(filename: str):
     """Get playlist tracks with YouTube IDs for the player."""
+    # Filename is user-facing (shareable URL param). Block path traversal and
+    # restrict to our naming convention before touching the filesystem.
+    if not _PLAYLIST_NAME_RE.match(filename):
+        return JSONResponse({"error": "Invalid filename"}, status_code=400)
     path = os.path.join(PLAYLISTS_DIR, filename)
     if not os.path.exists(path):
         return JSONResponse({"error": "Not found"}, status_code=404)
@@ -897,12 +905,23 @@ async function generate(modelKey) {
   document.querySelectorAll('.model-btn').forEach(b => b.disabled = false);
 }
 
-async function loadPlaylist(filename) {
+async function loadPlaylist(filename, updateUrl) {
+  if (updateUrl === undefined) updateUrl = true;
   try {
-    const resp = await fetch('/api/playlist/' + filename);
+    const resp = await fetch('/api/playlist/' + encodeURIComponent(filename));
+    if (!resp.ok) return false;
     const data = await resp.json();
-    if (data.tracks && data.tracks.length) initPlayer(data.tracks);
+    if (data.tracks && data.tracks.length) {
+      initPlayer(data.tracks);
+      if (updateUrl) {
+        const u = new URL(window.location);
+        u.searchParams.set('playlist', filename);
+        history.replaceState(null, '', u);
+      }
+      return true;
+    }
   } catch(e) { console.error(e); }
+  return false;
 }
 
 // ── Save to YouTube ──
@@ -1009,11 +1028,16 @@ async function init() {
     ).join('');
   }
 
-  // Auto-load best existing playlist (first with YouTube IDs)
+  // Auto-load: ?playlist=<filename> wins, falls back to most recent default.
   const withYT = playlists.filter(p => p.has_youtube);
+  const requested = new URLSearchParams(window.location.search).get('playlist');
+  let loaded = false;
+  if (requested) {
+    loaded = await loadPlaylist(requested);
+    if (!loaded) console.warn('Playlist not found, falling back to default:', requested);
+  }
   if (withYT.length) {
-    // Load the most recent one automatically
-    await loadPlaylist(withYT[0].filename);
+    if (!loaded) await loadPlaylist(withYT[0].filename);
 
     // Show remaining as "Previous Playlists"
     if (withYT.length > 1) {

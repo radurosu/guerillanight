@@ -549,7 +549,7 @@ DJ_PAGE_HTML = """<!DOCTYPE html>
       <div class="now-meta" id="nowmeta"></div>
       <div class="controls">
         <button id="prev">‹ Prev</button>
-        <button id="pause">Pause</button>
+        <button id="pause">▶ Play</button>
         <button id="next">Next ›</button>
       </div>
       <div class="err" id="err"></div>
@@ -580,14 +580,49 @@ const state = {
   voice: 'rex',
   density: 'random',     // 'random' | 'all' | 'off'
   djGaps: new Set(),     // gap indices that should have DJ (random mode)
-  djAudio: null,
+  audioEl: null,         // single persistent audio element (iOS unlock needs this)
+  audioUnlocked: false,
+  djAudio: null,         // alias to audioEl when active, kept for compatibility
   djPrefetch: {},     // at -> Promise
   status: '',
   paused: false,
   skipPending: false,
 };
 
+// 44-byte empty WAV — silent placeholder used to unlock the audio element on iOS.
+// Subsequent .play() calls (even non-gesture, e.g. on track-end) then work.
+const SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';
+
+function ensureAudioEl() {
+  if (state.audioEl) return state.audioEl;
+  const a = new Audio();
+  a.preload = 'auto';
+  a.setAttribute('playsinline', '');   // iOS: don't open native player overlay
+  a.crossOrigin = 'anonymous';
+  state.audioEl = a;
+  return a;
+}
+
+function unlockAudio() {
+  if (state.audioUnlocked) return;
+  const a = ensureAudioEl();
+  // Play silent placeholder during the user gesture. This "user-activates" the
+  // element so subsequent .play() (after track-end, after async fetch) works on iOS.
+  const prev = a.src;
+  a.src = SILENT_WAV;
+  const p = a.play();
+  if (p && p.then) {
+    p.then(() => { a.pause(); a.currentTime = 0; state.audioUnlocked = true; })
+     .catch(() => { /* still mark unlocked; the gesture was registered */ state.audioUnlocked = true; });
+  } else {
+    state.audioUnlocked = true;
+  }
+}
+
 function setStatus(s) { state.status = s; $('status').textContent = s; }
+function setPlayBtn(playing) {
+  $('pause').textContent = playing ? '❚❚ Pause' : '▶ Play';
+}
 function setOnAir(on) {
   $('onair').classList.toggle('live', on);
   $('onairtxt').textContent = on ? 'ON AIR' : 'OFF AIR';
@@ -662,9 +697,13 @@ function onYTStateChange(ev) {
   // 0 = ended, 1 = playing, 2 = paused
   if (ev.data === YT.PlayerState.PLAYING) {
     setStatus(`Playing track ${state.i+1}/${state.tracks.length}`);
+    setPlayBtn(true);
     // Prefetch the DJ clip for the next gap while this track plays.
     prefetchDJ(state.i + 1);
+  } else if (ev.data === YT.PlayerState.PAUSED) {
+    setPlayBtn(false);
   } else if (ev.data === YT.PlayerState.ENDED) {
+    setPlayBtn(false);
     advanceWithDJ();
   }
 }
@@ -721,16 +760,27 @@ async function playDJ(at) {
     setOnAir(false); return false;
   }
   renderTranscript(clip.text || '');
+  const a = ensureAudioEl();
+  state.djAudio = a;  // active flag for skip
   return new Promise(resolve => {
-    state.djAudio = new Audio(clip.audio_url);
-    state.djAudio.onended = () => { setOnAir(false); state.djAudio = null; resolve(true); };
-    state.djAudio.onerror = () => { setOnAir(false); state.djAudio = null; resolve(false); };
-    state.djAudio.play().catch(() => { setOnAir(false); resolve(false); });
+    a.onended = () => { setOnAir(false); state.djAudio = null; resolve(true); };
+    a.onerror = () => { setOnAir(false); state.djAudio = null; resolve(false); };
+    a.src = clip.audio_url;
+    const p = a.play();
+    if (p && p.catch) p.catch(err => {
+      $('err').textContent = 'Audio blocked — tap Play once to unlock: ' + (err.message || err);
+      setOnAir(false); state.djAudio = null; resolve(false);
+    });
   });
 }
 
 function stopDJ() {
-  if (state.djAudio) { state.djAudio.pause(); state.djAudio = null; setOnAir(false); }
+  if (state.djAudio) {
+    state.djAudio.pause();
+    state.djAudio.currentTime = 0;
+    state.djAudio = null;
+    setOnAir(false);
+  }
 }
 
 async function advanceWithDJ() {
@@ -755,20 +805,26 @@ function jumpTo(i) {
   loadTrack(i);
 }
 
-// Controls
+// Controls — every handler unlocks audio first so the gesture activates the element.
 $('pause').onclick = () => {
+  unlockAudio();
   if (!state.ready) return;
-  if (!state.yt.getCurrentTime || !state.tracks.length) {
-    loadTrack(0); return;
+  const s = state.yt.getPlayerState ? state.yt.getPlayerState() : -1;
+  // Nothing loaded yet → bootstrap with track 0. Mobile needs explicit playVideo()
+  // inside the same gesture (loadVideoById alone often doesn't autoplay on iOS).
+  if (s === -1 || s === YT.PlayerState.UNSTARTED || !state.tracks.length) {
+    loadTrack(0);
+    try { state.yt.playVideo(); } catch (e) {}
+    return;
   }
-  const s = state.yt.getPlayerState();
-  if (s === YT.PlayerState.PLAYING) { state.yt.pauseVideo(); $('pause').textContent = 'Play'; }
-  else { state.yt.playVideo(); $('pause').textContent = 'Pause'; }
+  if (s === YT.PlayerState.PLAYING) state.yt.pauseVideo();
+  else state.yt.playVideo();
 };
-$('prev').onclick = () => { if (state.i > 0) jumpTo(state.i - 1); };
-$('next').onclick = () => { stopDJ(); jumpTo(state.i + 1); };
-$('skipdj').onclick = () => { if (state.djAudio) { stopDJ(); setStatus('Skipped DJ.'); } };
+$('prev').onclick = () => { unlockAudio(); if (state.i > 0) jumpTo(state.i - 1); };
+$('next').onclick = () => { unlockAudio(); stopDJ(); jumpTo(state.i + 1); };
+$('skipdj').onclick = () => { unlockAudio(); if (state.djAudio) { stopDJ(); setStatus('Skipped DJ.'); } };
 $('testdj').onclick = async () => {
+  unlockAudio();
   // Find the next DJ-marked gap relative to current position; wrap around if needed.
   let gap = null;
   for (let i = state.i + 1; i < state.tracks.length; i++) {
@@ -786,8 +842,13 @@ $('testdj').onclick = async () => {
   await playDJ(gap);
   if (wasPlaying && state.yt) state.yt.playVideo();
 };
-$('voice').onchange = e => { state.voice = e.target.value; state.djPrefetch = {}; };
-$('density').onchange = e => { state.density = e.target.value; renderTracklist(); highlightTrack(state.i); };
+$('voice').onchange = e => { unlockAudio(); state.voice = e.target.value; state.djPrefetch = {}; };
+$('density').onchange = e => { unlockAudio(); state.density = e.target.value; renderTracklist(); highlightTrack(state.i); };
+
+// Belt + braces: any first tap anywhere on the page unlocks audio in case the
+// user interacts somewhere not bound above (track row, transcript, YT iframe).
+document.addEventListener('pointerdown', unlockAudio, { capture: true });
+document.addEventListener('touchstart', unlockAudio, { capture: true, passive: true });
 
 (async () => {
   await loadPlaylist();

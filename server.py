@@ -653,10 +653,17 @@ function renderTracklist() {
     el.onclick = () => jumpTo(parseInt(el.dataset.i)));
 }
 function renderTranscript(text) {
-  const html = text
+  // 1) Escape ALL HTML in the raw text so Grok's <slow>/<whisper>/etc. become &lt;...&gt;
+  //    (and any &/< chars from track titles can't break the DOM).
+  // 2) THEN wrap the patterns we want styled. The <em> tags we insert can't be
+  //    re-matched because their angle brackets are real markup, not the escaped &lt;.
+  const escaped = text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  const html = escaped
     .replace(/\\[([^\\]]+)\\]/g, '<em>[$1]</em>')
-    .replace(/<([a-z\\-]+)>/g, '<em>&lt;$1&gt;</em>')
-    .replace(/<\\/([a-z\\-]+)>/g, '<em>&lt;/$1&gt;</em>');
+    .replace(/&lt;(\\/?[a-z\\-]+)&gt;/g, '<em>&lt;$1&gt;</em>');
   $('transcript').innerHTML = html;
 }
 
@@ -1072,7 +1079,7 @@ async def api_context(
 
 # ── DJ persona (Lee Baby Sims) ───────────────────────────────────────────────
 
-DJ_PROMPT_VERSION = 2  # bump to invalidate all cached clips
+DJ_PROMPT_VERSION = 3  # bump to invalidate all cached clips
 DJ_VOICES = {"rex", "leo", "sal", "eve", "ara"}
 DJ_DEFAULT_VOICE = "rex"
 
@@ -1087,7 +1094,9 @@ DJ_SYSTEM_PROMPT = (
     "  • Wrap whole sentences in <slow>...</slow> when they need to land.\n"
     "  • Use <whisper>...</whisper> for the intimate, conspiratorial lines.\n"
     "  • Drift. Meander. Half-finished thoughts trailing off are good.\n"
-    "  • Two or three thoughts max. Air between them. Not a paragraph.\n\n"
+    "  • 4 to 6 thoughts. Slow, breath-heavy, with REAL content inside the pauses —\n"
+    "    actual observations, callbacks to the previous track, a stray memory, a curse,\n"
+    "    a line about Bucharest or the hour. Don't just stack atmosphere — say things.\n\n"
     "Available tags: [inhale] [exhale] [cough] [laugh] [chuckle] [sigh] "
     "<whisper>...</whisper> <lower-pitch>...</lower-pitch> <slow>...</slow>\n\n"
     "Never describe actions — turn them into tags. Be vulgar, dark, raw, zero filter. "
@@ -1098,7 +1107,9 @@ DJ_SYSTEM_PROMPT = (
 DJ_USER_TEMPLATE = (
     "Here is what just played and what is coming up on Radio Guerrilla Night, "
     "Bucharest, late overnight. DJ it live in character.\n\n"
-    "Keep it short — 2 to 3 drifting thoughts with breath between them. Not a speech.\n"
+    "4 to 6 drifting thoughts, slow and breath-heavy, with real substance — "
+    "name things, riff on the track that just ended, say something about the hour "
+    "or Bucharest, then ease into what's next. Pauses between, but content inside them.\n"
     "The last track in \"previous\" is what JUST ended; the track in \"next\" is what "
     "you are about to introduce.\n\n{context}"
 )

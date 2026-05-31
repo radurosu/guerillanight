@@ -680,16 +680,38 @@ async function loadPlaylist() {
   renderTracklist();
   const preview = [...state.djGaps].slice(0, 10).map(i => i+1).join(', ');
   setStatus(`Loaded ${state.tracks.length} tracks. DJ before tracks: ${preview}${state.djGaps.size > 10 ? '…' : ''}. Press Play.`);
+  maybeCreatePlayer();   // YT API may already be ready
 }
 
 let consecutiveErrors = 0;
+let ytApiReady = false;
+let ytPlayerCreated = false;
 
+// YT API loads asynchronously; we may know about it before tracks are loaded,
+// or vice versa. Wait until BOTH are ready, then create the player WITH the
+// initial videoId set (this matches the main / page, where it just works).
 function onYouTubeIframeAPIReady() {
+  ytApiReady = true;
+  maybeCreatePlayer();
+}
+
+function maybeCreatePlayer() {
+  if (ytPlayerCreated || !ytApiReady || !state.tracks.length) return;
+  ytPlayerCreated = true;
   state.yt = new YT.Player('ytslot', {
     width: '100%', height: '100%',
-    playerVars: { autoplay: 0, controls: 1, modestbranding: 1, rel: 0, playsinline: 1 },
+    videoId: state.tracks[0].id,
+    playerVars: {
+      modestbranding: 1, rel: 0, playsinline: 1,
+      origin: window.location.origin,   // required for some embed-restricted videos via jsapi
+    },
     events: {
-      onReady: () => { state.ready = true; setStatus('Player ready. Press Play.'); },
+      onReady: () => {
+        state.ready = true;
+        setNow(state.tracks[0]);
+        highlightTrack(0);
+        setStatus('Player ready. Press ▶ Play.');
+      },
       onStateChange: onYTStateChange,
       onError: onYTError,
     },
@@ -831,14 +853,9 @@ function jumpTo(i) {
 $('pause').onclick = () => {
   unlockAudio();
   if (!state.ready) return;
-  const s = state.yt.getPlayerState ? state.yt.getPlayerState() : -1;
-  // Nothing loaded yet → bootstrap with track 0. Mobile needs explicit playVideo()
-  // inside the same gesture (loadVideoById alone often doesn't autoplay on iOS).
-  if (s === -1 || s === YT.PlayerState.UNSTARTED || !state.tracks.length) {
-    loadTrack(0);
-    try { state.yt.playVideo(); } catch (e) {}
-    return;
-  }
+  const s = state.yt.getPlayerState();
+  // Player was constructed with track 0 already loaded — just play it.
+  // (Same gesture is needed on iOS for the initial play to actually start.)
   if (s === YT.PlayerState.PLAYING) state.yt.pauseVideo();
   else state.yt.playVideo();
 };

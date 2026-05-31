@@ -682,15 +682,35 @@ async function loadPlaylist() {
   setStatus(`Loaded ${state.tracks.length} tracks. DJ before tracks: ${preview}${state.djGaps.size > 10 ? '…' : ''}. Press Play.`);
 }
 
+let consecutiveErrors = 0;
+
 function onYouTubeIframeAPIReady() {
   state.yt = new YT.Player('ytslot', {
     width: '100%', height: '100%',
-    playerVars: { autoplay: 0, controls: 1, modestbranding: 1, rel: 0 },
+    playerVars: { autoplay: 0, controls: 1, modestbranding: 1, rel: 0, playsinline: 1 },
     events: {
       onReady: () => { state.ready = true; setStatus('Player ready. Press Play.'); },
       onStateChange: onYTStateChange,
+      onError: onYTError,
     },
   });
+}
+
+function onYTError(ev) {
+  // 2=invalid id, 5=HTML5 player error, 100=removed/private, 101/150=embed disabled
+  console.warn('YT error', ev.data, 'on track', state.i, state.tracks[state.i]);
+  consecutiveErrors++;
+  const errMap = {2:'invalid ID', 5:'player error', 100:'removed/private', 101:'embed disabled', 150:'embed disabled'};
+  const reason = errMap[ev.data] || `error ${ev.data}`;
+  if (consecutiveErrors >= 5) {
+    setStatus(`Too many unplayable tracks (${consecutiveErrors}). Stopped — try a different playlist.`);
+    $('err').textContent = `Last failure: track ${state.i+1} (${reason})`;
+    return;
+  }
+  setStatus(`Track ${state.i+1} unavailable on YouTube (${reason}) — skipping`);
+  $('err').textContent = `Skipped: ${state.tracks[state.i]?.artist} — ${state.tracks[state.i]?.title}`;
+  // Brief delay so user sees the message, then jump (no DJ for a failed track's gap).
+  setTimeout(() => { stopDJ(); jumpTo(state.i + 1); }, 700);
 }
 
 function onYTStateChange(ev) {
@@ -698,6 +718,8 @@ function onYTStateChange(ev) {
   if (ev.data === YT.PlayerState.PLAYING) {
     setStatus(`Playing track ${state.i+1}/${state.tracks.length}`);
     setPlayBtn(true);
+    consecutiveErrors = 0;          // a successful play resets the failure counter
+    $('err').textContent = '';
     // Prefetch the DJ clip for the next gap while this track plays.
     prefetchDJ(state.i + 1);
   } else if (ev.data === YT.PlayerState.PAUSED) {

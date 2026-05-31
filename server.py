@@ -533,6 +533,7 @@ DJ_PAGE_HTML = """<!DOCTYPE html>
       <option value="all">every track</option>
       <option value="off">off (music only)</option>
     </select>
+    <button id="testdj" title="Play the next DJ clip now (pauses music)">▶ Test DJ</button>
     <button id="skipdj">Skip DJ</button>
     <span style="flex:1"></span>
     <span id="meta" style="color:rgba(255,255,255,.25)"></span>
@@ -767,6 +768,24 @@ $('pause').onclick = () => {
 $('prev').onclick = () => { if (state.i > 0) jumpTo(state.i - 1); };
 $('next').onclick = () => { stopDJ(); jumpTo(state.i + 1); };
 $('skipdj').onclick = () => { if (state.djAudio) { stopDJ(); setStatus('Skipped DJ.'); } };
+$('testdj').onclick = async () => {
+  // Find the next DJ-marked gap relative to current position; wrap around if needed.
+  let gap = null;
+  for (let i = state.i + 1; i < state.tracks.length; i++) {
+    if (shouldTalkAt(i)) { gap = i; break; }
+  }
+  if (gap === null) {
+    for (let i = 1; i <= state.i; i++) {
+      if (shouldTalkAt(i)) { gap = i; break; }
+    }
+  }
+  if (gap === null) { setStatus('No DJ moments in this playlist (try changing density).'); return; }
+  const wasPlaying = state.yt && state.yt.getPlayerState && state.yt.getPlayerState() === YT.PlayerState.PLAYING;
+  if (wasPlaying) state.yt.pauseVideo();
+  setStatus(`Test: DJ clip for gap before track ${gap+1}…`);
+  await playDJ(gap);
+  if (wasPlaying && state.yt) state.yt.playVideo();
+};
 $('voice').onchange = e => { state.voice = e.target.value; state.djPrefetch = {}; };
 $('density').onchange = e => { state.density = e.target.value; renderTracklist(); highlightTrack(state.i); };
 

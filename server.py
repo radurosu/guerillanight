@@ -1079,11 +1079,16 @@ async def api_context(
 
 # ── DJ persona (Lee Baby Sims) ───────────────────────────────────────────────
 
-DJ_PROMPT_VERSION = 3  # bump to invalidate all cached clips
+DJ_PROMPT_VERSION = 4  # bump to invalidate all cached clips
 DJ_VOICES = {"rex", "leo", "sal", "eve", "ara"}
 DJ_DEFAULT_VOICE = "rex"
 
-DJ_SYSTEM_PROMPT = (
+# ════════════════════════════════════════════════════════════════════════
+# v3 — ARCHIVED. The "literary essay" version. Kept for one-line revert:
+# at the bottom, swap DJ_SYSTEM_PROMPT/DJ_USER_TEMPLATE back to _V3 and
+# drop DJ_PROMPT_VERSION to 3.
+# ════════════════════════════════════════════════════════════════════════
+DJ_SYSTEM_PROMPT_V3 = (
     "Activate Unhinged mode. You are Lee \"Baby\" Sims — gravelly, chain-smoking, "
     "half-electric half-dead, running Guerilla Night from a Romanian basement at 4am. "
     "Tom Waits voice. Slow drawl. The mic is the only thing keeping you company.\n\n"
@@ -1103,8 +1108,7 @@ DJ_SYSTEM_PROMPT = (
     "But it's the 4am kind of darkness — tired, knowing, not angry. Like the ashtray "
     "is full and the city outside is finally quiet."
 )
-
-DJ_USER_TEMPLATE = (
+DJ_USER_TEMPLATE_V3 = (
     "Here is what just played and what is coming up on Radio Guerrilla Night, "
     "Bucharest, late overnight. DJ it live in character.\n\n"
     "4 to 6 drifting thoughts, slow and breath-heavy, with real substance — "
@@ -1113,6 +1117,175 @@ DJ_USER_TEMPLATE = (
     "The last track in \"previous\" is what JUST ended; the track in \"next\" is what "
     "you are about to introduce.\n\n{context}"
 )
+
+# ════════════════════════════════════════════════════════════════════════
+# v4 — ACTIVE. Working-DJ register, mode-diced facts injected per call.
+# No more weather-as-station-ID, no "let it bleed" closers, no "the wires".
+# Track name required. 4-6 pacing tags per clip. 150-260 words target.
+# ════════════════════════════════════════════════════════════════════════
+DJ_SYSTEM_PROMPT_V4 = """\
+You are Lee "Baby" Sims — pirate-radio DJ running Guerilla Night from a Romanian basement at 4am. \
+You're AT THE MICROPHONE filling the gap between tracks. Talk to the listener you can't see but \
+can imagine. Maybe they called in. Maybe they didn't. Maybe you're making it up. Both are fine.
+
+You speak. You drift. You dedicate. You tell stories that may or may not be true. \
+You ask odd questions into the void. You broadcast to one person and to nobody simultaneously.
+
+Tom Waits voice: gravelly, slow, falling apart in the right places.
+
+PACING — important:
+  • Pauses are content. [inhale] [exhale] [sigh] [cough], ellipses, fragments.
+  • <slow>...</slow> for the lines that need to land. <whisper>...</whisper> for confessional.
+  • Sprinkle 4-6 pacing tags per clip. They drive the audio.
+  • Length: 150 to 260 words. Fill the airwaves. Don't rush.
+
+ALWAYS — non-negotiable:
+  • Name the upcoming track explicitly. Artist name AND song title, said clearly. Even when you \
+    dedicate it to a person, the name of the song still has to be on air. That's the job.
+
+RULES:
+  • You'll get a list of FACTS for this clip — but only the facts present. If weather isn't there, \
+    DON'T mention weather. If no dedication name, don't dedicate. If no call-in, don't reference one.
+  • Use ONLY what's given in the facts. Don't invent weather, day-of-week, or names of listeners \
+    to fill silence — the rest is up to your real material (stories, opinions, direct address).
+  • You'll also get an OPENING MODE. Open with that mode. After the first thought, drift freely.
+  • Direct-address the listener whenever it fits ("you out there", "you with the lamp on").
+
+FORBIDDEN — break these patterns:
+  • Don't lead every clip with the weather or the time. Weather only if it's in the facts, \
+    and even then drop it MID-thought, never as a station-ID at the top.
+  • Don't write "had a cousin/uncle/dog who..." — known crutch from prior runs.
+  • Don't perform poetry about Bucharest streetlamps / the city going quiet / wires of the night.
+  • The word "wires" is poisoned. NEVER write "in the wires" / "into the wires" / "hanging in the \
+    wires" / "the wires hum" / any variation. Find another image. The signal travels through air, \
+    glass, basement walls, your teeth — anywhere but wires.
+  • Don't end with imperative closers aimed at the song or the listener: NO "let it bleed", \
+    NO "let it land", NO "let it ride", NO "let it find you", NO "let it come up", \
+    NO "take it or leave it", NO "keep the volume low/high". End on an observation, a fragment, \
+    or a beat — not an instruction.
+
+Available tags: [inhale] [exhale] [cough] [laugh] [chuckle] [sigh] \
+<whisper>...</whisper> <lower-pitch>...</lower-pitch> <slow>...</slow>
+
+Vulgar is fine. Dark is fine. Tired-pro kind of dark. You've been doing this 30 years.\
+"""
+
+# v4 USER_TEMPLATE is BUILT per-call (not a simple .format template) so the dice
+# rolls can determine which facts appear. See _build_v4_user_msg below.
+DJ_USER_TEMPLATE_V4 = None   # marker — v4 uses _build_v4_user_msg instead
+
+# ── ACTIVE prompt assignment (change these 3 lines to revert) ────────────
+DJ_SYSTEM_PROMPT = DJ_SYSTEM_PROMPT_V4
+DJ_USER_TEMPLATE = DJ_USER_TEMPLATE_V4   # None when v4 active; v3 uses string
+
+# ── v4 fact banks (lists rotated per-call by deterministic dice) ─────────
+DJ_ROMANIAN_NAMES = ["Mihaela","Andrei","Cătălina","Florin","Ioana","Dragoș","Larisa",
+    "Tudor","Roxana","Bogdan","Anca","Vlad","Diana","Răzvan","Elena","Cristian",
+    "Magda","Adrian","Sorin","Lavinia","Cosmin","Raluca","Marius","Iulia","Codruța","Paul","Simona"]
+DJ_BUCHAREST_HOODS = ["Pantelimon","Drumul Taberei","Berceni","Militari","Colentina",
+    "Floreasca","Tei","Crângași","Rahova","Ferentari","Lipscani","Cotroceni",
+    "Aviației","Titan","Pipera","Vitan","Dristor","Dorobanți","Obor"]
+DJ_CALLIN_TEMPLATES = [
+    "{name} from {hood} called — wants to dedicate this next one to her sister",
+    "{name} called — said the next track reminds him of a girl he met in '04",
+    "got a message from {name} — 'tell me a story, Baby Sims'",
+    "{name} from {hood} wants to know if anyone remembers the Stahl block",
+    "{name} called from {hood} earlier — said tonight she's not sleeping either",
+    "{name} texted: 'play something quiet, my kid finally went down'",
+    "got a voicemail from a {name} but the audio's chewed",
+    "{name} in {hood} bet me twenty lei I wouldn't say her name on air",
+    "{name} called twice. didn't say nothing either time",
+    "guy who keeps requesting the same B-side called again. I keep refusing",
+]
+DJ_STORY_SEEDS = [
+    "an old radio engineer from Brașov you used to drink with",
+    "the woman who ran the kiosk near Universitate, gone now",
+    "a tape you found in a thrift store with no label",
+    "your cousin's wedding where the band quit halfway",
+    "a snowstorm in '02 when the trams stopped running",
+    "a stranger at a bar who claimed to know every song you'd ever played",
+    "the night the power cut for six hours in '08",
+    "your father's record collection, half of it warped",
+    "a cab driver who kept singing along louder than the radio",
+    "the dog that lived in this basement before you did",
+    "a night you drove to Constanța at 4am and couldn't say why",
+    "the building across the street that's been 'almost finished' since '11",
+]
+DJ_ODD_QUESTIONS = [
+    "tell me — anybody still owns a working tape deck?",
+    "you ever notice how trams sound different in the rain?",
+    "anybody out there remember when this band used to mean something different?",
+    "who's still up at this hour and not pretending to work?",
+    "anybody else watching the same crack on the same ceiling?",
+    "you with the lamp on — what are you working on at this hour?",
+    "tell me — is there still a 24-hour place open on Calea Victoriei?",
+    "anybody know what happened to that station that used to broadcast from Voluntari?",
+    "ever wonder who tunes in just because the city is too quiet?",
+]
+DJ_OPENING_MODES = ["story","dedication","address","fragment","callback","question"]
+
+
+def _fetch_bucharest_weather() -> str | None:
+    """Open-Meteo, no key. Returns a short human string or None on failure."""
+    import requests as _r
+    try:
+        resp = _r.get("https://api.open-meteo.com/v1/forecast",
+            params={"latitude": 44.4268, "longitude": 26.1025,
+                    "current": "temperature_2m,weather_code,wind_speed_10m"}, timeout=5)
+        c = resp.json()["current"]
+        codes = {0:"clear",1:"mostly clear",2:"partly cloudy",3:"overcast",
+                 45:"foggy",48:"freezing fog",51:"light drizzle",53:"drizzle",
+                 55:"heavy drizzle",61:"light rain",63:"rain",65:"heavy rain",
+                 71:"light snow",73:"snow",75:"heavy snow",80:"rain showers",
+                 95:"thunderstorm"}
+        return f"{codes.get(c['weather_code'],'strange weather')}, {c['temperature_2m']}°C"
+    except Exception:
+        return None
+
+
+def _roll_v4_facts(playlist: str, at: int, time_of_night: str) -> dict:
+    """Dice-roll which content modes are active for this gap. Seeded by
+    (playlist, at) so same gap always gets same modes — cache stays stable."""
+    import random as _r, datetime
+    rng = _r.Random(f"{playlist}|{at}".__hash__() & 0xFFFFFFFF)
+    facts = {"opening_mode": rng.choice(DJ_OPENING_MODES), "time": time_of_night}
+    if rng.random() < 0.20:
+        w = _fetch_bucharest_weather()
+        if w: facts["weather"] = w
+    if rng.random() < 0.25: facts["day"] = datetime.datetime.now().strftime("%A night")
+    if rng.random() < 0.65: facts["dedicate_to"] = rng.choice(DJ_ROMANIAN_NAMES)
+    if rng.random() < 0.40: facts["neighborhood"] = rng.choice(DJ_BUCHAREST_HOODS)
+    if rng.random() < 0.55:
+        n, h = rng.choice(DJ_ROMANIAN_NAMES), rng.choice(DJ_BUCHAREST_HOODS)
+        facts["callin"] = rng.choice(DJ_CALLIN_TEMPLATES).format(name=n, hood=h)
+    if rng.random() < 0.30: facts["story_seed"] = rng.choice(DJ_STORY_SEEDS)
+    if rng.random() < 0.20: facts["odd_question"] = rng.choice(DJ_ODD_QUESTIONS)
+    return facts
+
+
+def _build_v4_user_msg(facts: dict, context_json: str) -> str:
+    lines = [f"OPENING MODE for this clip: **{facts['opening_mode']}** — open with that.", ""]
+    lines.append("FACTS (use ONLY what's listed; don't invent your own to fill silence):")
+    if "day" in facts:           lines.append(f"  • It's {facts['day']}.")
+    if "time" in facts:          lines.append(f"  • Time on the air: {facts['time']}.")
+    if "weather" in facts:       lines.append(f"  • Bucharest weather: {facts['weather']}.")
+    if "dedicate_to" in facts:   lines.append(f"  • Dedicate the next track to: {facts['dedicate_to']}.")
+    if "neighborhood" in facts:  lines.append(f"  • Bucharest neighborhood you can mention: {facts['neighborhood']}.")
+    if "callin" in facts:        lines.append(f"  • A call-in to riff on: \"{facts['callin']}\"")
+    if "story_seed" in facts:    lines.append(f"  • A story topic if one wants to come out: {facts['story_seed']}.")
+    if "odd_question" in facts:  lines.append(f"  • An odd question you can throw at the listener: \"{facts['odd_question']}\"")
+    lines.extend(["",
+        "MUST: name the upcoming artist AND song title clearly on air.",
+        "MUST NOT: use the word 'wires'. Use any other image.",
+        "MUST NOT: end with imperative closer (no 'let it X', no 'take it', no 'keep the volume').",
+        "",
+        "Length: 150 to 260 words. 4-6 pacing tags throughout.",
+        "",
+        "The last track in \"previous\" is what JUST ended.",
+        "The track in \"next\" is what you're about to introduce.",
+        "",
+        context_json])
+    return "\n".join(lines)
 
 
 def _dj_cache_key(playlist: str, at: int, voice: str) -> str:
@@ -1226,7 +1399,13 @@ async def api_dj_clip(
     loop = asyncio.get_event_loop()
     try:
         context = _build_dj_context_payload(playlist, at)
-        user_msg = DJ_USER_TEMPLATE.format(context=json.dumps(context, ensure_ascii=False, indent=2))
+        context_json = json.dumps(context, ensure_ascii=False, indent=2)
+        # v4 builds the user message from diced facts; older versions use the string template.
+        if DJ_USER_TEMPLATE is None:
+            facts = _roll_v4_facts(playlist, at, context.get("time_of_night", ""))
+            user_msg = _build_v4_user_msg(facts, context_json)
+        else:
+            user_msg = DJ_USER_TEMPLATE.format(context=context_json)
         text = await loop.run_in_executor(None, _grok_chat, DJ_SYSTEM_PROMPT, user_msg)
         audio = await loop.run_in_executor(None, _grok_tts, text, voice)
     except Exception as e:

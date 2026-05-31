@@ -521,6 +521,7 @@ DJ_PAGE_HTML = """<!DOCTYPE html>
     <span class="onair" id="onair"><span class="dot"></span><span id="onairtxt">OFF AIR</span></span>
     <label>Voice</label>
     <select id="voice">
+      <option value="custom">custom (your voice)</option>
       <option value="rex">rex (male, professional)</option>
       <option value="leo">leo (male, decisive)</option>
       <option value="sal">sal (neutral)</option>
@@ -577,7 +578,7 @@ const state = {
   i: 0,
   yt: null,
   ready: false,
-  voice: 'rex',
+  voice: 'custom',     // matches server DJ_DEFAULT_VOICE; the personal Grok voice clone
   density: 'random',     // 'random' | 'all' | 'off'
   djGaps: new Set(),     // gap indices that should have DJ (random mode)
   audioEl: null,         // single persistent audio element (iOS unlock needs this)
@@ -1080,8 +1081,18 @@ async def api_context(
 # ── DJ persona (Lee Baby Sims) ───────────────────────────────────────────────
 
 DJ_PROMPT_VERSION = 5  # bump to invalidate all cached clips
-DJ_VOICES = {"rex", "leo", "sal", "eve", "ara"}
-DJ_DEFAULT_VOICE = "rex"
+# Friendly name → actual API voice_id. Friendly name is what we cache by and
+# what the frontend dropdown uses; the long ID is what we pass to /v1/tts.
+# "custom" = Radu's personal voice clone.
+DJ_VOICES = {
+    "custom": "3qomq267hu1v",   # personal Grok voice clone
+    "rex":    "rex",
+    "leo":    "leo",
+    "sal":    "sal",
+    "eve":    "eve",
+    "ara":    "ara",
+}
+DJ_DEFAULT_VOICE = "custom"
 
 # ════════════════════════════════════════════════════════════════════════
 # v3 — ARCHIVED. The "literary essay" version. Kept for one-line revert:
@@ -1481,7 +1492,7 @@ async def api_dj_clip(
         else:
             user_msg = DJ_USER_TEMPLATE.format(context=context_json)
         text = await loop.run_in_executor(None, _grok_chat, DJ_SYSTEM_PROMPT, user_msg)
-        audio = await loop.run_in_executor(None, _grok_tts, text, voice)
+        audio = await loop.run_in_executor(None, _grok_tts, text, DJ_VOICES[voice])
     except Exception as e:
         return JSONResponse({"error": f"Generation failed: {e}"}, status_code=502)
 

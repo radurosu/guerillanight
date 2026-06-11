@@ -1080,7 +1080,7 @@ async def api_context(
 
 # ── DJ persona (Lee Baby Sims) ───────────────────────────────────────────────
 
-DJ_PROMPT_VERSION = 5  # bump to invalidate all cached clips
+DJ_PROMPT_VERSION = 6  # bump to invalidate all cached clips
 # Friendly name → actual API voice_id. Friendly name is what we cache by and
 # what the frontend dropdown uses; the long ID is what we pass to /v1/tts.
 # "custom" = Radu's personal voice clone.
@@ -1268,16 +1268,16 @@ DJ_BUCHAREST_HOODS = ["Pantelimon","Drumul Taberei","Berceni","Militari","Colent
     "Floreasca","Tei","Crângași","Rahova","Ferentari","Lipscani","Cotroceni",
     "Aviației","Titan","Pipera","Vitan","Dristor","Dorobanți","Obor"]
 DJ_CALLIN_TEMPLATES = [
-    "{name} from {hood} called — wants to dedicate this next one to her sister",
-    "{name} called — said the next track reminds him of a girl he met in '04",
+    "{name} from {hood} called — wants to dedicate this next one to an old flame",
+    "{name} called — said the next track reminds them of someone they met in '04",
     "got a message from {name} — 'tell me a story, Baby Sims'",
     "{name} from {hood} wants to know if anyone remembers the Stahl block",
-    "{name} called from {hood} earlier — said tonight she's not sleeping either",
+    "{name} called from {hood} earlier — said tonight they're not sleeping either",
     "{name} texted: 'play something quiet, my kid finally went down'",
-    "got a voicemail from a {name} but the audio's chewed",
-    "{name} in {hood} bet me twenty lei I wouldn't say her name on air",
+    "got a voicemail from {name} but the audio's chewed",
+    "{name} in {hood} bet me twenty lei I wouldn't say their name on air",
     "{name} called twice. didn't say nothing either time",
-    "guy who keeps requesting the same B-side called again. I keep refusing",
+    "somebody keeps requesting the same B-side, called again. I keep refusing",
 ]
 DJ_STORY_SEEDS = [
     "an old radio engineer from Brașov you used to drink with",

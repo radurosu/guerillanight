@@ -18,11 +18,13 @@ import json
 import re
 import os
 import random
+import shutil
 import subprocess
 import sys
 import time
 import urllib.parse
 from collections import Counter
+from html import escape as _esc
 from datetime import datetime
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -72,6 +74,40 @@ app.mount("/dj_clips", StaticFiles(directory=DJ_CLIPS_DIR), name="dj_clips")
 
 
 # ── Helpers ──────────────────────────────────────────────────────────────────
+
+def _client_ip(request: Request) -> str:
+    # nginx proxies from loopback and sets X-Real-IP; only trust it from there
+    peer = request.client.host if request.client else "unknown"
+    if peer in ("127.0.0.1", "::1"):
+        return request.headers.get("x-real-ip", peer)
+    return peer
+
+
+# Playlist generation and uncached DJ clips cost API money and write to a
+# small disk, so both are capped per client and site-wide.
+_hits: dict[tuple[str, str], list[float]] = {}
+
+
+def _allow(bucket: str, key: str, limit: int, window_s: int) -> bool:
+    now = time.time()
+    if len(_hits) > 10_000:
+        for k in [k for k, ts in _hits.items() if not ts or now - ts[-1] > 86_400]:
+            del _hits[k]
+    recent = [t for t in _hits.get((bucket, key), []) if now - t < window_s]
+    allowed = len(recent) < limit
+    if allowed:
+        recent.append(now)
+    _hits[(bucket, key)] = recent
+    return allowed
+
+
+def _disk_ok(min_free_bytes: int = 500 * 1024 * 1024) -> bool:
+    return shutil.disk_usage(DATA_DIR).free > min_free_bytes
+
+
+def _too_busy() -> JSONResponse:
+    return JSONResponse({"error": "Too many requests — try again later."}, status_code=429)
+
 
 def get_available_models() -> list[dict]:
     """Return models that have API keys configured."""
@@ -272,11 +308,11 @@ async def stats_page():
     unique = len(artists)
 
     artist_rows = "".join(
-        f'<tr><td><a href="/tracks?artist={urllib.parse.quote(a)}">{a}</a></td><td>{c}</td><td><div class="bar" style="width:{c/top_artists[0][1]*100:.0f}%"></div></td></tr>'
+        f'<tr><td><a href="/tracks?artist={urllib.parse.quote(a)}">{_esc(a)}</a></td><td>{c}</td><td><div class="bar" style="width:{c/top_artists[0][1]*100:.0f}%"></div></td></tr>'
         for a, c in top_artists
     )
     genre_rows = "".join(
-        f'<tr><td>{g}</td><td>{c}</td><td><div class="bar g" style="width:{c/top_genres[0][1]*100:.0f}%"></div></td></tr>'
+        f'<tr><td>{_esc(g)}</td><td>{c}</td><td><div class="bar g" style="width:{c/top_genres[0][1]*100:.0f}%"></div></td></tr>'
         for g, c in top_genres
     )
 
@@ -371,23 +407,23 @@ async def tracks_page(artist: str = "", genre: str = ""):
     # Build rows
     track_rows = []
     for t in filtered:
-        genres_html = " ".join(f'<a href="/tracks?genre={urllib.parse.quote(g)}" class="tag">{g}</a>' for g in t.get("genres", [])[:3])
+        genres_html = " ".join(f'<a href="/tracks?genre={urllib.parse.quote(g)}" class="tag">{_esc(g)}</a>' for g in t.get("genres", [])[:3])
         meta = t.get("metadata", {})
-        album = f'<span class="album">{meta["album"]}</span>' if meta.get("album") else ""
-        artist_link = f'<a href="/tracks?artist={urllib.parse.quote(t["artist"])}">{t["artist"]}</a>'
+        album = f'<span class="album">{_esc(meta["album"])}</span>' if meta.get("album") else ""
+        artist_link = f'<a href="/tracks?artist={urllib.parse.quote(t["artist"])}">{_esc(t["artist"])}</a>'
         track_rows.append(
-            f'<tr><td class="td-date">{t["date"]}</td><td class="td-time">{t["time"]}</td>'
-            f'<td class="td-artist">{artist_link}</td><td class="td-title">{t["title"]}{album}</td>'
+            f'<tr><td class="td-date">{_esc(t["date"])}</td><td class="td-time">{_esc(t["time"])}</td>'
+            f'<td class="td-artist">{artist_link}</td><td class="td-title">{_esc(t["title"])}{album}</td>'
             f'<td class="td-genres">{genres_html}</td></tr>'
         )
     rows_html = "".join(track_rows)
 
-    # Active filter display
+    # Active filter display — artist/genre come straight from the query string
     filter_desc = ""
     if artist:
-        filter_desc = f' · Filtered by <strong>{artist}</strong> <a href="/tracks" class="clear">✕ clear</a>'
+        filter_desc = f' · Filtered by <strong>{_esc(artist)}</strong> <a href="/tracks" class="clear">✕ clear</a>'
     elif genre:
-        filter_desc = f' · Filtered by genre <strong>{genre}</strong> <a href="/tracks" class="clear">✕ clear</a>'
+        filter_desc = f' · Filtered by genre <strong>{_esc(genre)}</strong> <a href="/tracks" class="clear">✕ clear</a>'
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -908,11 +944,16 @@ document.addEventListener('touchstart', unlockAudio, { capture: true, passive: t
 
 
 @app.get("/api/generate/{model_key}")
-async def api_generate(model_key: str):
+async def api_generate(model_key: str, request: Request):
     if model_key not in MODELS:
         return JSONResponse({"error": f"Unknown model: {model_key}"}, status_code=400)
     if not os.environ.get(MODELS[model_key]["env_key"], ""):
         return JSONResponse({"error": f"No API key for {model_key}"}, status_code=400)
+    if not _disk_ok():
+        return JSONResponse({"error": "Generation is paused — try again later."}, status_code=503)
+    if not (_allow("generate", _client_ip(request), 5, 3600)
+            and _allow("generate", "*", 40, 86_400)):
+        return _too_busy()
 
     return StreamingResponse(
         generate_stream(model_key),
@@ -1446,6 +1487,7 @@ def _build_dj_context_payload(playlist_file: str, at: int, before: int = 6, afte
 
 @app.get("/api/dj/clip")
 async def api_dj_clip(
+    request: Request,
     playlist: str | None = None,
     at: int = 1,
     voice: str = DJ_DEFAULT_VOICE,
@@ -1469,6 +1511,12 @@ async def api_dj_clip(
     if not os.path.exists(playlist_path):
         return JSONResponse({"error": "Playlist not found"}, status_code=404)
 
+    # Clamp before keying the cache: otherwise every out-of-range `at` is a
+    # fresh cache miss — a new paid generation and a new mp3 on disk.
+    with open(playlist_path) as f:
+        n_tracks = len(json.load(f).get("tracks", []))
+    at = max(0, min(at, max(n_tracks - 1, 0)))
+
     key = _dj_cache_key(playlist, at, voice)
     mp3_path = os.path.join(DJ_CLIPS_DIR, f"{key}.mp3")
     txt_path = os.path.join(DJ_CLIPS_DIR, f"{key}.txt")
@@ -1481,6 +1529,11 @@ async def api_dj_clip(
                 "playlist": playlist, "at": at, "voice": voice}
 
     # Generate
+    if not _disk_ok():
+        return JSONResponse({"error": "DJ is resting — try again later."}, status_code=503)
+    if not (_allow("dj", _client_ip(request), 30, 3600)
+            and _allow("dj", "*", 150, 3600)):
+        return _too_busy()
     loop = asyncio.get_event_loop()
     try:
         context = _build_dj_context_payload(playlist, at)
@@ -1837,6 +1890,12 @@ async function generate(modelKey) {
 
   try {
     const resp = await fetch('/api/generate/' + modelKey);
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      text.textContent = err.error || ('Error ' + resp.status);
+      document.querySelectorAll('.model-btn').forEach(b => b.disabled = false);
+      return;
+    }
     const reader = resp.body.getReader();
     const decoder = new TextDecoder();
     let buffer = '';
@@ -2060,4 +2119,4 @@ if __name__ == "__main__":
         if arg == "--port" and i < len(sys.argv) - 1:
             port = int(sys.argv[i + 1])
     print(f"\n  Guerrilla Night — http://localhost:{port}\n")
-    uvicorn.run(app, host="0.0.0.0", port=port, log_level="info")
+    uvicorn.run(app, host="127.0.0.1", port=port, log_level="info")
